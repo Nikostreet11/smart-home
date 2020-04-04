@@ -1,0 +1,154 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
+/********** GLOBAL ************************************************************/
+
+body {
+    font-family: system-ui, -apple-system, -apple-system-font, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.header-left {
+	position: absolute;
+	top: 0px;
+	left: 10px;
+}
+
+.header-center {
+	margin: 8px 0px;
+}
+
+.header-right {
+	position: absolute;
+	top: 0px;
+	right: 10px;
+}
+
+.header h2 {
+	font-weight: normal;
+	text-align: center;
+	margin: 0px;
+}
+
+/********** SIGN IN PAGE ******************************************************/
+
+#sign-in-page .ui-input-text {
+	width: 60px;
+	display: inline-block;
+}
+
+#sign-in-page .ui-input-text input {
+	text-align: center;
+}
+
+/********** PROFILES PAGE *****************************************************/
+
+#profiles-page .profiles-container {
+	width: 220px;
+	margin: auto;
+}
+
+#profiles-page .float-bottom-right {
+	width: 50px;
+	position: fixed;
+	bottom: 0px;
+	right: 10px;
+}
+
+/********** CONTROL PANEL PAGE ************************************************/
+
+#control-panel-page .rooms-container {
+	width: 220px;
+	margin: auto;
+}
+
+#control-panel-page .float-bottom-right {
+	width: 50px;
+	position: fixed;
+	bottom: 0px;
+	right: 10px;
+}
+
+/********** MANUAL PANEL PAGE *************************************************/
+
+#manual-panel-page .items-list {
+	/*width: 220px;*/
+	/*margin: auto;*/
+}
+
+#manual-panel-page .item {
+	position: relative;
+	margin: 0px;
+}
+
+#manual-panel-page .item .active-btn {
+	display: inline-block;
+	width: 120px;
+	margin: 0px;
+	/*margin: auto;*/
+}
+
+#manual-panel-page .item .active-btn h3 {
+	margin:0px;
+}
+
+#manual-panel-page .item .smart-container {
+	position: absolute;
+	bottom: 0px;
+	right: 0px;
+}
+
+#manual-panel-page .item .smart-container .smart {
+	position: relative;
+	/*display: inline-block;*/
+	margin: 5px 0px 0px 0px;
+}
+
+#manual-panel-page .item .smart-container .smart button {
+	margin: 0px;
+	padding: 0px 10px;
+}
+
+#manual-panel-page .item .smart-container .smart .on-btn {
+	background-color: #2deb82;
+}
+
+#manual-panel-page .item .smart-container .smart .off-btn {
+	background-color: #cccccc;
+}
+
+#manual-panel-page .item .smart-container .smart p {
+	color: white;
+	margin: 5px 15px;
+	font-weight: normal;
+	font-size: 15px;
+}
+
+#manual-panel-page .items-list hr {
+	border: transparent;
+	border-top: 2px solid #dddddd;
+	margin: 15px 0px;
+	
+}
+
+#manual-panel-page .float-bottom-right {
+	width: 50px;
+	position: fixed;
+	bottom: 0px;
+	right: 10px;
+}

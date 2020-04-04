@@ -1,0 +1,11 @@
+# cordova
+/hooks/
+/node_modules/
+/platforms/
+/plugins/
+config.xml
+package.json
+package-lock.json
+
+# personal notes
+/private/

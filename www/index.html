@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <!--
+        Customize this policy to fit your own app's needs. For more guidance, see:
+            https://github.com/apache/cordova-plugin-whitelist/blob/master/README.md#content-security-policy
+        Some notes:
+            * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+            * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+            * Disables use of inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+                * Enable inline JS: add 'unsafe-inline' to default-src
+        -->
+        <title>Smart Home</title>
+		<meta charset="UTF-8"/>
+        <meta http-equiv="Content-Security-Policy" content="
+            default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval' *;
+            style-src 'self' 'unsafe-inline';
+            media-src *;
+            img-src 'self' data: content:;
+        ">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport"
+            content="initial-scale=1, width=device-width, viewport-fit=cover">
+		<link rel="stylesheet" type="text/css"
+            href="css/jquery.mobile-1.4.5.min.css"/>
+        <link rel="stylesheet" type="text/css" href="css/index.css">
+		<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+		<script type="text/javascript"
+            src="js/jquery.mobile-1.4.5.min.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+    </head>
+	<body>
+		
+<!---------- WELCOME ---------------------------------------------------------->
+		
+		<div data-role="page" id="welcome-page">
+			<div data-role="header" class="header">
+				<div class="header-center">
+					<h2>Smart Home</h2>
+				</div>
+				
+				<div class="header-right">
+					<input type="button" class="connect-btn" value="connect">
+				</div>
+			</div>
+		
+			<div data-role="content" class="ui-content">
+				<img id="welcome-img" src="img/welcome.jpg" width="300px" height="260px"/>
+				<h2>be smart, like your home</h2>
+				<p>this app allows you to control almost every device in your
+					home by a few taps on your smartphone or tablet.</p>
+			</div>
+		</div>
+		
+<!---------- SIGN IN ---------------------------------------------------------->
+		
+		<div data-role="page" id="sign-in-page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="back-btn" value="&lt back">
+				</div>
+				
+				<div class="header-center">
+					<h2>Smart Home</h2>
+				</div>
+				<!-- button class="registerBtn" value="register"-->
+			</div>
+			
+			<div data-role="content">
+				<form>
+					<label>Insert your local IP address:</label>
+					<input class="local-ip-1" type="text" value="192">
+					<span>.</span>
+					<input class="local-ip-2" type="text" value="168">
+					<span>.</span>
+					<input class="local-ip-3" type="text" value="0">
+					<span>.</span>
+					<input class="local-ip-4" type="text" value="1">
+					
+					<div class="devices-container"></div>
+					
+					<input type="button" class="refresh-btn" value="refresh">
+					<!--
+					<input type="text" name="name" placeholder="Name"/>
+					<input type="text" name="password" placeholder="Password"/>
+					-->
+					<input type="button" class="submit-btn" value="ok">
+				</form>
+			</div>
+		</div>
+		
+<!---------- REGISTER --------------------------------------------------------->
+		
+		<!--
+		<div data-role="page" id="registerPage">
+			<div data-role="header">
+				<a data-role="button" class="backBtn headerBtn">&lt Back</a>
+				<h1>Smart Home</h1>
+				<a data-role="button" class="signInBtn headerBtn">Sign in</a>
+			</div>
+			
+			<div data-role="content">
+				<form>
+					<h2>Device:</h2>
+					<div class="devicesContainer">
+						<p>No devices found, be sure to connect to the same WiFi
+								of your device</p>
+					</div>
+					<a data-role="button" class="refreshBtn">Refresh</a>
+				
+					<input type="text" name="name" placeholder="Name"/>
+					<input type="text" name="password" placeholder="Password"/>
+					<input type="text" name="passwordCheck" placeholder="Repeat password"/>
+					<a data-role="button" class="submitBtn">Register</a>
+				</form>
+			</div>
+		</div>
+		-->
+		
+<!---------- PROFILES --------------------------------------------------------->
+		
+		<div data-role="page" id="profiles-page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="log-out-btn" value="log out">
+				</div>
+				
+				<div class="header-center">
+					<h2>Smart Home</h2>
+				</div>
+				
+				<div class="header-right">
+					<input type="button" class="edit-btn" value="edit">
+				</div>
+			</div>
+			
+			<div data-role="content">
+				<div class="profiles-container">
+					<!-- filled dynamically -->
+				</div>
+				
+				<div class="float-bottom-right">
+					<input type="button" class="add-btn" value="+">
+				</div>
+			</div>
+		</div>
+		
+<!---------- EDIT PROFILE ----------------------------------------------------->
+		
+		<div data-role="page" id="edit-profile-page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="cancel-btn" value="cancel">
+				</div>
+				
+				<div class="header-center">
+					<h2>Smart Home</h2>
+				</div>
+				
+				<div class="header-right">
+					<input type="button" class="confirm-btn" value="confirm">
+				</div>
+			</div>
+			
+			<div data-role="content">
+				<form>
+					<input type="text" name="name" placeholder="Insert profile name here"/>
+					
+					<!--<input type="text" name="name" value="John"/>-->
+					<!--
+					<input type="text" name="password" placeholder="Password"/>
+					<label>
+						<input type="checkbox" name="edit-password-checkbox">
+						Edit password
+					</label>
+					<div class="editPasswordContainer">
+						<input type="text" name="new-password" placeholder="New password"/>
+						<input type="text" name="new-password-check" placeholder="Repeat password"/>
+					</div>
+					-->
+					
+					<div class="avatars-container">
+						<!-- filled dynamically -->
+					</div>
+					
+					<input type="button" class="delete-btn" value="delete">
+				</form>
+			</div>
+		</div>
+		
+<!---------- ADD PROFILE ------------------------------------------------------>
+		
+		<div data-role="page" id="add-profile-page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="cancel-btn" value="cancel">
+				</div>
+				
+				<div class="header-center">
+					<h2>Smart Home</h2>
+				</div>
+				
+				<div class="header-right">
+					<input type="button" class="confirm-btn" value="confirm">
+				</div>
+			</div>
+			
+			<div data-role="content">
+				<form>
+					<input type="text" name="name" placeholder="Insert profile name here"/>
+					<!--<input type="text" name="password" placeholder="Password"/>
+					<input type="text" name="password-check" placeholder="Repeat password"/>-->
+					
+					<div class="avatars-container">
+						<!-- filled dynamically -->
+					</div>
+				</form>
+			</div>
+		</div>
+		
+<!---------- SIGN IN PROFILE -------------------------------------------------->
+		
+		<div data-role="page" id="sign-in-profile-page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="back-btn" value="&lt back">
+				</div>
+				
+				<div class="header-center">
+					<h2>Smart Home</h2>
+				</div>
+			</div>
+			
+			<div data-role="content">
+				<div class="profileContainer">
+					<img src="img/profiles/default.png" width="250px" height="250px"/>
+					<h2>Name</h2>
+				</div>
+				
+				<form>
+					<input type="text" name="password" placeholder="Password"/>
+					<a data-role="button" class="submitBtn">Sign in</a>
+				</form>
+			</div>
+		</div>
+		
+<!---------- CONTROL PANEL ---------------------------------------------------->
+		<div data-role="page" id="control-panel-page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="menu-btn" value="menu">
+				</div>
+				
+				<div class="header-center">
+					<h2>Smart Home</h2>
+				</div>
+				
+				<div class="header-right">
+					<input type="button" class="edit-btn" value="edit">
+				</div>
+			</div>
+			
+			<div data-role="content">
+				<div class="rooms-container">
+					<!-- filled dynamically -->
+				</div>
+				
+				<div class="float-bottom-right">
+					<input type="button" class="add-btn" value="+">
+				</div>
+			</div>
+		</div>
+		
+<!---------- EDIT ROOM -------------------------------------------------------->
+		
+		<div data-role="page" id="edit-room-page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="cancel-btn" value="cancel">
+				</div>
+				
+				<div class="header-center">
+					<h2>Smart Home</h2>
+				</div>
+				
+				<div class="header-right">
+					<input type="button" class="confirm-btn" value="confirm">
+				</div>
+			</div>
+			
+			<div data-role="content">
+				<form>
+					<input type="text" name="name" placeholder="Insert room name here"/>
+					
+					<div class="room-icons-container">
+						<!-- filled dynamically -->
+					</div>
+					
+					<input type="button" class="delete-btn" value="delete">
+				</form>
+			</div>
+		</div>
+		
+<!---------- ADD ROOM --------------------------------------------------------->
+		
+		<div data-role="page" id="add-room-page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="cancel-btn" value="cancel">
+				</div>
+				
+				<div class="header-center">
+					<h2>Smart Home</h2>
+				</div>
+				
+				<div class="header-right">
+					<input type="button" class="confirm-btn" value="confirm">
+				</div>
+			</div>
+			
+			<div data-role="content">
+				<form>
+					<input type="text" name="name" placeholder="Insert room name here"/>
+					
+					<div class="room-icons-container">
+						<!-- filled dynamically -->
+					</div>
+				</form>
+			</div>
+		</div>
+		
+<!---------- MANUAL PANEL ----------------------------------------------------->
+		
+		<div data-role="page" id="manual-panel-page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="back-btn" value="&lt back">
+				</div>
+				
+				<div class="header-center">
+					<h2>Smart Home</h2>
+				</div>
+				
+				<div class="header-right">
+					<input type="button" class="edit-btn" value="edit">
+				</div>
+			</div>
+			
+			<div data-role="content">
+				<div class="items-list">
+					<div class="item" id="test-item_0000"
+						 	active="false"
+						 	smart="false">
+						<button type="submit" class="active-btn">
+							<img src="img/items/011-light-bulb.png"
+								 width="50px"
+								 height="50px"/>
+							<h3>test item</h3>
+						</button>
+						<div class="smart-container">
+							<div class="smart">
+								<button type="submit" class="on-btn">
+									<p>smart on</p>
+								</button>
+							</div>
+							<div class="smart">
+								<button type="submit" class="off-btn">
+									<p>smart off</p>
+								</button>
+							</div>
+						</div>
+					</div>
+					<hr>
+					<div class="item" id="test-item_0001"
+						 	active="false"
+						 	smart="false">
+						<button type="submit" class="active-btn">
+							<img src="img/items/011-light-bulb.png"
+								 width="50px"
+								 height="50px"/>
+							<h3>test item</h3>
+						</button>
+						<div class="smart-container">
+							<div class="smart">
+								<button type="submit" class="on-btn">
+									<p>smart on</p>
+								</button>
+							</div>
+							<div class="smart">
+								<button type="submit" class="off-btn">
+									<p>smart off</p>
+								</button>
+							</div>
+						</div>
+					</div>
+					<!--filled dynamically-->
+				</div>
+				
+				<div class="float-bottom-right">
+					<input type="button" class="add-btn" value="+">
+				</div>
+			</div>
+		</div>
+		
+<!---------- EDIT ITEM -------------------------------------------------------->
+		
+		<div data-role="page" id="edit-item-page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="cancel-btn" value="cancel">
+				</div>
+				
+				<div class="header-center">
+					<h2>Smart Home</h2>
+				</div>
+				
+				<div class="header-right">
+					<input type="button" class="confirm-btn" value="confirm">
+				</div>
+			</div>
+			
+			<div data-role="content">
+				<form>
+					<h4>name</h4>
+					<input type="text" name="name" placeholder="insert item name here"/>
+					
+					<h4>port</h4>
+					<select class="port-select">
+						<!--filled dynamically-->
+					</select>
+					
+					<h4>icon</h4>
+					<div class="item-icons-container">
+						<!-- filled dynamically -->
+					</div>
+					
+					<!--<h4>type</h4>
+					<input type="radio" name="type" value="on/off" checked>
+					<input type="radio" name="type" value="linear">
+					<input type="radio" name="type" value="radio">-->
+					
+					<!--<h4>privacy</h4>
+					<input type="radio" name="privacy" value="Public"/> Public
+					<input type="radio" name="privacy" value="Private"/> Private-->
+					
+					<input type="button" class="delete-btn" value="delete">
+				</form>
+			</div>
+		</div>
+		
+<!---------- ADD ITEM --------------------------------------------------------->
+		
+		<div data-role="page" id="add-item-page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="cancel-btn" value="cancel">
+				</div>
+				
+				<div class="header-center">
+					<h2>Smart Home</h2>
+				</div>
+				
+				<div class="header-right">
+					<input type="button" class="confirm-btn" value="confirm">
+				</div>
+			</div>
+			
+			<div data-role="content">
+				<form>
+					<h4>name</h4>
+					<input type="text" name="name" placeholder="Insert item name here"/>
+					
+					<h4>port</h4>
+					<select class="port-select">
+						<!--filled dynamically-->
+					</select>
+					
+					<h4>icon</h4>
+					<div class="item-icons-container">
+						<!-- filled dynamically -->
+					</div>
+					
+					<!--<h4>type</h4>
+					<input type="radio" name="type" value="on/off" checked>
+					<input type="radio" name="type" value="linear">
+					<input type="radio" name="type" value="radio">-->
+					
+					<!--<h4>privacy</h4>
+					<input type="radio" name="privacy" value="Public"/> Public
+					<input type="radio" name="privacy" value="Private"/> Private-->
+				</form>
+			</div>
+		</div>
+		
+		
+<!---------- BLANK ------------------------------------------------------------>
+		
+		
+		<div data-role="page" id="">
+			<div data-role="header">
+				
+			</div>
+			
+			<div data-role="content">
+				
+			</div>
+		</div>
+	</body>
+</html>
