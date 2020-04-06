@@ -303,7 +303,7 @@ bool SmartHomeServer::handleGET(String path, String query)
 			led_blink = true;
 			return true;
 		}
-		else if (path.startsWith("/debug/ports"))
+		/*else if (path.startsWith("/debug/ports"))
 		{
 			database.portManager.debug();
 			return true;
@@ -317,7 +317,7 @@ bool SmartHomeServer::handleGET(String path, String query)
 		{
 			database.portManager.unlock("port_10");
 			return true;
-		}
+		}*/
 	}
 	
 	return false;

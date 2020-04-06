@@ -90,8 +90,6 @@ public:
 	static const int MAX_ROOMS = 32;
 	//static const int MAX_ITEMS_PER_ROOM = 8;
 
-	// public resources
-	PortManager portManager;
 private:
 	// internal
 	void log(JsonDocument& json);
@@ -103,6 +101,7 @@ private:
 	StaticJsonDocument<4096> responseJson;
 	LinkedPointerList<Profile> profiles;
 	LinkedPointerList<Room> rooms;
+	PortManager portManager;
 
 	// variables
 	String logBuffer;
