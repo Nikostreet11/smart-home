@@ -14,8 +14,8 @@ public:
 	virtual ~Room();
 
 	// search
-	Item* searchItem(const String& id);
-	int searchItemIndex(const String& id);
+	/*Item* searchItem(const String& id);
+	int searchItemIndex(const String& id);*/
 
 	// getters / setters
 	int getTrueId() const;
@@ -26,15 +26,12 @@ public:
 	void setIcon(const String& icon);
 	bool isSmart() const;
 	void setSmart(bool smart);
-	int getItemsSize();
-	Item* getItem(int index);
-	Item* getItem(const String& id);
-	bool addItem(Item* item);
-	bool deleteItem(int index);
-	//bool turnOnItem(int index);
-	//bool turnOffItem(int index);
-	// TODO: add by direct definition
-	//void addItem(const String& name, int type, ...);
+	Item* get(int index);
+	Item* get(const String& id);
+	int getIndex(const String& id);
+	bool add(Item* item);
+	bool remove(int index);
+	int getSize();
 
 	// static constants
 	static const int MAX_ROOMS = 1024;

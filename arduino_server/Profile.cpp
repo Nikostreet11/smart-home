@@ -75,8 +75,8 @@ bool Profile::editSmartItem(String itemId, Item* newItem)
 }
 */
 
-// smart delete
-bool Profile::deleteSmartRoom(String roomId)
+// smart remove
+bool Profile::removeSmartRoom(String roomId)
 {
 	for (int index = 0; index < smartRooms.size(); index++)
 	{
@@ -93,7 +93,7 @@ bool Profile::deleteSmartRoom(String roomId)
 	return false;
 }
 
-bool Profile::deleteSmartItem(String itemId, String roomId)
+bool Profile::removeSmartItem(String itemId, String roomId)
 {
 	for (int index1 = 0; index1 < smartRooms.size(); index1++)
 	{

@@ -48,19 +48,16 @@ public:
 	String addItem(String data);
 
 	// edit
-	// TODO: data already contains all the information, so send just "data"
 	String editProfile(String id, String data);
 	String editRoom(String id, String data);
 	String editItem(String id, String data);
 
-	// delete
-	// TODO: data already contains all the information, so send just "data"
-	String deleteProfile(String id);
-	String deleteRoom(String id);
-	String deleteItem(String id, String data);
+	// remove
+	String removeProfile(String id);
+	String removeRoom(String id);
+	String removeItem(String id, String data);
 
 	// status
-	// TODO: data already contains all the information, so send just "data"
 	String setItemActive(String id, String data);
 
 	// smart

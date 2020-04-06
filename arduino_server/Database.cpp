@@ -93,13 +93,16 @@ Room* Database::searchRoom(String roomId)
 
 Item* Database::searchItem(String id)
 {
-	for (int index = 0; index < rooms.size(); index++)
+	for (int index1 = 0; index1 < rooms.size(); index1++)
 	{
-		Item* item = rooms.get(index)->searchItem(id);
-		
-		if (item)
+		Room* room = rooms.get(index1);
+		for (int index2 = 0; index2 < room->getSize(); index2++)
 		{
-			return item;
+			Item* item = room->get(index2);
+			if (item->getId() == id)
+			{
+				return item;
+			}
 		}
 	}
 	return nullptr;
@@ -258,10 +261,10 @@ String Database::getItems(String roomId, String profileId)
 		for (int index1 = 0; index1 < rooms.size(); index1++)
 		{
 			Room* room = rooms.get(index1);
-			for (int index2 = 0; index2 < room->getItemsSize(); index2++)
+			for (int index2 = 0; index2 < room->getSize(); index2++)
 			{
 				JsonObject jsonItem = jsonItems.createNestedObject();
-				itemToJson(room->getItem(index2), jsonItem);
+				itemToJson(room->get(index2), jsonItem);
 			}
 		}
 	}
@@ -286,9 +289,9 @@ String Database::getItems(String roomId, String profileId)
 				responseJson["outcome"] = "success";
 				
 				JsonArray jsonItems = responseJson.createNestedArray("items");
-				for (int index = 0; index < room->getItemsSize(); index++)
+				for (int index = 0; index < room->getSize(); index++)
 				{
-					Item* item = room->getItem(index);
+					Item* item = room->get(index);
 					JsonObject jsonItem = jsonItems.createNestedObject();
 					itemToJson(item, jsonItem);
 					//jsonItem["smart"] = profile->isItemSmart(item, roomName);
@@ -428,7 +431,7 @@ String Database::addItem(String data)
 		responseJson["outcome"] = "failure";
 		responseJson["error"] = "room not found";
 	}
-	else if (room->getItemsSize() == Room::MAX_ITEMS)
+	else if (room->getSize() == Room::MAX_ITEMS)
 	{
 		responseJson["outcome"] = "failure";
 		responseJson["error"] = "max number of items in the room reached";
@@ -443,7 +446,7 @@ String Database::addItem(String data)
 		Item* newItem = Item::create(portManager);
 		portManager.lock(itemJson["port"]);
 		jsonToItem(itemJson, newItem);
-		room->addItem(newItem);
+		room->add(newItem);
 		responseJson["outcome"] = "success";
 	}
 	log(responseJson);
@@ -548,9 +551,9 @@ String Database::editItem(String id, String data)
 	return getLog();
 }
 
-/********** DELETE **************************************************************/
+/********** REMOVE **************************************************************/
 
-String Database::deleteProfile(String id)
+String Database::removeProfile(String id)
 {	
 	int index = searchProfileIndex(id);
 	if (index == -1)
@@ -569,7 +572,7 @@ String Database::deleteProfile(String id)
 	return getLog();
 }
 
-String Database::deleteRoom(String id)
+String Database::removeRoom(String id)
 {
 	int index = searchRoomIndex(id);
 	if (index == -1)
@@ -583,7 +586,7 @@ String Database::deleteRoom(String id)
 		rooms.remove(index);
 		for (int index = 0; index < profiles.size(); index++)
 		{
-			profiles.get(index)->deleteSmartRoom(id);
+			profiles.get(index)->removeSmartRoom(id);
 		}
 		responseJson["outcome"] = "success";
 	}
@@ -592,7 +595,7 @@ String Database::deleteRoom(String id)
 	return getLog();
 }
 
-String Database::deleteItem(String id, String data)
+String Database::removeItem(String id, String data)
 {
 	deserializeJson(requestJson, data);
 	String roomId = requestJson["room-id"];
@@ -605,7 +608,7 @@ String Database::deleteItem(String id, String data)
 	}
 	else
 	{
-		int index = room->searchItemIndex(id);
+		int index = room->getIndex(id);
 		if (index == -1)
 		{
 			responseJson["outcome"] = "failure";
@@ -613,11 +616,11 @@ String Database::deleteItem(String id, String data)
 		}
 		else
 		{
-			portManager.unlock(room->getItem(index)->getPort());
-			room->deleteItem(index);
+			portManager.unlock(room->get(index)->getPort());
+			room->remove(index);
 			for (int index = 0; index < profiles.size(); index++)
 			{
-				profiles.get(index)->deleteSmartItem(id, roomId);
+				profiles.get(index)->removeSmartItem(id, roomId);
 			}
 			responseJson["outcome"] = "success";
 		}
@@ -645,7 +648,7 @@ String Database::setItemActive(String id, String data)
 	}
 	else
 	{
-		Item* item = room->getItem(id);
+		Item* item = room->get(id);
 		if (!item)
 		{
 			responseJson["outcome"] = "failure";
@@ -708,7 +711,7 @@ String Database::setRoomSmart(String roomId, String data)
 				for (int index = 0; index < smartRoom->getSize(); index++)
 				{
 					SmartItem* smartItem = smartRoom->get(index);
-					Item* item = room->getItem(smartItem->getId());
+					Item* item = room->get(smartItem->getId());
 
 					if (roomSmart)
 					{
@@ -756,7 +759,7 @@ String Database::setItemSmart(String id, String data)
 		}
 		else
 		{
-			Item* item = room->getItem(id);
+			Item* item = room->get(id);
 			if (!item)
 			{
 				responseJson["outcome"] = "failure";

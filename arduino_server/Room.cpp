@@ -30,7 +30,7 @@ Room::~Room()
 }
 
 // search
-Item* Room::searchItem(const String& id)
+/*Item* Room::searchItem(const String& id)
 {
 	for (int index = 0; index < items.size(); index++)
 	{
@@ -52,7 +52,7 @@ int Room::searchItemIndex(const String& id)
 		}
 	}
 	return -1;
-}
+}*/
 
 // getters / setters
 int Room::getTrueId() const
@@ -104,17 +104,12 @@ void Room::setSmart(bool smart)
 	this->smart = smart;
 }
 
-int Room::getItemsSize()
-{
-	return items.size();
-}
-
-Item* Room::getItem(int index)
+Item* Room::get(int index)
 {
 	return items.get(index);
 }
 
-Item* Room::getItem(const String& id)
+Item* Room::get(const String& id)
 {
 	for (int index = 0; index < items.size(); index++)
 	{
@@ -127,7 +122,19 @@ Item* Room::getItem(const String& id)
 	return nullptr;
 }
 
-bool Room::addItem(Item* item)
+int Room::getIndex(const String& id)
+{
+	for (int index = 0; index < items.size(); index++)
+	{
+		if (items.get(index)->getId() == id)
+		{
+			return index;
+		}
+	}
+	return -1;
+}
+
+bool Room::add(Item* item)
 {
 	if (items.size() < Room::MAX_ITEMS && item != nullptr)
 	{
@@ -140,7 +147,7 @@ bool Room::addItem(Item* item)
 	}
 }
 
-bool Room::deleteItem(int index)
+bool Room::remove(int index)
 {
 	if (index < items.size())
 	{
@@ -152,6 +159,11 @@ bool Room::deleteItem(int index)
 	{
 		return false;
 	}
+}
+
+int Room::getSize()
+{
+	return items.size();
 }
 
 /*bool Room::turnOnItem(int index)

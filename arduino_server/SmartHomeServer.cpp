@@ -349,9 +349,9 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 				responseText = database.editProfile(profileId, data);
 				return true;
 			}
-			else if (getParameter("action", query) == "delete")
+			else if (getParameter("action", query) == "remove")
 			{
-				responseText = database.deleteProfile(profileId);
+				responseText = database.removeProfile(profileId);
 				return true;
 			}
 		}
@@ -377,9 +377,9 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 				responseText = database.editRoom(roomId, data);
 				return true;
 			}
-			else if (getParameter("action", query) == "delete")
+			else if (getParameter("action", query) == "remove")
 			{
-				responseText = database.deleteRoom(roomId);
+				responseText = database.removeRoom(roomId);
 				return true;
 			}
 			else if (getParameter("action", query) == "set-smart")
@@ -423,9 +423,9 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 					responseText = database.editItem(itemId, data);
 					return true;
 				}
-				else if (action == "delete")
+				else if (action == "remove")
 				{
-					responseText = database.deleteItem(itemId, data);
+					responseText = database.removeItem(itemId, data);
 					return true;
 				}
 				else if (action == "set-status")

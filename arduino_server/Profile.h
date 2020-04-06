@@ -24,9 +24,9 @@ public:
 	//bool editSmartRoom(String roomId, Room* newRoom);
 	//bool editSmartItem(String itemId, Item* newItem);
 	
-	// smart delete
-	bool deleteSmartRoom(String roomId);
-	bool deleteSmartItem(String itemId, String roomId);
+	// smart remove
+	bool removeSmartRoom(String roomId);
+	bool removeSmartItem(String itemId, String roomId);
 
 	// smart
 	bool isItemSmart(String itemId, String roomId);
