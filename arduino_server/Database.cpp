@@ -677,6 +677,7 @@ String Database::setRoomSmart(String roomId, String data)
 	deserializeJson(requestJson, data);	
 	bool roomSmart = toBool(requestJson["room-smart"]);
 	String profileId = requestJson["profile-id"];
+	String smartsetId = requestJson["smartset-id"];
 
 	Profile* profile = searchProfile(profileId);
 	if (!profile)
@@ -684,7 +685,8 @@ String Database::setRoomSmart(String roomId, String data)
 		responseJson["outcome"] = "failure";
 		responseJson["error"] = "profile not found";
 	}
-	else {
+	else
+	{
 		Room* room = searchRoom(roomId);
 		if (!room)
 		{
@@ -706,25 +708,36 @@ String Database::setRoomSmart(String roomId, String data)
 			}*/
 			else
 			{
-				room->setSmart(roomSmart);
-				
-				for (int index = 0; index < smartRoom->getSize(); index++)
+				Smartset* smartset = smartRoom->getSmartset(smartsetId);
+				if (!smartset)
 				{
-					SmartItem* smartItem = smartRoom->get(index);
-					Item* item = room->get(smartItem->getId());
-
-					if (roomSmart)
-					{
-						item->setActive(smartItem->isActive());
-					}
-					else
-					{
-						item->setActive(false);
-					}
+					responseJson["outcome"] = "failure";
+					responseJson["error"] = "smartset not found";
 				}
-				
-				responseJson["outcome"] = "success";
-				responseJson["room-smart"] = toStr(roomSmart);
+				else
+				{
+					/* TODO
+					room->setSmart(roomSmart);
+					
+					for (int index = 0; index < smartRoom->getSize(); index++)
+					{
+						SmartItem* smartItem = smartRoom->get(index);
+						Item* item = room->get(smartItem->getId());
+	
+						if (roomSmart)
+						{
+							item->setActive(smartItem->isActive());
+						}
+						else
+						{
+							item->setActive(false);
+						}
+					}
+					
+					responseJson["outcome"] = "success";
+					responseJson["room-smart"] = toStr(roomSmart);
+					*/
+				}
 			}
 		}
 	}

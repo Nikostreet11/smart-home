@@ -18,7 +18,7 @@ public:
 
 	// smart add
 	bool addSmartRoom(String roomId);
-	bool addSmartItem(String itemId, bool active, String roomId);
+	bool addSmartItem(String itemId, bool active, String roomId, String smartsetId);
 	
 	// smart edit
 	//bool editSmartRoom(String roomId, Room* newRoom);

@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <LinkedPointerList.h>
-#include "SmartItem.h"
+#include "Smartset.h"
 
 // forward declarations
 class Room;
@@ -18,22 +18,19 @@ public:
 	virtual ~SmartRoom();
 
 	// operations
-	bool add(SmartItem* smartItem);
-	bool remove(int index);
-
-	// update
-	//void updateFrom(Room* room);
+	bool addSmartset(Smartset* smartset);
+	bool removeSmartset(int index);
 
 	// getters / setters
 	const String& getId() const;
 	void setId(const String& id);
-	SmartItem* get(int index);
-	SmartItem* get(const String& id);
-	int getIndex(const String& id);
-	int getSize();
+	Smartset* getSmartset(int index);
+	Smartset* getSmartset(const String& id);
+	int getSmartsetIndex(const String& id);
+	int getSmartsetsSize();
 
 	// static constants
-	//static const int MAX_ITEMS = 8;
+	static const int MAX_SMARTSETS = 32;
 	
 protected:
 	// constructors
@@ -41,7 +38,7 @@ protected:
 
 private:
 	// resources
-	LinkedPointerList<SmartItem> smartItems;
+	LinkedPointerList<Smartset> smartsets;
 	
 	// variables
 	String id;

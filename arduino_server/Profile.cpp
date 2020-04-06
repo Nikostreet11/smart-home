@@ -26,15 +26,23 @@ bool Profile::addSmartRoom(String roomId)
 	return smartRooms.add(SmartRoom::create(roomId));
 }
 
-bool Profile::addSmartItem(String itemId, bool active, String roomId)
+bool Profile::addSmartItem(String itemId, bool active, String roomId, String smartsetId)
 {
 	for (int index = 0; index < smartRooms.size(); index++)
 	{
 		SmartRoom* smartRoom = smartRooms.get(index);
 		if (smartRoom->getId() == roomId)
 		{
-			smartRoom->add(SmartItem::create(itemId, active));
-			return true;
+			for (int index2 = 0; index2 < smartRoom->getSmartsetsSize(); index2++)
+			{
+				Smartset* smartset = smartRoom->getSmartset(index);
+				if (smartset->getId() == smartsetId)
+				{
+					smartset->add(SmartItem::create(itemId, active));
+					return true;
+				}
+			}
+			return false;
 		}
 	}
 	return false;
@@ -95,6 +103,7 @@ bool Profile::removeSmartRoom(String roomId)
 
 bool Profile::removeSmartItem(String itemId, String roomId)
 {
+	/*
 	for (int index1 = 0; index1 < smartRooms.size(); index1++)
 	{
 		SmartRoom* smartRoom = smartRooms.get(index1);
@@ -111,12 +120,14 @@ bool Profile::removeSmartItem(String itemId, String roomId)
 			return false;
 		}
 	}
+	*/
 	return false;
 }
 
 // smart
 bool Profile::isItemSmart(String itemId, String roomId)
 {
+	/* TODO
 	for (int index1 = 0; index1 < smartRooms.size(); index1++)
 	{
 		SmartRoom* smartRoom = smartRooms.get(index1);
@@ -133,11 +144,13 @@ bool Profile::isItemSmart(String itemId, String roomId)
 			return false;
 		}
 	}
+	*/
 	return false;
 }
 
 bool Profile::setItemSmart(String itemId, bool smart, bool active, String roomId)
 {
+	/* TODO
 	for (int index1 = 0; index1 < smartRooms.size(); index1++)
 	{
 		SmartRoom* smartRoom = smartRooms.get(index1);
@@ -172,6 +185,7 @@ bool Profile::setItemSmart(String itemId, bool smart, bool active, String roomId
 			}
 		}
 	}
+	*/
 	return false;
 }
 

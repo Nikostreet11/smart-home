@@ -15,24 +15,24 @@ SmartRoom* SmartRoom::create(String id)
 // destructor
 SmartRoom::~SmartRoom()
 {
-	for (int index = 0; index < smartItems.size(); index++)
+	for (int index = 0; index < smartsets.size(); index++)
 	{
-		delete smartItems.get(index);
+		delete smartsets.get(index);
 	}
 }
 
 // operations
-bool SmartRoom::add(SmartItem* smartItem)
+bool SmartRoom::addSmartset(Smartset* smartset)
 {
-	return smartItems.add(smartItem);
+	return smartsets.add(smartset);
 }
 
-bool SmartRoom::remove(int index)
+bool SmartRoom::removeSmartset(int index)
 {
-	SmartItem* smartItem = smartItems.remove(index);
-	if (smartItem)
+	Smartset* smartset = smartsets.remove(index);
+	if (smartset)
 	{
-		delete smartItem;
+		delete smartset;
 		return true;
 	}
 	return false;
@@ -55,29 +55,29 @@ void SmartRoom::setId(const String& id)
 	this->id = id;
 }
 
-SmartItem* SmartRoom::get(int index)
+Smartset* SmartRoom::getSmartset(int index)
 {
-	return smartItems.get(index);
+	return smartsets.get(index);
 }
 
-SmartItem* SmartRoom::get(const String& id)
+Smartset* SmartRoom::getSmartset(const String& id)
 {
-	for (int index = 0; index < smartItems.size(); index++)
+	for (int index = 0; index < smartsets.size(); index++)
 	{
-		SmartItem* smartItem = smartItems.get(index);
-		if (smartItem->getId() == id)
+		Smartset* smartset = smartsets.get(index);
+		if (smartset->getId() == id)
 		{
-			return smartItem;
+			return smartset;
 		}
 	}
 	return nullptr;
 }
 
-int SmartRoom::getIndex(const String& id)
+int SmartRoom::getSmartsetIndex(const String& id)
 {
-	for (int index = 0; index < smartItems.size(); index++)
+	for (int index = 0; index < smartsets.size(); index++)
 	{
-		if (smartItems.get(index)->getId() == id)
+		if (smartsets.get(index)->getId() == id)
 		{
 			return index;
 		}
@@ -85,9 +85,9 @@ int SmartRoom::getIndex(const String& id)
 	return -1;
 }
 
-int SmartRoom::getSize()
+int SmartRoom::getSmartsetsSize()
 {
-	return smartItems.size();
+	return smartsets.size();
 }
 
 

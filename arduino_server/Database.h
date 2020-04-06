@@ -7,6 +7,7 @@
 #include "Profile.h"				// profile class
 #include "Room.h"					// room class
 #include "Item.h"					// item class
+#include "Smartset.h"
 #include "PortManager.h"
 
 class Database
