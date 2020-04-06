@@ -44,7 +44,7 @@ void PortManager::debug()
 
 bool PortManager::isAvailable(const String& portName)
 {
-	if (portName == "none" || check(portName, availablePorts) != -1)
+	if (portName == "none" || getIndex(portName, availablePorts) != -1)
 	{
 		return true;
 	}
@@ -54,7 +54,7 @@ bool PortManager::isAvailable(const String& portName)
 
 bool PortManager::isLocked(const String& portName)
 {
-	if (check(portName, ports) != -1 && check(portName, availablePorts) == -1)
+	if (getIndex(portName, ports) != -1 && getIndex(portName, availablePorts) == -1)
 	{
 		return true;
 	}
@@ -69,7 +69,7 @@ bool PortManager::lock(const String& portName)
 		return true;
 	}
 	
-	int index = check(portName, availablePorts);
+	int index = getIndex(portName, availablePorts);
 	
 	if (index != -1)
 	{
@@ -87,11 +87,11 @@ bool PortManager::unlock(const String& portName)
 		return true;
 	}
 	
-	int index1 = check(portName, ports);
+	int index1 = getIndex(portName, ports);
 	
 	if (index1 != -1)
 	{
-		int index2 = check(portName, availablePorts);
+		int index2 = getIndex(portName, availablePorts);
 		
 		if (index2 == -1)
 		{
@@ -105,29 +105,30 @@ bool PortManager::unlock(const String& portName)
 	return false;
 }
 
-bool PortManager::turnOn(const String& portName)
+bool PortManager::setActive(const String& portName, bool active)
 {
 	if (isLocked(portName))
 	{
-		int index = check(portName, ports);
-		digitalWrite(ports.get(index)->getNumber(), HIGH);
+		int index = getIndex(portName, ports);
+		ports.get(index)->setActive(active);
+		digitalWrite(ports.get(index)->getNumber(), toInt(active));
 		return true;
 	}
 
 	return false;
 }
 
-bool PortManager::turnOff(const String& portName)
+/*bool PortManager::turnOff(const String& portName)
 {
 	if (isLocked(portName))
 	{
-		int index = check(portName, ports);
+		int index = getIndex(portName, ports);
 		digitalWrite(ports.get(index)->getNumber(), LOW);
 		return true;
 	}
 
 	return false;
-}
+}*/
 
 // getters / setters
 LinkedPointerList<ArduinoPort>& PortManager::getAvailablePorts()
@@ -136,7 +137,7 @@ LinkedPointerList<ArduinoPort>& PortManager::getAvailablePorts()
 }
 
 // internal
-int PortManager::check(const String& portName, LinkedPointerList<ArduinoPort>& list)
+int PortManager::getIndex(const String& portName, LinkedPointerList<ArduinoPort>& list)
 {
 	for (int index = 0; index < list.size(); index++)
 	{
@@ -159,4 +160,17 @@ void PortManager::orderedAdd(ArduinoPort* port, LinkedPointerList<ArduinoPort>& 
 	}
 
 	list.add(index, port);
+}
+
+
+int PortManager::toInt(bool active)
+{
+	if (active)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }

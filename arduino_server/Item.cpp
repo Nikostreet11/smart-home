@@ -90,17 +90,10 @@ bool Item::isActive() const
 void Item::setActive(bool active)
 {
 	this->active = active;
-	if (active)
-	{
-		portManager.turnOn(port);
-	}
-	else
-	{
-		portManager.turnOff(port);
-	}
+	portManager.setActive(port, active);
 }
 
-void Item::turnOn()
+/*void Item::turnOn()
 {
 	active = true;
 	portManager.turnOn(port);
@@ -110,7 +103,7 @@ void Item::turnOff()
 {
 	active = false;
 	portManager.turnOff(port);
-}
+}*/
 
 // constructor
 Item::Item(PortManager& portManager) :

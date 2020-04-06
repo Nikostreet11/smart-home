@@ -28,3 +28,9 @@ bool ArduinoPort::isActive() const
 {
 	return active;
 }
+
+
+void ArduinoPort::setActive(bool active)
+{
+	this->active = active;
+}

@@ -11,14 +11,12 @@ public:
 	
 	// destructor
 	virtual ~ArduinoPort();
-
-	// operations
-	//int compare(Comparable* comparable);
 	
 	// getters / setters
 	int getNumber() const;
 	const String& getName() const;
 	bool isActive() const;
+	void setActive(bool active);
 	
 private:
 	// variables

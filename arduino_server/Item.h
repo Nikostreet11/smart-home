@@ -25,8 +25,8 @@ public:
 	void setPort(const String& port);
 	bool isActive() const;
 	void setActive(bool active);
-	void turnOn();
-	void turnOff();
+	//void turnOn();
+	//void turnOff();
 
 	// static constants
 	static const int MAX_ITEMS = 1024;

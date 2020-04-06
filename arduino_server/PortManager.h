@@ -20,16 +20,17 @@ public:
 	bool isLocked(const String& portName);
 	bool lock(const String& portName);
 	bool unlock(const String& portName);
-	bool turnOn(const String& portName);
-	bool turnOff(const String& portName);
+	bool setActive(const String& portName, bool active);
+	/*bool turnOff(const String& portName);*/
 
 	// getters / setters
 	LinkedPointerList<ArduinoPort>& getAvailablePorts();
 	
 private:
 	// internal
-	int check(const String& portName, LinkedPointerList<ArduinoPort>& list);
+	int getIndex(const String& portName, LinkedPointerList<ArduinoPort>& list);
 	void orderedAdd(ArduinoPort* port, LinkedPointerList<ArduinoPort>& list);
+	int toInt(bool active);
 	
 	// resources
 	LinkedPointerList<ArduinoPort> ports;

@@ -154,7 +154,7 @@ bool Room::removeItem(int index)
 	}
 }
 
-bool Room::turnOnItem(int index)
+/*bool Room::turnOnItem(int index)
 {
 	if (0 <= index && index < items.size())
 	{
@@ -165,9 +165,9 @@ bool Room::turnOnItem(int index)
 	{
 		return false;
 	}
-}
+}*/
 
-bool Room::turnOffItem(int index)
+/*bool Room::turnOffItem(int index)
 {
 	if (0 <= index && index < items.size())
 	{
@@ -178,7 +178,7 @@ bool Room::turnOffItem(int index)
 	{
 		return false;
 	}
-}
+}*/
 
 // constructors
 Room::Room() :
