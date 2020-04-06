@@ -3,11 +3,11 @@
 int Smartset::currentId = 0;
 
 // static constructors
-Smartset* Smartset::create()
+Smartset* Smartset::create(Profile& owner)
 {
 	if (Smartset::currentId < Smartset::MAX_SMARTSETS)
 	{
-		return new Smartset();
+		return new Smartset(owner);
 	}
 	else
 	{
@@ -105,7 +105,8 @@ bool Smartset::remove(int index)
 }
 
 // constructors
-Smartset::Smartset() :
+Smartset::Smartset(Profile& owner) :
+		owner(owner),
 		id(Smartset::currentId),
 		name("default")
 {

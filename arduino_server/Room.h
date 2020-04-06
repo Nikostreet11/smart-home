@@ -3,6 +3,7 @@
 
 #include <LinkedPointerList.h> // linked list library
 #include "Item.h"
+#include "Smartset.h"
 
 class Room
 {
@@ -43,13 +44,16 @@ private:
 	
 	// static variables
 	static int currentId;
+
+	// resources
+	LinkedPointerList<Item> items;
+	LinkedPointerList<Smartset> activeSmartsets;
 	
 	// variables
 	int id;
 	String name;
 	String icon;
-	bool smart;
-	LinkedPointerList<Item> items;
+	bool smart; // TODO: must remove
 };
 
 #endif /* ROOM_H_ */

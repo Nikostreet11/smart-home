@@ -12,7 +12,7 @@ class Smartset
 {
 public:
 	// static constructor
-	static Smartset* create();
+	static Smartset* create(Profile& owner);
 
 	// destructor
 	virtual ~Smartset();
@@ -34,12 +34,13 @@ public:
 	
 private:
 	// constructors
-	Smartset();
+	Smartset(Profile& owner);
 	
 	// static variables
 	static int currentId;
 
 	// resources
+	Profile& owner;
 	LinkedPointerList<SmartItem> smartItems;
 	
 	// variables
