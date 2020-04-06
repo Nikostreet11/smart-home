@@ -30,7 +30,7 @@ public:
 	Item* getItem(int index);
 	Item* getItem(const String& id);
 	bool addItem(Item* item);
-	bool removeItem(int index);
+	bool deleteItem(int index);
 	//bool turnOnItem(int index);
 	//bool turnOffItem(int index);
 	// TODO: add by direct definition

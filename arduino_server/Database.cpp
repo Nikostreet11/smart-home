@@ -614,7 +614,7 @@ String Database::deleteItem(String id, String data)
 		else
 		{
 			portManager.unlock(room->getItem(index)->getPort());
-			room->removeItem(index);
+			room->deleteItem(index);
 			for (int index = 0; index < profiles.size(); index++)
 			{
 				profiles.get(index)->deleteSmartItem(id, roomId);

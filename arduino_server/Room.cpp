@@ -140,7 +140,7 @@ bool Room::addItem(Item* item)
 	}
 }
 
-bool Room::removeItem(int index)
+bool Room::deleteItem(int index)
 {
 	if (index < items.size())
 	{
