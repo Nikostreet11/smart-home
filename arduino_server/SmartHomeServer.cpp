@@ -517,14 +517,14 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 				}
 				else if (action == "add_item")
 				{
-					// TODO: add the item to the smartset
-					// responseText = database.addItemToSmartset(smartsetId, data);
+					// add the item to the smartset
+					responseText = database.addItemToSmartset(smartsetId, data);
 					return true;
 				}
 				else if (action == "remove_item")
 				{
-					// TODO: remove the item from the smartset
-					// responseText = database.removeItemFromSmartset(smartsetId, data);
+					// remove the item from the smartset
+					responseText = database.removeItemFromSmartset(smartsetId, data);
 					return true;
 				}
 			}

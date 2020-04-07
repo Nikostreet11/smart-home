@@ -9,7 +9,8 @@ class Item;
 class SmartItem
 {
 public:
-	// static constructor
+	// static constructors
+	static SmartItem* create();
 	static SmartItem* create(String id, bool active);
 	//static SmartItem* createFrom(Item* item);
 

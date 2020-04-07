@@ -17,6 +17,10 @@ public:
 	// destructor
 	virtual ~Smartset();
 
+	// operations
+	bool addSmartItem(SmartItem* smartItem);
+	bool removeSmartItem(int index);
+
 	// getters / setters
 	int getTrueId() const;
 	String getId() const;
@@ -24,9 +28,8 @@ public:
 	void setName(const String& name);
 	SmartItem* getSmartItem(int index);
 	SmartItem* getSmartItem(const String& id);
+	int getSmartItemIndex(const String& id);
 	int getSmartItemsSize();
-	bool addSmartItem(SmartItem* smartItem);
-	bool removeSmartItem(int index);
 
 	// static constants
 	static const int MAX_SMARTSETS = 1024;

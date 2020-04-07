@@ -24,6 +24,34 @@ Smartset::~Smartset()
 	}
 }
 
+// operations
+bool Smartset::addSmartItem(SmartItem* smartItem)
+{
+	if (smartItems.size() < Smartset::MAX_SMART_ITEMS && smartItem != nullptr)
+	{
+		smartItems.add(smartItem);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Smartset::removeSmartItem(int index)
+{
+	if (index < smartItems.size())
+	{
+		delete smartItems.get(index);
+		smartItems.remove(index);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 // getters / setters
 int Smartset::getTrueId() const
 {
@@ -72,36 +100,21 @@ SmartItem* Smartset::getSmartItem(const String& id)
 	return nullptr;
 }
 
+int Smartset::getSmartItemIndex(const String& id)
+{
+	for (int index = 0; index < smartItems.size(); index++)
+	{
+		if (smartItems.get(index)->getId() == id)
+		{
+			return index;
+		}
+	}
+	return -1;
+}
+
 int Smartset::getSmartItemsSize()
 {
 	return smartItems.size();
-}
-
-bool Smartset::addSmartItem(SmartItem* smartItem)
-{
-	if (smartItems.size() < Smartset::MAX_SMART_ITEMS && smartItem != nullptr)
-	{
-		smartItems.add(smartItem);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
-}
-
-bool Smartset::removeSmartItem(int index)
-{
-	if (index < smartItems.size())
-	{
-		delete smartItems.get(index);
-		smartItems.remove(index);
-		return true;
-	}
-	else
-	{
-		return false;
-	}
 }
 
 // constructors

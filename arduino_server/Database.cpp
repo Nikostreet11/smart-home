@@ -876,6 +876,109 @@ String Database::setItemActive(String id, String data)
 
 /********** SMART ***************************************************************/
 
+String Database::addItemToSmartset(String smartsetId, String data)
+{
+	deserializeJson(requestJson, data);
+	JsonObject itemJson = requestJson["item"];
+	String itemId = itemJson["id"];
+	String itemActive = itemJson["active"];
+	String profileId = requestJson["profile_id"];
+	String roomId = requestJson["room_id"];
+	
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		SmartRoom* smartRoom = profile->getSmartRoom(roomId);
+		if (!smartRoom)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "smart room not found";
+		}
+		else
+		{
+			Smartset* smartset = smartRoom->getSmartset(smartsetId);
+			if (!smartset)
+			{
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "smartset not found";
+			}
+			else
+			{
+				responseJson["outcome"] = "success";
+
+				SmartItem* smartItem = smartset->getSmartItem(itemId);
+				if (!smartItem)
+				{
+					smartItem = SmartItem::create();
+					smartItem->setId(itemId);
+					smartset->addSmartItem(smartItem);
+				}
+				
+				smartItem->setActive(toBool(itemActive));
+			}
+		}
+	}
+	log(responseJson);
+
+	return getLog();
+}
+
+String Database::removeItemFromSmartset(String smartsetId, String data)
+{
+	deserializeJson(requestJson, data);
+	String itemId = requestJson["id"];
+	String profileId = requestJson["profile_id"];
+	String roomId = requestJson["room_id"];
+	
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		SmartRoom* smartRoom = profile->getSmartRoom(roomId);
+		if (!smartRoom)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "smart room not found";
+		}
+		else
+		{
+			Smartset* smartset = smartRoom->getSmartset(smartsetId);
+			if (!smartset)
+			{
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "smartset not found";
+			}
+			else
+			{
+				int index = smartset->getSmartItemIndex(itemId);
+				if (index == -1)
+				{
+					responseJson["outcome"] = "failure";
+					responseJson["error"] = "smartItem not found";
+				}
+				else
+				{
+					smartset->removeSmartItem(index);
+					
+					responseJson["outcome"] = "success";
+				}
+			}
+		}
+	}
+	log(responseJson);
+
+	return getLog();
+}
+	
 /*String Database::setRoomSmart(String roomId, String data)
 {
 	deserializeJson(requestJson, data);	

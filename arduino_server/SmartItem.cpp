@@ -2,6 +2,10 @@
 #include "Item.h"
 
 // static constructor
+SmartItem* SmartItem::create()
+{
+	return new SmartItem();
+}
 SmartItem* SmartItem::create(String id, bool active)
 {
 	SmartItem* smartItem = new SmartItem();
