@@ -62,8 +62,8 @@ public:
 	String setItemActive(String id, String data);
 
 	// smart
-	String setRoomSmart(String roomId, String data);
-	String setItemSmart(String id, String data);
+	// String setRoomSmart(String roomId, String data);
+	// String setItemSmart(String id, String data);
 
 	// json
 	void clearJsonDocuments();

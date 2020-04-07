@@ -671,8 +671,9 @@ String Database::setItemActive(String id, String data)
 	return getLog();
 }
 
-// smart
-String Database::setRoomSmart(String roomId, String data)
+/********** SMART ***************************************************************/
+
+/*String Database::setRoomSmart(String roomId, String data)
 {
 	deserializeJson(requestJson, data);	
 	bool roomSmart = toBool(requestJson["room-smart"]);
@@ -701,11 +702,6 @@ String Database::setRoomSmart(String roomId, String data)
 				responseJson["outcome"] = "failure";
 				responseJson["error"] = "smart room not found";
 			}
-			/*else if (smartRoom->getSize() == 0)
-			{
-				responseJson["outcome"] = "failure";
-				responseJson["error"] = "no smart items set";
-			}*/
 			else
 			{
 				Smartset* smartset = smartRoom->getSmartset(smartsetId);
@@ -716,7 +712,6 @@ String Database::setRoomSmart(String roomId, String data)
 				}
 				else
 				{
-					/* TODO
 					room->setSmart(roomSmart);
 					
 					for (int index = 0; index < smartRoom->getSize(); index++)
@@ -736,7 +731,6 @@ String Database::setRoomSmart(String roomId, String data)
 					
 					responseJson["outcome"] = "success";
 					responseJson["room-smart"] = toStr(roomSmart);
-					*/
 				}
 			}
 		}
@@ -744,9 +738,9 @@ String Database::setRoomSmart(String roomId, String data)
 	log(responseJson);
 
 	return getLog();
-}
+}*/
 
-String Database::setItemSmart(String id, String data)
+/*String Database::setItemSmart(String id, String data)
 {
 	deserializeJson(requestJson, data);
 	//String itemId = requestJson["item-id"];
@@ -789,7 +783,7 @@ String Database::setItemSmart(String id, String data)
 	log(responseJson);
 
 	return getLog();
-}
+}*/
 
 /********** JSON ****************************************************************/
 

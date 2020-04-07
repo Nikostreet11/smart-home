@@ -417,11 +417,11 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 				responseText = database.removeRoom(roomId);
 				return true;
 			}
-			else if (getParameter("action", query) == "set-smart")
+			/*else if (getParameter("action", query) == "set-smart")
 			{
 				responseText = database.setRoomSmart(roomId, data);
 				return true;
-			}
+			}*/
 		}
 	}
 	else if (path.startsWith("/items/"))
@@ -468,19 +468,9 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 					responseText = database.setItemActive(itemId, data);
 					return true;
 				}
-				/*else if (action == "turn-off")
-				{
-					responseText = database.setItemActive(false, itemId, data);
-					return true;
-				}*/
-				else if (action == "set-smart")
+				/*else if (action == "set-smart")
 				{
 					responseText = database.setItemSmart(itemId, data);
-					return true;
-				}
-				/*else if (action == "smart-off")
-				{
-					responseText = database.setItemSmart(false, itemId, data);
 					return true;
 				}*/
 			}
