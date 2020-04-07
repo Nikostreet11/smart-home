@@ -496,8 +496,8 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 			{
 				if (action == "add")
 				{
-					// TODO: add the smartset
-					// responseText = database.addSmartset(data);
+					// add the smartset
+					responseText = database.addSmartset(data);
 					return true;
 				}
 			}
@@ -505,14 +505,14 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 			{
 				if (action == "edit")
 				{
-					// TODO: edit the smartset
-					// responseText = database.editSmartset(smartsetId, data);
+					// edit the smartset
+					responseText = database.editSmartset(smartsetId, data);
 					return true;
 				}
 				else if (action == "remove")
 				{
-					// TODO: remove the smartset
-					// responseText = database.removeSmartset(smartsetId, data);
+					// remove the smartset
+					responseText = database.removeSmartset(smartsetId, data);
 					return true;
 				}
 				else if (action == "add_item")

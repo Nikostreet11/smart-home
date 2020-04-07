@@ -49,16 +49,19 @@ public:
 	String addProfile(String data);
 	String addRoom(String data);
 	String addItem(String data);
+	String addSmartset(String data);
 
 	// edit
 	String editProfile(String id, String data);
 	String editRoom(String id, String data);
 	String editItem(String id, String data);
+	String editSmartset(String smartsetId, String data);
 
 	// remove
 	String removeProfile(String id);
 	String removeRoom(String id);
 	String removeItem(String id, String data);
+	String removeSmartset(String smartsetId, String data);
 
 	// status
 	String setItemActive(String id, String data);
@@ -77,7 +80,7 @@ public:
 	void jsonToProfile(JsonObject& json, Profile* profile);
 	void jsonToRoom(JsonObject& json, Room* room);
 	void jsonToItem(JsonObject& json, Item* item);
-	//void jsonToSmartset(JsonObject& json, Smartset* smartset);
+	void jsonToSmartset(JsonObject& json, Smartset* smartset);
 	//void jsonToPort(JsonObject& json, ArduinoPort* port);
 	
 	// getters

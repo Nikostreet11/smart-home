@@ -531,6 +531,47 @@ String Database::addItem(String data)
 	return getLog();
 }
 
+String Database::addSmartset(String data)
+{	
+	deserializeJson(requestJson, data);
+	JsonObject smartsetJson = requestJson["new_smartset"];
+
+	String profileId = requestJson["profile_id"];
+	String roomId = requestJson["room_id"];
+
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		SmartRoom* smartRoom = profile->getSmartRoom(roomId);
+		if (!smartRoom)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "smart room not found";
+		}
+		else if (smartRoom->getSmartsetsSize() == Room::MAX_ITEMS)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "max number of saved smartsets in the room reached";
+		}
+		else
+		{
+			Smartset* smartset = Smartset::create(profile);
+			jsonToSmartset(smartsetJson, smartset);
+			smartRoom->addSmartset(smartset);
+			
+			responseJson["outcome"] = "success";
+		}
+	}
+	log(responseJson);
+	
+	return getLog();
+}
+
 /********** EDIT ****************************************************************/
 
 String Database::editProfile(String id, String data)
@@ -600,7 +641,7 @@ String Database::editRoom(String id, String data)
 }
 
 String Database::editItem(String id, String data)
-{	
+{
 	deserializeJson(requestJson, data);
 	JsonObject newItemJson = requestJson["new-item"];
 	
@@ -622,6 +663,49 @@ String Database::editItem(String id, String data)
 		portManager.lock(newItemJson["port"]);
 		jsonToItem(newItemJson, item);
 		responseJson["outcome"] = "success";
+	}
+	log(responseJson);
+	
+	return getLog();
+}
+
+String Database::editSmartset(String smartsetId, String data)
+{
+	deserializeJson(requestJson, data);
+	JsonObject smartsetJson = requestJson["new_smartset"];
+	String profileId = requestJson["profile_id"];
+	String roomId = requestJson["room_id"];
+
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		SmartRoom* smartRoom = profile->getSmartRoom(roomId);
+		if (!smartRoom)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "smart room not found";
+		}
+		else
+		{
+			Smartset* smartset = smartRoom->getSmartset(smartsetId);
+			if (!smartset)
+			{
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "smartset not found";
+			}
+			else
+			{
+				jsonToSmartset(smartsetJson, smartset);
+				// TODO: update the active smartsets of the rooms
+				
+				responseJson["outcome"] = "success";
+			}
+		}
 	}
 	log(responseJson);
 	
@@ -704,6 +788,48 @@ String Database::removeItem(String id, String data)
 	}
 	log(responseJson);
 
+	return getLog();
+}
+
+String Database::removeSmartset(String smartsetId, String data)
+{
+	deserializeJson(requestJson, data);
+	String profileId = requestJson["profile_id"];
+	String roomId = requestJson["room_id"];
+
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		SmartRoom* smartRoom = profile->getSmartRoom(roomId);
+		if (!smartRoom)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "smart room not found";
+		}
+		else
+		{
+			int index = smartRoom->getSmartsetIndex(smartsetId);
+			if (index == -1)
+			{
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "smartset not found";
+			}
+			else
+			{
+				smartRoom->removeSmartset(index);
+				// TODO: update the active smartsets of the rooms
+				
+				responseJson["outcome"] = "success";
+			}
+		}
+	}
+	log(responseJson);
+	
 	return getLog();
 }
 
@@ -931,6 +1057,11 @@ void Database::jsonToItem(JsonObject& json, Item* item)
 	item->setName(json["name"]);
 	item->setIcon(json["icon"]);
 	item->setPort(json["port"]);
+}
+
+void Database::jsonToSmartset(JsonObject& json, Smartset* smartset)
+{
+	smartset->setName(json["name"]);
 }
 
 /********** GETTERS *************************************************************/
