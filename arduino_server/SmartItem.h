@@ -12,7 +12,7 @@ public:
 	// static constructors
 	static SmartItem* create();
 	static SmartItem* create(String id, bool active);
-	//static SmartItem* createFrom(Item* item);
+	static SmartItem* copy(SmartItem* origin);
 
 	// destructor
 	virtual ~SmartItem();
@@ -27,6 +27,9 @@ public:
 protected:
 	// constructor
 	SmartItem();
+	
+	// copy constructor
+	SmartItem(SmartItem* origin);
 	
 	// variables
 	//int trueId;

@@ -211,7 +211,6 @@ bool SmartHomeServer::handleGET(String path, String query)
 			if (roomId == "")
 			{			
 				// get all rooms
-				// TODO: also get info on active smartsets
 				responseText = database.getRooms(profileId);
 				return true;
 			}

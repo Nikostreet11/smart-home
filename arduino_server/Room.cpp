@@ -94,19 +94,24 @@ void Room::setIcon(const String& icon)
 	this->icon = icon;
 }
 
-bool Room::isSmart() const
+/*bool Room::isSmart() const
 {
 	return smart;
-}
+}*/
 
-void Room::setSmart(bool smart)
+/*void Room::setSmart(bool smart)
 {
 	this->smart = smart;
-}
+}*/
 
 Item* Room::get(int index)
 {
 	return items.get(index);
+}
+
+Smartset* Room::getSmartset(int index)
+{
+	return smartsets.get(index);
 }
 
 Item* Room::get(const String& id)
@@ -117,6 +122,19 @@ Item* Room::get(const String& id)
 		if (id == currentItem->getId())
 		{
 			return currentItem;
+		}
+	}
+	return nullptr;
+}
+
+Smartset* Room::getSmartset(const String& id)
+{
+	for (int index = 0; index < smartsets.size(); index++)
+	{
+		Smartset* smartset = smartsets.get(index);
+		if (smartset->getId() == id)
+		{
+			return smartset;
 		}
 	}
 	return nullptr;
@@ -134,11 +152,36 @@ int Room::getIndex(const String& id)
 	return -1;
 }
 
+int Room::getSmartsetIndex(const String& id)
+{
+	for (int index = 0; index < smartsets.size(); index++)
+	{
+		if (smartsets.get(index)->getId() == id)
+		{
+			return index;
+		}
+	}
+	return -1;
+}
+
 bool Room::add(Item* item)
 {
 	if (items.size() < Room::MAX_ITEMS && item != nullptr)
 	{
 		items.add(item);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Room::addSmartset(Smartset* smartset)
+{
+	if (smartsets.size() < Smartset::MAX_SMARTSETS)
+	{
+		smartsets.add(smartset);
 		return true;
 	}
 	else
@@ -161,9 +204,28 @@ bool Room::remove(int index)
 	}
 }
 
+bool Room::removeSmartset(int index)
+{
+	if (index < smartsets.size())
+	{
+		delete smartsets.get(index);
+		smartsets.remove(index);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 int Room::getSize()
 {
 	return items.size();
+}
+
+int Room::getSmartsetsSize()
+{
+	return smartsets.size();
 }
 
 /*bool Room::turnOnItem(int index)
@@ -196,8 +258,8 @@ int Room::getSize()
 Room::Room() :
 		id(Room::currentId),
 		name("default"),
-		icon("default"),
-		smart(false)
+		icon("default")
+		//smart(false)
 {
 	Room::currentId++;
 }

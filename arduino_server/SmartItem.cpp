@@ -6,12 +6,18 @@ SmartItem* SmartItem::create()
 {
 	return new SmartItem();
 }
+
 SmartItem* SmartItem::create(String id, bool active)
 {
 	SmartItem* smartItem = new SmartItem();
 	smartItem->setId(id);
 	smartItem->setActive(active);
 	return smartItem;
+}
+
+SmartItem* SmartItem::copy(SmartItem* origin)
+{
+	return new SmartItem(origin);
 }
 
 /*SmartItem* SmartItem::createFrom(Item* item)
@@ -47,10 +53,16 @@ void SmartItem::setActive(bool active)
 	this->active = active;
 }
 
-
 // constructor
 SmartItem::SmartItem() :
 		id("unset"),
 		active(false)
+{
+}
+
+// copy constructor
+SmartItem::SmartItem(SmartItem* origin) :
+		id(origin->getId()),
+		active(origin->isActive())
 {
 }

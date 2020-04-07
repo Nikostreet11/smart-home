@@ -25,14 +25,20 @@ public:
 	void setName(const String& name);
 	const String& getIcon() const;
 	void setIcon(const String& icon);
-	bool isSmart() const;
-	void setSmart(bool smart);
+	//bool isSmart() const;
+	//void setSmart(bool smart);
 	Item* get(int index);
+	Smartset* getSmartset(int index);
 	Item* get(const String& id);
+	Smartset* getSmartset(const String& id);
 	int getIndex(const String& id);
+	int getSmartsetIndex(const String& id);
 	bool add(Item* item);
+	bool addSmartset(Smartset* smartset);
 	bool remove(int index);
+	bool removeSmartset(int index);
 	int getSize();
+	int getSmartsetsSize();
 
 	// static constants
 	static const int MAX_ROOMS = 1024;
@@ -47,13 +53,13 @@ private:
 
 	// resources
 	LinkedPointerList<Item> items;
-	LinkedPointerList<Smartset> activeSmartsets;
+	LinkedPointerList<Smartset> smartsets;
 	
 	// variables
 	int id;
 	String name;
 	String icon;
-	bool smart; // TODO: must remove
+	// bool smart;
 };
 
 #endif /* ROOM_H_ */

@@ -13,6 +13,7 @@ class Smartset
 public:
 	// static constructor
 	static Smartset* create(Profile* owner);
+	static Smartset* copy(Smartset* origin);
 
 	// destructor
 	virtual ~Smartset();
@@ -26,6 +27,7 @@ public:
 	String getId() const;
 	const String& getName() const;
 	void setName(const String& name);
+	Profile* getOwner();
 	SmartItem* getSmartItem(int index);
 	SmartItem* getSmartItem(const String& id);
 	int getSmartItemIndex(const String& id);
@@ -36,19 +38,22 @@ public:
 	static const int MAX_SMART_ITEMS = 8;
 	
 private:
-	// constructors
+	// constructor
 	Smartset(Profile* owner);
+
+	// copy constructor
+	Smartset(Smartset* origin);
 	
 	// static variables
 	static int currentId;
 
 	// resources
-	Profile* owner;
 	LinkedPointerList<SmartItem> smartItems;
 	
 	// variables
 	int id;
 	String name;
+	Profile* owner;
 };
 
 #endif /* SMARTSET_H_ */

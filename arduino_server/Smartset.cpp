@@ -15,6 +15,11 @@ Smartset* Smartset::create(Profile* owner)
 	}
 }
 
+Smartset* Smartset::copy(Smartset* origin)
+{
+	return new Smartset(origin);
+}
+
 // destructor
 Smartset::~Smartset()
 {
@@ -82,6 +87,11 @@ void Smartset::setName(const String& name)
 	this->name = name;
 }
 
+Profile* Smartset::getOwner()
+{
+	return owner;
+}
+
 SmartItem* Smartset::getSmartItem(int index)
 {
 	return smartItems.get(index);
@@ -119,9 +129,21 @@ int Smartset::getSmartItemsSize()
 
 // constructors
 Smartset::Smartset(Profile* owner) :
-		owner(owner),
 		id(Smartset::currentId),
-		name("default")
+		name("default"),
+		owner(owner)
 {
 	Smartset::currentId++;
+}
+
+// copy constructor
+Smartset::Smartset(Smartset* origin) :
+		id(origin->getTrueId()),
+		name(origin->getName()),
+		owner(origin->getOwner())
+{
+	for (int index = 0; index < origin->getSmartItemsSize(); index++)
+	{
+		addSmartItem(SmartItem::copy(origin->getSmartItem(index)));
+	}
 }

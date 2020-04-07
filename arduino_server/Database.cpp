@@ -1111,7 +1111,13 @@ void Database::roomToJson(Room* room, JsonObject& json)
 	json["id"] = room->getId();
 	json["name"] = room->getName();
 	json["icon"] = room->getIcon();
-	json["smart"] = toStr(room->isSmart());
+	
+	JsonArray smartsetsJson = json.createNestedArray("smartsets");
+	for (int index = 0; index < room->getSmartsetsSize(); index++)
+	{
+		JsonObject smartsetJson = smartsetsJson.createNestedObject();
+		smartsetToJson(room->getSmartset(index), smartsetJson);
+	}
 }
 
 void Database::itemToJson(Item* item, JsonObject& json)
@@ -1135,6 +1141,9 @@ void Database::smartsetToJson(Smartset* smartset, JsonObject& json)
 {
 	json["id"] = smartset->getId();
 	json["name"] = smartset->getName();
+	
+	JsonObject ownerJson = json.createNestedObject("owner");
+	profileToJson(smartset->getOwner(), ownerJson);
 }
 
 void Database::portToJson(ArduinoPort* port, JsonObject& json)
