@@ -325,6 +325,83 @@ String Database::getItem(String itemId, String roomId, String profileId)
 	return getLog();
 }
 
+String Database::getSmartsets(String profileId, String roomId, String itemId)
+{
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		SmartRoom* smartRoom = profile->getSmartRoom(roomId);
+		if (!smartRoom)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "smart room not found";
+		}
+		else
+		{
+			// send the smartsets
+			responseJson["outcome"] = "success";
+
+			JsonArray jsonSmartsets = responseJson.createNestedArray("smartsets");
+			for (int index = 0; index < smartRoom->getSmartsetsSize(); index++)
+			{
+				Smartset* smartset = smartRoom->getSmartset(index);
+				if (itemId == "null" || smartset->getSmartItem(itemId) != nullptr)
+				{
+					JsonObject jsonSmartset = jsonSmartsets.createNestedObject();
+					smartsetToJson(smartset, jsonSmartset);
+				}
+			}
+		}
+	}
+	log(responseJson);
+
+	return getLog();
+}
+
+String Database::getSmartset(String smartsetId, String profileId, String roomId)
+{
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		SmartRoom* smartRoom = profile->getSmartRoom(roomId);
+		if (!smartRoom)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "smart room not found";
+		}
+		else
+		{
+			Smartset* smartset = smartRoom->getSmartset(smartsetId);
+			if (!smartset)
+			{
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "smartset not found";
+			}
+			else
+			{
+				// send the smartset
+				responseJson["outcome"] = "success";
+				
+				JsonObject jsonSmartset = responseJson.createNestedObject("smartset");
+				smartsetToJson(smartset, jsonSmartset);
+			}
+		}
+	}
+	log(responseJson);
+
+	return getLog();
+}
+
 String Database::getAvailablePorts()
 {
 	responseJson["outcome"] = "success";
@@ -823,6 +900,12 @@ void Database::itemToJson(Item* item, JsonObject& json)
 	{
 		json["active"] = "false";
 	}
+}
+
+void Database::smartsetToJson(Smartset* smartset, JsonObject& json)
+{
+	json["id"] = smartset->getId();
+	json["name"] = smartset->getName();
 }
 
 void Database::portToJson(ArduinoPort* port, JsonObject& json)

@@ -277,14 +277,14 @@ bool SmartHomeServer::handleGET(String path, String query)
 			smartsetId = remainingPath;
 			if (smartsetId == "")
 			{
-				// TODO: get all the selected smartsets
-				// responseText = database.getSmartsets(profileId, roomId, itemId);
+				// get all the selected smartsets
+				responseText = database.getSmartsets(profileId, roomId, itemId);
 				return true;
 			}
 			else
 			{
-				// TODO: get the smartset
-				// responseText = database.getSmartset(smartsetId, profileId, roomId);
+				// get the smartset
+				responseText = database.getSmartset(smartsetId, profileId, roomId);
 				return true;
 			}
 		}

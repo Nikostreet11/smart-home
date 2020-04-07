@@ -54,17 +54,12 @@ void Smartset::setName(const String& name)
 	this->name = name;
 }
 
-int Smartset::getSize()
-{
-	return smartItems.size();
-}
-
-SmartItem* Smartset::get(int index)
+SmartItem* Smartset::getSmartItem(int index)
 {
 	return smartItems.get(index);
 }
 
-SmartItem* Smartset::get(const String& id)
+SmartItem* Smartset::getSmartItem(const String& id)
 {
 	for (int index = 0; index < smartItems.size(); index++)
 	{
@@ -77,7 +72,12 @@ SmartItem* Smartset::get(const String& id)
 	return nullptr;
 }
 
-bool Smartset::add(SmartItem* smartItem)
+int Smartset::getSmartItemsSize()
+{
+	return smartItems.size();
+}
+
+bool Smartset::addSmartItem(SmartItem* smartItem)
 {
 	if (smartItems.size() < Smartset::MAX_SMART_ITEMS && smartItem != nullptr)
 	{
@@ -90,7 +90,7 @@ bool Smartset::add(SmartItem* smartItem)
 	}
 }
 
-bool Smartset::remove(int index)
+bool Smartset::removeSmartItem(int index)
 {
 	if (index < smartItems.size())
 	{

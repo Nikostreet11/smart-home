@@ -38,7 +38,7 @@ bool Profile::addSmartItem(String itemId, bool active, String roomId, String sma
 				Smartset* smartset = smartRoom->getSmartset(index);
 				if (smartset->getId() == smartsetId)
 				{
-					smartset->add(SmartItem::create(itemId, active));
+					smartset->addSmartItem(SmartItem::create(itemId, active));
 					return true;
 				}
 			}

@@ -41,6 +41,8 @@ public:
 	//String getItems(String data);
 	String getItems(String roomId, String profileId);
 	String getItem(String itemId, String roomId, String profileId);
+	String getSmartsets(String profileId, String roomId, String itemId);
+	String getSmartset(String smartsetId, String profileId, String roomId);
 	String getAvailablePorts();
 
 	// add
@@ -70,10 +72,12 @@ public:
 	void profileToJson(Profile* profile, JsonObject& json);
 	void roomToJson(Room* room, JsonObject& json);
 	void itemToJson(Item* item, JsonObject& json);
+	void smartsetToJson(Smartset* smartset, JsonObject& json);
 	void portToJson(ArduinoPort* port, JsonObject& json);
 	void jsonToProfile(JsonObject& json, Profile* profile);
 	void jsonToRoom(JsonObject& json, Room* room);
 	void jsonToItem(JsonObject& json, Item* item);
+	//void jsonToSmartset(JsonObject& json, Smartset* smartset);
 	//void jsonToPort(JsonObject& json, ArduinoPort* port);
 	
 	// getters

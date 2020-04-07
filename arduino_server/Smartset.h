@@ -22,11 +22,11 @@ public:
 	String getId() const;
 	const String& getName() const;
 	void setName(const String& name);
-	int getSize();
-	SmartItem* get(int index);
-	SmartItem* get(const String& id);
-	bool add(SmartItem* smartItem);
-	bool remove(int index);
+	SmartItem* getSmartItem(int index);
+	SmartItem* getSmartItem(const String& id);
+	int getSmartItemsSize();
+	bool addSmartItem(SmartItem* smartItem);
+	bool removeSmartItem(int index);
 
 	// static constants
 	static const int MAX_SMARTSETS = 1024;
