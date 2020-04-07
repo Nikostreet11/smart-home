@@ -211,6 +211,7 @@ bool SmartHomeServer::handleGET(String path, String query)
 			if (roomId == "")
 			{			
 				// get all rooms
+				// TODO: also get info on active smartsets
 				responseText = database.getRooms(profileId);
 				return true;
 			}
@@ -250,6 +251,40 @@ bool SmartHomeServer::handleGET(String path, String query)
 			{
 				// get the room
 				responseText = database.getItem(itemId, roomId, profileId);
+				return true;
+			}
+		}
+	}
+	else if (path.startsWith("/smartsets/"))
+	{
+		// get the item name
+		String remainingPath = path.substring(String("/smartsets/").length());
+		int smartsetIdEnd = remainingPath.indexOf("/");
+		String smartsetId;
+		String profileId = getParameter("profile_id", query);
+		String roomId = getParameter("room_id", query);
+		String itemId = getParameter("item_id", query);
+		
+		if (smartsetIdEnd != -1)
+		{
+			smartsetId = remainingPath.substring(0, smartsetIdEnd);
+			remainingPath = remainingPath.substring(smartsetIdEnd);
+
+			// TODO
+		}
+		else
+		{
+			smartsetId = remainingPath;
+			if (smartsetId == "")
+			{
+				// TODO: get all the selected smartsets
+				// responseText = database.getSmartsets(profileId, roomId, itemId);
+				return true;
+			}
+			else
+			{
+				// TODO: get the smartset
+				// responseText = database.getSmartset(smartsetId, profileId, roomId);
 				return true;
 			}
 		}
@@ -448,6 +483,60 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 					responseText = database.setItemSmart(false, itemId, data);
 					return true;
 				}*/
+			}
+		}
+	}
+	else if (path.startsWith("/smartsets/"))
+	{
+		// get the item name
+		String remainingPath = path.substring(String("/smartsets/").length());
+		int smartsetIdEnd = remainingPath.indexOf("/");
+		String smartsetId;
+		String action = getParameter("action", query);
+		
+		if (smartsetIdEnd != -1)
+		{
+			// TODO
+		}
+		else
+		{
+			smartsetId = remainingPath;
+			
+			if (smartsetId == "")
+			{
+				if (action == "add")
+				{
+					// TODO: add the smartset
+					// responseText = database.addSmartset(data);
+					return true;
+				}
+			}
+			else
+			{
+				if (action == "edit")
+				{
+					// TODO: edit the smartset
+					// responseText = database.editSmartset(smartsetId, data);
+					return true;
+				}
+				else if (action == "remove")
+				{
+					// TODO: remove the smartset
+					// responseText = database.removeSmartset(smartsetId, data);
+					return true;
+				}
+				else if (action == "add_item")
+				{
+					// TODO: add the item to the smartset
+					// responseText = database.addItemToSmartset(smartsetId, data);
+					return true;
+				}
+				else if (action == "remove_item")
+				{
+					// TODO: remove the item from the smartset
+					// responseText = database.removeItemFromSmartset(smartsetId, data);
+					return true;
+				}
 			}
 		}
 	}
