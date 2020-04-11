@@ -864,8 +864,28 @@ String Database::setItemActive(String id, String data)
 		}
 		else
 		{
+			bool found = false;
+			for (int index1 = 0; index1 < room->getSmartsetsSize(); index1++)
+			{
+				Smartset* controlset = room->getSmartset(index1);
+				int index2 = controlset->getSmartItemIndex(item->getId());
+				if (index2 != -1)
+				{
+					found = true;
+					controlset->removeSmartItem(index2);
+				}
+			}
 			item->setActive(active);
-			responseJson["outcome"] = "success";
+			
+			if (found)
+			{
+				responseJson["outcome"] = "partial_success";
+				responseJson["message"] = "item removed from some smartsets";
+			}
+			else
+			{
+				responseJson["outcome"] = "success";
+			}
 			responseJson["active"] = toStr(item->isActive());
 		}
 	}
