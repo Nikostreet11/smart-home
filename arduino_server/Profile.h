@@ -16,6 +16,9 @@ public:
 	// destructor
 	virtual ~Profile();
 
+	// update
+	void updateSmartRooms(LinkedPointerList<Room>& rooms);
+
 	// smart add
 	bool addSmartRoom(String roomId);
 	bool addSmartItem(String itemId, bool active, String roomId, String smartsetId);
@@ -40,7 +43,9 @@ public:
 	void setName(const String& name);
 	const String& getAvatar() const;
 	void setAvatar(const String& avatar);
+	SmartRoom* getSmartRoom(int index);
 	SmartRoom* getSmartRoom(const String& roomId);
+	int getSmartRoomIndex(const String& roomId);
 
 	// static constants
 	static const int MAX_PROFILES = 1024;

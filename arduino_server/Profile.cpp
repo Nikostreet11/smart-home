@@ -20,6 +20,49 @@ Profile::~Profile()
 {
 }
 
+// update
+void Profile::updateSmartRooms(LinkedPointerList<Room>& rooms)
+{
+	for (int index1 = 0; index1 < rooms.size(); index1++)
+	{
+		Room* room = rooms.get(index1);
+		bool found = false;
+		for (int index2 = 0; index2 < smartRooms.size(); index2++)
+		{
+			SmartRoom* smartRoom = smartRooms.get(index2);
+			if (smartRoom->getId() == room->getId())
+			{
+				found = true;
+			}
+		}
+
+		if (!found)
+		{
+			smartRooms.add(SmartRoom::create(room->getId()));
+		}
+	}
+
+	for (int index1 = 0; index1 < smartRooms.size(); index1++)
+	{
+		SmartRoom* smartRoom = smartRooms.get(index1);
+		bool found = false;
+		for (int index2 = 0; index2 < rooms.size(); index2++)
+		{
+			Room* room = rooms.get(index2);
+			if (room->getId() == smartRoom->getId())
+			{
+				found = true;
+			}
+		}
+
+		if (!found)
+		{
+			int index = getSmartRoomIndex(smartRoom->getId());
+			smartRooms.remove(index);
+		}
+	}
+}
+
 // smart add
 bool Profile::addSmartRoom(String roomId)
 {
@@ -230,6 +273,11 @@ void Profile::setAvatar(const String& avatar)
 	this->avatar = avatar;
 }
 
+SmartRoom* Profile::getSmartRoom(int index)
+{
+	return smartRooms.get(index);
+}
+
 SmartRoom* Profile::getSmartRoom(const String& roomId)
 {
 	for (int index = 0; index < smartRooms.size(); index++)
@@ -241,6 +289,19 @@ SmartRoom* Profile::getSmartRoom(const String& roomId)
 		}
 	}
 	return nullptr;
+}
+
+int Profile::getSmartRoomIndex(const String& roomId)
+{
+	for (int index = 0; index < smartRooms.size(); index++)
+	{
+		SmartRoom* smartRoom = smartRooms.get(index);
+		if (smartRoom->getId() == roomId)
+		{
+			return index;
+		}
+	}
+	return -1;
 }
 
 // constructor
