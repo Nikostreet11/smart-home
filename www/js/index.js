@@ -260,8 +260,8 @@ var app = {
 				$("#edit-profile-page .edit-password-container").css("display", "none");
 		});*/
 		
-		$("#edit-profile-page .delete-btn").click(function() {
-			app.arduino.deleteProfile(app.currentProfile)
+		$("#edit-profile-page .remove-btn").click(function() {
+			app.arduino.removeProfile(app.currentProfile)
 			.then(function(response) {
 				var outcome = JSON.parse(response).outcome;
 
@@ -275,7 +275,7 @@ var app = {
 				}
 			})
 			.catch(function() {
-				alert("deleteProfile::error");
+				alert("removeProfile::error");
 			});
 		});
 
@@ -506,8 +506,8 @@ var app = {
 			}
 		});
 		
-		$("#edit-room-page .delete-btn").click(function() {
-			app.arduino.deleteRoom(app.currentRoom)
+		$("#edit-room-page .remove-btn").click(function() {
+			app.arduino.removeRoom(app.currentRoom)
 			.then(function(response) {
 				var outcome = JSON.parse(response).outcome;
 
@@ -521,7 +521,7 @@ var app = {
 				}
 			})
 			.catch(function() {
-				alert("deleteRoom::error");
+				alert("removeRoom::error");
 			});
 		});
 
@@ -754,8 +754,8 @@ var app = {
 			}
 		});
 		
-		$("#edit-item-page .delete-btn").click(function() {
-			app.arduino.deleteItem(app.currentItem, app.currentRoom)
+		$("#edit-item-page .remove-btn").click(function() {
+			app.arduino.removeItem(app.currentItem, app.currentRoom)
 			.then(function(result) {
 				var response = JSON.parse(result);
 
@@ -769,7 +769,7 @@ var app = {
 				}
 			})
 			.catch(function() {
-				alert("deleteItem::error");
+				alert("removeItem::error");
 			});
 		});
 		
@@ -1458,7 +1458,7 @@ var app = {
 							"?action=add",
 					JSON.stringify({
 						"action": "add",
-						"new-profile": newProfile,
+						"new_profile": newProfile,
 					}));
 		},
 		
@@ -1470,20 +1470,20 @@ var app = {
 							"?action=edit",
 					JSON.stringify({
 						"action": "edit",
-						"profile-id": profile.id,
-						"new-profile": newProfile,
+						"profile_id": profile.id,
+						"new_profile": newProfile,
 					}));
 		},
 		
-		deleteProfile: function(profile) {
+		removeProfile: function(profile) {
 			return app.arduino.request(
 					"POST",
 					"http://" + app.connectedDevice.address +
 							"/profiles/" + profile.id +
-							"?action=delete",
+							"?action=remove",
 					JSON.stringify({
-						"action": "delete",
-						"profile-id": profile.id,
+						"action": "remove",
+						"profile_id": profile.id,
 					}));
 		},
 		
@@ -1494,7 +1494,7 @@ var app = {
 					"GET",
 					"http://" + app.connectedDevice.address +
 							"/rooms/",
-			"profile-id=" + profile.id);
+					"profile_id=" + profile.id);
 		},
 		
 		getRoom: function(roomId, profile) {
@@ -1502,7 +1502,7 @@ var app = {
 					"GET",
 					"http://" + app.connectedDevice.address +
 							"/rooms/" + roomId,
-			"profile-id=" + profile.id);
+					"profile_id=" + profile.id);
 		},
 		
 		addRoom: function(newRoom) {
@@ -1513,7 +1513,7 @@ var app = {
 							"?action=add",
 					JSON.stringify({
 						"action": "add",
-						"new-room": newRoom,
+						"new_room": newRoom,
 					}));
 		},
 		
@@ -1525,20 +1525,20 @@ var app = {
 							"?action=edit",
 					JSON.stringify({
 						"action": "edit",
-						"room-id": room.id,
-						"new-room": newRoom,
+						"room_id": room.id,
+						"new_room": newRoom,
 					}));
 		},
 		
-		deleteRoom: function(room) {
+		removeRoom: function(room) {
 			return app.arduino.request(
 					"POST",
 					"http://" + app.connectedDevice.address +
 							"/rooms/" + room.id +
-							"?action=delete",
+							"?action=remove",
 					JSON.stringify({
-						"action": "delete",
-						"room-id": room.id,
+						"action": "remove",
+						"room_id": room.id,
 					}));
 		},
 		
@@ -1547,12 +1547,12 @@ var app = {
 					"POST",
 					"http://" + app.connectedDevice.address +
 							"/rooms/" + roomId +
-							"?action=set-smart",
+							"?action=set_smart",
 					JSON.stringify({
-						"action": "set-smart",
-						"room-id": roomId,
-						"room-smart": roomSmart,
-						"profile-id" : profile.id,
+						"action": "set_smart",
+						"room_id": roomId,
+						"room_smart": roomSmart,
+						"profile_id" : profile.id,
 					}));
 		},
 		
@@ -1561,8 +1561,8 @@ var app = {
 					"GET",
 					"http://" + app.connectedDevice.address +
 							"/items/",
-					"room-id=" + room.id + "&" +
-							"profile-id=" + profile.id);
+					"room_id=" + room.id + "&" +
+							"profile_id=" + profile.id);
 		},
 		
 		getItem: function(itemId, room, profile) {
@@ -1570,8 +1570,8 @@ var app = {
 					"GET",
 					"http://" + app.connectedDevice.address +
 							"/items/" + itemId,
-					"room-id=" + room.id + "&" +
-							"profile-id=" + profile.id);
+					"room_id=" + room.id + "&" +
+							"profile_id=" + profile.id);
 		},
 		
 		addItem: function(newItem, room) {
@@ -1582,8 +1582,8 @@ var app = {
 							"?action=add",
 					JSON.stringify({
 						"action": "add",
-						"new-item": newItem,
-						"room-id": room.id,
+						"new_item": newItem,
+						"room_id": room.id,
 					}));
 		},
 		
@@ -1595,22 +1595,22 @@ var app = {
 							"?action=edit",
 					JSON.stringify({
 						"action": "edit",
-						"item-id": item.id,
-						"new-item": newItem,
-						"room-id": room.id,
+						"item_id": item.id,
+						"new_item": newItem,
+						"room_id": room.id,
 					}));
 		},
 		
-		deleteItem: function(item, room) {
+		removeItem: function(item, room) {
 			return app.arduino.request(
 					"POST",
 					"http://" + app.connectedDevice.address +
 							"/items/" + item.id +
-							"?action=delete",
+							"?action=remove",
 					JSON.stringify({
-						"action": "delete",
-						"item-id": item.id,
-						"room-id": room.id,
+						"action": "remove",
+						"item_id": item.id,
+						"room_id": room.id,
 					}));
 		},
 		
@@ -1619,12 +1619,12 @@ var app = {
 					"POST",
 					"http://" + app.connectedDevice.address +
 							"/items/" + itemId +
-							"?action=set-status",
+							"?action=set_status",
 					JSON.stringify({
-						"action": "set-status",
-						"item-id": itemId,
-						"item-active": itemActive,
-						"room-id": room.id,
+						"action": "set_status",
+						"item_id": itemId,
+						"item_active": itemActive,
+						"room_id": room.id,
 					}));
 		},
 		
@@ -1633,14 +1633,14 @@ var app = {
 					"POST",
 					"http://" + app.connectedDevice.address +
 							"/items/" + itemId +
-							"?action=set-smart",
+							"?action=set_smart",
 					JSON.stringify({
-						"action": "set-smart",
-						"item-id": itemId,
-						"item-smart": itemSmart,
-						"item-active": itemActive,
-						"room-id": room.id,
-						"profile-id" : profile.id,
+						"action": "set_smart",
+						"item_id": itemId,
+						"item_smart": itemSmart,
+						"item_active": itemActive,
+						"room_id": room.id,
+						"profile_id" : profile.id,
 					}));
 		},
 		
