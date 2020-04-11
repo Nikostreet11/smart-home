@@ -481,10 +481,12 @@ String Database::addRoom(String data)
 		Room* newRoom = Room::create();
 		jsonToRoom(roomJson, newRoom);
 		rooms.add(newRoom);
-		for (int index = 0; index < profiles.size(); index++)
+		/*for (int index = 0; index < profiles.size(); index++)
 		{
 			profiles.get(index)->addSmartRoom(newRoom->getId());
-		}
+		}*/
+		notifyProfiles();
+		
 		responseJson["outcome"] = "success";
 	}
 	log(responseJson);
@@ -745,10 +747,11 @@ String Database::removeRoom(String id)
 	{
 		delete rooms.get(index);
 		rooms.remove(index);
-		for (int index = 0; index < profiles.size(); index++)
+		/*for (int index = 0; index < profiles.size(); index++)
 		{
 			profiles.get(index)->removeSmartRoom(id);
-		}
+		}*/
+		notifyProfiles();
 		responseJson["outcome"] = "success";
 	}
 	log(responseJson);
@@ -1287,5 +1290,13 @@ bool Database::toBool(String value)
 	else
 	{
 		return false;
+	}
+}
+
+void Database::notifyProfiles()
+{
+	for (int index = 0; index < profiles.size(); index++)
+	{
+		profiles.get(index)->updateSmartRooms(rooms);
 	}
 }

@@ -102,6 +102,7 @@ private:
 	void log(JsonDocument& json);
 	String toStr(bool value);
 	bool toBool(String value);
+	void notifyProfiles();
 	
 	// resources
 	StaticJsonDocument<1024> requestJson;
