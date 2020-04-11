@@ -181,6 +181,11 @@ bool Room::addSmartset(Smartset* smartset)
 {
 	if (smartsets.size() < Smartset::MAX_SMARTSETS)
 	{
+		for (int index = 0; index < smartset->getSmartItemsSize(); index++)
+		{
+			SmartItem* smartItem = smartset->getSmartItem(index);
+			get(smartItem->getId())->setActive(smartItem->isActive());
+		}
 		smartsets.add(smartset);
 		return true;
 	}
@@ -192,7 +197,7 @@ bool Room::addSmartset(Smartset* smartset)
 
 bool Room::remove(int index)
 {
-	if (index < items.size())
+	if (0 <= index < items.size())
 	{
 		delete items.get(index);
 		items.remove(index);
@@ -206,9 +211,33 @@ bool Room::remove(int index)
 
 bool Room::removeSmartset(int index)
 {
-	if (index < smartsets.size())
+	if (0 <= index < smartsets.size())
 	{
-		delete smartsets.get(index);
+		Smartset* targetset = smartsets.get(index);
+		for (int index1 = 0; index1 < targetset->getSmartItemsSize(); index1++)
+		{
+			SmartItem* target = targetset->getSmartItem(index1);
+			bool found = false;
+			for (int index2 = 0; index2 < smartsets.size(); index2++)
+			{
+				Smartset* controlset = smartsets.get(index2);
+				if (controlset != targetset)
+				{
+					SmartItem* control = controlset->getSmartItem(target->getId());
+					if (control)
+					{
+						found = true;
+					}
+				}
+			}
+
+			if (!found)
+			{
+				get(target->getId())->setActive(false);
+			}
+		}
+		
+		delete targetset;
 		smartsets.remove(index);
 		return true;
 	}

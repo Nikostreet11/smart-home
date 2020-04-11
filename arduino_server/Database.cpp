@@ -1020,6 +1020,7 @@ String Database::activateSmartset(String roomId, String data)
 					Smartset* insertset = Smartset::copy(targetset);
 					
 					bool conflict = false; // just for debug
+					bool modified = false;
 					
 					for (int index1 = 0; index1 < targetset->getSmartItemsSize(); index1++)
 					{
@@ -1051,13 +1052,24 @@ String Database::activateSmartset(String roomId, String data)
 						{
 							int index = insertset->getSmartItemIndex(target->getId());
 							insertset->removeSmartItem(index);
+							modified = true;
 						}
 					}
 
 					if (conflict)
 					{
-						responseJson["failure"] = "success";
+						responseJson["outcome"] = "failure";
 						responseJson["error"] = "conflict found on previous smartsets";
+					}
+					else if (insertset->getSmartItemsSize() == 0)
+					{
+						responseJson["outcome"] = "failure";
+						responseJson["error"] = "all the items are currently unavailable";
+					}
+					else if (modified)
+					{
+						responseJson["outcome"] = "partial_success";
+						responseJson["reason"] = "some items are currently unavailable";
 					}
 					else
 					{
