@@ -979,12 +979,11 @@ String Database::removeItemFromSmartset(String smartsetId, String data)
 	return getLog();
 }
 	
-/*String Database::setRoomSmart(String roomId, String data)
+String Database::activateSmartset(String roomId, String data)
 {
-	deserializeJson(requestJson, data);	
-	bool roomSmart = toBool(requestJson["room-smart"]);
-	String profileId = requestJson["profile-id"];
-	String smartsetId = requestJson["smartset-id"];
+	deserializeJson(requestJson, data);
+	String smartsetId = requestJson["smartset_id"];
+	String profileId = requestJson["profile_id"];
 
 	Profile* profile = searchProfile(profileId);
 	if (!profile)
@@ -1010,33 +1009,62 @@ String Database::removeItemFromSmartset(String smartsetId, String data)
 			}
 			else
 			{
-				Smartset* smartset = smartRoom->getSmartset(smartsetId);
-				if (!smartset)
+				Smartset* targetset = smartRoom->getSmartset(smartsetId);
+				if (!targetset)
 				{
 					responseJson["outcome"] = "failure";
 					responseJson["error"] = "smartset not found";
 				}
 				else
 				{
-					room->setSmart(roomSmart);
+					Smartset* insertset = Smartset::copy(targetset);
 					
-					for (int index = 0; index < smartRoom->getSize(); index++)
+					bool conflict = false; // just for debug
+					
+					for (int index1 = 0; index1 < targetset->getSmartItemsSize(); index1++)
 					{
-						SmartItem* smartItem = smartRoom->get(index);
-						Item* item = room->get(smartItem->getId());
-	
-						if (roomSmart)
+						SmartItem* target = targetset->getSmartItem(index1);
+
+						bool found = false;
+						bool active = false;
+						for (int index2 = 0; index2 < room->getSmartsetsSize(); index2++)
 						{
-							item->setActive(smartItem->isActive());
+							Smartset* controlset = room->getSmartset(index2);
+							SmartItem* control = controlset->getSmartItem(target->getId());
+							if (control)
+							{
+								// debug
+								if (found)
+								{
+									if (active != control->isActive())
+									{
+										conflict = true;
+									}
+								}
+								// end debug
+								found = true;
+								active = control->isActive();
+							}
 						}
-						else
+
+						if (found && target->isActive() != active)
 						{
-							item->setActive(false);
+							int index = insertset->getSmartItemIndex(target->getId());
+							insertset->removeSmartItem(index);
 						}
 					}
-					
-					responseJson["outcome"] = "success";
-					responseJson["room-smart"] = toStr(roomSmart);
+
+					if (conflict)
+					{
+						responseJson["failure"] = "success";
+						responseJson["error"] = "conflict found on previous smartsets";
+					}
+					else
+					{
+						room->addSmartset(insertset);
+						
+						responseJson["outcome"] = "success";
+					}
 				}
 			}
 		}
@@ -1044,17 +1072,13 @@ String Database::removeItemFromSmartset(String smartsetId, String data)
 	log(responseJson);
 
 	return getLog();
-}*/
+}
 
-/*String Database::setItemSmart(String id, String data)
+String Database::deactivateSmartset(String roomId, String data)
 {
 	deserializeJson(requestJson, data);
-	//String itemId = requestJson["item-id"];
-	bool smart = toBool(requestJson["item-smart"]);
-	//JsonObject statusJson = requestJson["item-status"];
-	bool active = toBool(requestJson["item-active"]);
-	String roomId = requestJson["room-id"];
-	String profileId = requestJson["profile-id"];
+	String smartsetId = requestJson["smartset_id"];
+	String profileId = requestJson["profile_id"];
 
 	Profile* profile = searchProfile(profileId);
 	if (!profile)
@@ -1072,16 +1096,24 @@ String Database::removeItemFromSmartset(String smartsetId, String data)
 		}
 		else
 		{
-			Item* item = room->get(id);
-			if (!item)
+			bool found = false;
+			for (int index = 0; index < room->getSmartsetsSize(); index++)
+			{
+				Smartset* smartset = room->getSmartset(index);
+				if (smartset->getOwner() == profile && smartset->getId() == smartsetId)
+				{
+					found = true;
+					room->removeSmartset(index);
+				}
+			}
+			
+			if (!found)
 			{
 				responseJson["outcome"] = "failure";
-				responseJson["error"] = "item not found";
+				responseJson["error"] = "smartset not found";
 			}
 			else
 			{
-				profile->setItemSmart(id, smart, active, roomId);
-				
 				responseJson["outcome"] = "success";
 			}
 		}
@@ -1089,7 +1121,7 @@ String Database::removeItemFromSmartset(String smartsetId, String data)
 	log(responseJson);
 
 	return getLog();
-}*/
+}
 
 /********** JSON ****************************************************************/
 
@@ -1126,15 +1158,7 @@ void Database::itemToJson(Item* item, JsonObject& json)
 	json["name"] = item->getName();
 	json["icon"] = item->getIcon();
 	json["port"] = item->getPort();
-	
-	if (item->isActive())
-	{
-		json["active"] = "true";
-	}
-	else
-	{
-		json["active"] = "false";
-	}
+	json["active"] = toStr(item->isActive());
 }
 
 void Database::smartsetToJson(Smartset* smartset, JsonObject& json)

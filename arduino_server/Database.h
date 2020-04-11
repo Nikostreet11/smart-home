@@ -69,8 +69,8 @@ public:
 	// smart
 	String addItemToSmartset(String smartsetId, String data);
 	String removeItemFromSmartset(String smartsetId, String data);
-	// String setRoomSmart(String roomId, String data);
-	// String setItemSmart(String id, String data);
+	String activateSmartset(String roomId, String data);
+	String deactivateSmartset(String roomId, String data);
 
 	// json
 	void clearJsonDocuments();

@@ -416,11 +416,16 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 				responseText = database.removeRoom(roomId);
 				return true;
 			}
-			/*else if (getParameter("action", query) == "set-smart")
+			else if (getParameter("action", query) == "activate_smartset")
 			{
-				responseText = database.setRoomSmart(roomId, data);
+				responseText = database.activateSmartset(roomId, data);
 				return true;
-			}*/
+			}
+			else if (getParameter("action", query) == "activate_smartset")
+			{
+				responseText = database.deactivateSmartset(roomId, data);
+				return false;
+			}
 		}
 	}
 	else if (path.startsWith("/items/"))
