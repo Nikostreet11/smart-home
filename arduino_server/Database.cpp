@@ -27,41 +27,41 @@ void Database::debugInit()
 {
 	// test profile entries
 	String testJson;
-	testJson = "{\"task\":\"add\",\"new-profile\":{\"name\":\"John\",\"avatar\":\"avatar-1\"}}";
+	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"John\",\"avatar\":\"avatar-1\"}}";
 	addProfile(testJson);
-	testJson = "{\"task\":\"add\",\"new-profile\":{\"name\":\"Marie\",\"avatar\":\"avatar-4\"}}";
+	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Marie\",\"avatar\":\"avatar-4\"}}";
 	addProfile(testJson);
 
 	// test room entries
-	testJson = "{\"task\":\"add\",\"new-room\":{\"name\":\"Living_room\",\"icon\":\"034-television\"}}";
+	testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Living_room\",\"icon\":\"034-television\"}}";
 	addRoom(testJson);
-	testJson = "{\"task\":\"add\",\"new-room\":{\"name\":\"Bedroom\",\"icon\":\"002-bed\"}}";
+	testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Bedroom\",\"icon\":\"002-bed\"}}";
 	addRoom(testJson);
-	testJson = "{\"task\":\"add\",\"new-room\":{\"name\":\"Kitchen\",\"icon\":\"020-kitchen-set\"}}";
+	testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Kitchen\",\"icon\":\"020-kitchen-set\"}}";
 	addRoom(testJson);
-	testJson = "{\"task\":\"add\",\"new-room\":{\"name\":\"Kids'_bedroom\",\"icon\":\"035-bunk\"}}";
+	testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Kids'_bedroom\",\"icon\":\"035-bunk\"}}";
 	addRoom(testJson);
 
 	// test item entries
-	testJson = "{\"task\":\"add\",\"new-item\":{\"name\":\"Light\",\"icon\":\"011-light-bulb\",\"port\":\"none\"},\"room-id\":\"room_0000\"}";
+	testJson = "{\"task\":\"add\",\"new_item\":{\"name\":\"Light\",\"icon\":\"011-light-bulb\",\"port\":\"none\"},\"room_id\":\"room_0000\"}";
 	addItem(testJson);
-	testJson = "{\"task\":\"add\",\"new-item\":{\"name\":\"TV\",\"icon\":\"008-smart-home\",\"port\":\"none\"},\"room-id\":\"room_0000\"}";
+	testJson = "{\"task\":\"add\",\"new_item\":{\"name\":\"TV\",\"icon\":\"008-smart-home\",\"port\":\"none\"},\"room_id\":\"room_0000\"}";
 	addItem(testJson);
-	testJson = "{\"task\":\"add\",\"new-item\":{\"name\":\"Stereo\",\"icon\":\"032-speakers\",\"port\":\"none\"},\"room-id\":\"room_0000\"}";
+	testJson = "{\"task\":\"add\",\"new_item\":{\"name\":\"Stereo\",\"icon\":\"032-speakers\",\"port\":\"none\"},\"room_id\":\"room_0000\"}";
 	addItem(testJson);
-	testJson = "{\"task\":\"add\",\"new-item\":{\"name\":\"PC\",\"icon\":\"006-real-estate\",\"port\":\"none\"},\"room-id\":\"room_0000\"}";
+	testJson = "{\"task\":\"add\",\"new_item\":{\"name\":\"PC\",\"icon\":\"006-real-estate\",\"port\":\"none\"},\"room_id\":\"room_0000\"}";
 	addItem(testJson);
-	testJson = "{\"task\":\"add\",\"new-item\":{\"name\":\"Light\",\"icon\":\"011-light-bulb\",\"port\":\"none\"},\"room-id\":\"room_0001\"}";
+	testJson = "{\"task\":\"add\",\"new_item\":{\"name\":\"Light\",\"icon\":\"011-light-bulb\",\"port\":\"none\"},\"room_id\":\"room_0001\"}";
 	addItem(testJson);
-	testJson = "{\"task\":\"add\",\"new-item\":{\"name\":\"Light\",\"icon\":\"011-light-bulb\",\"port\":\"none\"},\"room-id\":\"room_0002\"}";
+	testJson = "{\"task\":\"add\",\"new_item\":{\"name\":\"Light\",\"icon\":\"011-light-bulb\",\"port\":\"none\"},\"room_id\":\"room_0002\"}";
 	addItem(testJson);
-	testJson = "{\"task\":\"add\",\"new-item\":{\"name\":\"Light\",\"icon\":\"011-light-bulb\",\"port\":\"none\"},\"room-id\":\"room_0003\"}";
+	testJson = "{\"task\":\"add\",\"new_item\":{\"name\":\"Light\",\"icon\":\"011-light-bulb\",\"port\":\"none\"},\"room_id\":\"room_0003\"}";
 	addItem(testJson);
 
 	// test late profile entries
-	testJson = "{\"task\":\"add\",\"new-profile\":{\"name\":\"Andrew\",\"avatar\":\"avatar-7\"}}";
+	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Andrew\",\"avatar\":\"avatar-7\"}}";
 	addProfile(testJson);
-	testJson = "{\"task\":\"add\",\"new-profile\":{\"name\":\"Lisa\",\"avatar\":\"avatar-11\"}}";
+	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Lisa\",\"avatar\":\"avatar-11\"}}";
 	addProfile(testJson);
 }
 
@@ -427,7 +427,7 @@ String Database::addProfile(String data)
 	//Serial.println(data);
 	
 	deserializeJson(requestJson, data);
-	JsonObject profileJson = requestJson["new-profile"];
+	JsonObject profileJson = requestJson["new_profile"];
 	
 	if (profiles.size() == Database::MAX_PROFILES)
 	{
@@ -464,7 +464,7 @@ String Database::addRoom(String data)
 	//Serial.println(data);
 	
 	deserializeJson(requestJson, data);
-	JsonObject roomJson = requestJson["new-room"];
+	JsonObject roomJson = requestJson["new_room"];
 
 	if (rooms.size() == MAX_ROOMS)
 	{
@@ -498,9 +498,9 @@ String Database::addItem(String data)
 	//Serial.println(data);
 	
 	deserializeJson(requestJson, data);
-	JsonObject itemJson = requestJson["new-item"];
+	JsonObject itemJson = requestJson["new_item"];
 
-	String roomId = requestJson["room-id"];
+	String roomId = requestJson["room_id"];
 
 	Room* room = searchRoom(roomId);
 	if (room == nullptr)
@@ -586,7 +586,7 @@ String Database::editProfile(String id, String data)
 	}
 	else
 	{
-		JsonObject newProfileJson = requestJson["new-profile"];
+		JsonObject newProfileJson = requestJson["new_profile"];
 	
 		if (newProfileJson["name"] != profile->getName() &&
 				isProfileNameTaken(newProfileJson["name"]))
@@ -617,7 +617,7 @@ String Database::editRoom(String id, String data)
 	}
 	else
 	{
-		JsonObject newRoomJson = requestJson["new-room"];
+		JsonObject newRoomJson = requestJson["new_room"];
 		
 		if (newRoomJson["name"] != room->getName() &&
 				isRoomNameTaken(newRoomJson["name"]))
@@ -643,7 +643,7 @@ String Database::editRoom(String id, String data)
 String Database::editItem(String id, String data)
 {
 	deserializeJson(requestJson, data);
-	JsonObject newItemJson = requestJson["new-item"];
+	JsonObject newItemJson = requestJson["new_item"];
 	
 	Item* item = searchItem(id);
 	if (!item)
@@ -759,7 +759,7 @@ String Database::removeRoom(String id)
 String Database::removeItem(String id, String data)
 {
 	deserializeJson(requestJson, data);
-	String roomId = requestJson["room-id"];
+	String roomId = requestJson["room_id"];
 	
 	Room* room = searchRoom(roomId);
 	if (room == nullptr)
@@ -840,8 +840,8 @@ String Database::setItemActive(String id, String data)
 	deserializeJson(requestJson, data);
 	//String itemId = requestJson["item-id"];
 	//JsonObject statusJson = requestJson["item-status"];
-	bool active = toBool(requestJson["item-active"]);
-	String roomId = requestJson["room-id"];
+	bool active = toBool(requestJson["item_active"]);
+	String roomId = requestJson["room_id"];
 	
 	Room* room = searchRoom(roomId);
 	if (!room)

@@ -197,7 +197,7 @@ bool SmartHomeServer::handleGET(String path, String query)
 		String remainingPath = path.substring(String("/rooms/").length());
 		int roomIdEnd = remainingPath.indexOf("/");
 		String roomId;
-		String profileId = getParameter("profile-id", query);
+		String profileId = getParameter("profile_id", query);
 		if (roomIdEnd != -1)
 		{
 			roomId = remainingPath.substring(0, roomIdEnd);
@@ -228,8 +228,8 @@ bool SmartHomeServer::handleGET(String path, String query)
 		String remainingPath = path.substring(String("/items/").length());
 		int itemIdEnd = remainingPath.indexOf("/");
 		String itemId;
-		String roomId = getParameter("room-id", query);
-		String profileId = getParameter("profile-id", query);
+		String roomId = getParameter("room_id", query);
+		String profileId = getParameter("profile_id", query);
 		if (itemIdEnd != -1)
 		{
 			roomId = remainingPath.substring(0, itemIdEnd);
@@ -317,22 +317,22 @@ bool SmartHomeServer::handleGET(String path, String query)
 	}
 	else if (path.startsWith("/debug/"))
 	{
-		if (path.startsWith("/debug/led-on"))
+		if (path.startsWith("/debug/led_on"))
 		{
 			led_on = true;
 			return true;
 		}
-		else if (path.startsWith("/debug/led-off"))
+		else if (path.startsWith("/debug/led_off"))
 		{
 			led_off = true;
 			return true;
 		}
-		else if (path.startsWith("/debug/led-toggle"))
+		else if (path.startsWith("/debug/led_toggle"))
 		{
 			led_toggle = true;
 			return true;
 		}
-		else if (path.startsWith("/debug/led-blink"))
+		else if (path.startsWith("/debug/led_blink"))
 		{
 			led_blink = true;
 			return true;
@@ -467,7 +467,7 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 					responseText = database.removeItem(itemId, data);
 					return true;
 				}
-				else if (action == "set-status")
+				else if (action == "set_status")
 				{
 					responseText = database.setItemActive(itemId, data);
 					return true;
