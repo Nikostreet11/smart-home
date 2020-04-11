@@ -23,6 +23,10 @@ body {
     font-family: system-ui, -apple-system, -apple-system-font, 'Segoe UI', 'Roboto', sans-serif;
 }
 
+.header {
+	text-shadow: 0 0 0 #000;
+}
+
 .header-left {
 	position: absolute;
 	top: 0px;
@@ -43,6 +47,14 @@ body {
 	font-weight: normal;
 	text-align: center;
 	margin: 0px;
+}
+
+.content {
+	width: auto;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	text-shadow: 0 0 0 #000;
 }
 
 /********** SIGN IN PAGE ******************************************************/
@@ -82,6 +94,42 @@ body {
 	position: fixed;
 	bottom: 0px;
 	right: 10px;
+}
+
+#control-panel-page .smartsets-panel {
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	background-color: #333;
+	color: white;
+}
+
+#control-panel-page .smartsets-panel p {
+	padding: 0px;
+	margin: 0px;
+}
+
+#control-panel-page .smartsets-panel .top {
+	display: flex;
+	justify-content: space-between;
+}
+
+#control-panel-page .smartsets-panel .top div {
+	margin: 15px 30px;
+}
+
+#control-panel-page .smartsets-panel .top .right {
+	color: dodgerblue;
+}
+
+#control-panel-page .smartsets-panel hr {
+	border: transparent;
+	border-top: 1px solid #dddddd;
+	margin: 5px 0px;
+}
+
+#control-panel-page .smartsets-panel .smartset {
+	margin: 15px 30px;
 }
 
 /********** MANUAL PANEL PAGE *************************************************/
@@ -143,7 +191,6 @@ body {
 	border: transparent;
 	border-top: 2px solid #dddddd;
 	margin: 15px 0px;
-	
 }
 
 #manual-panel-page .float-bottom-right {

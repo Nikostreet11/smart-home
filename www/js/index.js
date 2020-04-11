@@ -1487,8 +1487,6 @@ var app = {
 					}));
 		},
 		
-		// TODO: start from here
-		
 		getRooms: function(profile) {
 			return app.arduino.request(
 					"GET",
@@ -1628,7 +1626,7 @@ var app = {
 					}));
 		},
 		
-		setItemSmart: function(itemId, itemSmart, itemActive, room, profile) {
+		/*setItemSmart: function(itemId, itemSmart, itemActive, room, profile) {
 			return app.arduino.request(
 					"POST",
 					"http://" + app.connectedDevice.address +
@@ -1642,7 +1640,7 @@ var app = {
 						"room_id": room.id,
 						"profile_id" : profile.id,
 					}));
-		},
+		},*/
 		
 		getPorts: function() {
 			return app.arduino.request(
