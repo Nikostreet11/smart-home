@@ -427,9 +427,10 @@ var app = {
 				}
 				else {
 					// hold
-					var roomId = this.getAttribute("id");
+					$.mobile.navigate("#smartsets-panel");
+					/*var roomId = this.getAttribute("id");
 					var roomSmart;
-					if ($(this)/*.parent()*/.attr("smart") == "true") {
+					if ($(this).attr("smart") == "true") {
 						roomSmart = "false";
 					}
 					else {
@@ -453,7 +454,7 @@ var app = {
 					})
 					.catch(function() {
 						alert("setRoomSmart::error");
-					});
+					});*/
 				}
 			}
 		})
