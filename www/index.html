@@ -291,15 +291,14 @@
 				<div id="smartsets-panel">
 					<div class="ui-bar ui-bar-a" data-role="header">
 						<h3 id="smartsets-header-title">activate...</h3>
-						<a class="ui-btn ui-btn-inline ui-btn-right">+new smartset</a>
+						<a class="add-smartset-btn ui-btn ui-btn-inline ui-btn-right">+new smartset</a>
 					</div>
 
-					<!--<div class="smartsets-list">-->
 					<ul class="smartsets-list" data-role="listview">
 						<li class="smartset" id="test_smartset_0000">
-							<a>test 1</a><a data-icon="edit"></a>
+							<a>WIP</a><a data-icon="edit"></a>
 						</li>
-						<li class="smartset" id="test_smartset_0001">
+						<!--<li class="smartset" id="test_smartset_0001">
 							<a>test 2</a><a data-icon="edit"></a>
 						</li>
 						<li class="smartset" id="test_smartset_0002">
@@ -307,9 +306,8 @@
 						</li>
 						<li class="smartset" id="test_smartset_0003">
 							<a>test 4</a><a data-icon="edit"></a>
-						</li>
+						</li>-->
 					</ul>
-					<!--</div>-->
 				</div>
 			</div>
 		</div>
@@ -389,8 +387,8 @@
 				</div>
 			</div>
 			
-			<div data-role="content">
-				<div class="items-list">
+			<div class="main" data-role="ui-content">
+				<div class="items-list"><!--
 					<div class="item" id="test-item_0000"
 						 	active="false"
 						 	smart="false">
@@ -435,12 +433,26 @@
 								</button>
 							</div>
 						</div>
-					</div>
+					</div>-->
 					<!--filled dynamically-->
 				</div>
 				
 				<div class="float-bottom-right">
 					<input type="button" class="add-btn" value="+">
+				</div>
+				
+				<div class="smartsets-panel">
+					<div class="ui-bar ui-bar-a" data-role="header">
+						<h3 class="title">add to...</h3>
+						<a href="#popup" data-rel="popup" class="ui-btn ui-btn-inline ui-btn-right">+new smartset</a>
+					</div>
+
+					<ul class="smartsets-list add-item-to-smartset"
+							data-role="listview">
+						<li class="smartset" id="test2_smartset_0000">
+							<a>WIP</a><a data-icon="edit"></a>
+						</li>
+					</ul>
 				</div>
 			</div>
 		</div>
@@ -539,12 +551,26 @@
 <!---------- BLANK ------------------------------------------------------------>
 		
 		
-		<div data-role="page" id="">
+		<div data-role="page" id="blank">
 			<div data-role="header">
 				
 			</div>
 			
-			<div data-role="content">
+			<div class="main" data-role="ui-content">
+				
+			</div>
+		</div>
+		
+		
+<!---------- SMARTSETS DIALOG ------------------------------------------------->
+		
+		
+		<div data-role="page" data-dialog="true" id="blank">
+			<div data-role="header">
+				
+			</div>
+			
+			<div class="main" data-role="ui-content">
 				
 			</div>
 		</div>

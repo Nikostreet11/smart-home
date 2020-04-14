@@ -427,6 +427,10 @@ var app = {
 				}
 				else {
 					// hold
+					
+					// 	TODO: app.getToom()
+					
+					$('#smartsets-panel').css('display', 'block');
 					/*var roomId = this.getAttribute("id");
 					var roomSmart;
 					if ($(this).attr("smart") == "true") {
@@ -461,6 +465,10 @@ var app = {
 			app.clickManager.active = false;
 			clearTimeout(app.timer);
 			app.timer = null;
+		});
+		
+		$("#control-panel-page").on("click", ".add-smartset-btn", function() {
+			alert('bau');
 		});
 		
 		
@@ -707,6 +715,12 @@ var app = {
 				alert("setItemSmart::error");
 			});
 		});
+		
+		/*$("#manual-panel-page")
+		.on("click", ".add-to-new-smartset-btn", function() {
+			//$.mobile.changePage('#add-edit-smartset-page', 'pop', true, true);
+			$('#popup').popup('open');
+		});*/
 		
 		
 /********** EDIT ITEM *********************************************************/

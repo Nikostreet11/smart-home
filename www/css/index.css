@@ -176,3 +176,16 @@ body {
 	bottom: 0px;
 	right: 10px;
 }
+
+#manual-panel-page .smartsets-panel {
+	display: block;
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+}
+
+#manual-panel-page .title {
+	text-align: left;
+	margin: 4px 5px;
+	padding: 0px;
+}
