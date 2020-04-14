@@ -49,13 +49,13 @@ body {
 	margin: 0px;
 }
 
-.main {
+/*.main {
 	width: auto;
 	margin: 0;
 	padding: 0;
 	border: 0;
 	text-shadow: 0 0 0 #000;
-}
+}*/
 
 /********** SIGN IN PAGE ******************************************************/
 
@@ -97,74 +97,16 @@ body {
 }
 
 #control-panel-page #smartsets-panel {
+	display: block;
 	position: fixed;
 	bottom: 0px;
 	width: 100%;
-	/*background-color: #333;
-	color: white;*/
 }
 
-#control-panel-page #smartsets-panel p {
+#control-panel-page #smartsets-header-title {
+	text-align: left;
+	margin: 4px 5px;
 	padding: 0px;
-	margin: 0px;
-}
-
-#control-panel-page #smartsets-panel .top {
-	display: flex;
-	justify-content: space-between;
-}
-
-#control-panel-page #smartsets-panel .top div {
-	margin: 15px 30px;
-}
-
-#control-panel-page #smartsets-panel .top .right {
-	color: dodgerblue;
-}
-
-#control-panel-page #smartsets-panel hr {
-	border: transparent;
-	border-top: 1px solid #dddddd;
-	margin: 5px 0px;
-}
-
-#control-panel-page #smartsets-panel .smartset {
-	margin: 15px 30px;
-}
-
-.split-custom-wrapper {
-    /* position wrapper on the right of the listitem */
-    position: absolute;
-    right: 0;
-    top: 0;
-    height: 100%;
-}
-
-.split-custom-button {
-    position: relative;
-    float: right;   /* allow multiple links stacked on the right */
-    height: 100%;
-    margin:0;
-    min-width:3em;
-    /* remove boxshadow and border */
-    border:none;
-    moz-border-radius: 0;
-    webkit-border-radius: 0;
-    border-radius: 0;
-    moz-box-shadow: none;
-    webkit-box-shadow: none;
-    box-shadow: none;
-}
-
-.split-custom-button span.ui-btn-inner {
-    /* position icons in center of listitem*/
-    position: relative;
-    margin-top:50%;
-    margin-left:50%;
-    /* compensation for icon dimensions */
-    top:11px; 
-    left:-12px;
-    height:40%; /* stay within boundaries of list item */
 }
 
 /********** MANUAL PANEL PAGE *************************************************/

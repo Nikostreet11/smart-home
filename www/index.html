@@ -289,54 +289,27 @@
 				</div>
 				
 				<div id="smartsets-panel">
-					<div class="top">
-						<div class="left">
-							<p>activate...</p>
-						</div>
-
-						<div class="middle">
-							<input type="button"
-								   id="smartsets-edit-btn"
-								   value="edit">
-							<!--<p>edit</p>-->
-						</div>
-
-						<div class="right">
-							<input type="button"
-								   id="smartsets-edit-btn"
-								   value="+new smartset">
-							<!--<p>+new smartset</p>-->
-						</div>
+					<div class="ui-bar ui-bar-a" data-role="header">
+						<h3 id="smartsets-header-title">activate...</h3>
+						<a class="ui-btn ui-btn-inline ui-btn-right">+new smartset</a>
 					</div>
 
-					<hr>
-
-					<div class="smartsets-list">
-						<ul data-role="listview">
-							<li><a>b</a><a>test 1</a></li>
-							<li>
-								<a>test 2</a>
-								<div class="split-custom-wrapper">
-									<a class="split-button-custom" data-role="button" data-icon="gear" data-iconpos="notext">1st link</a>
-									<a class="split-button-custom" data-role="button" data-icon="arrow-r" data-iconpos="notext">2nd link</a>
-								</div>
-							</li>
-							<li><a>test 3</a></li>
-							<li><a>test 4</a></li>
-						</ul>
-						<!--<div class="smartset" id="test_smartset_0000">
-							<p>test 1</p>
-						</div>
-						<div class="smartset" id="test_smartset_0001">
-							<p>test 2</p>
-						</div>
-						<div class="smartset" id="test_smartset_0002">
-							<p>test 3</p>
-						</div>
-						<div class="smartset" id="test_smartset_0003">
-							<p>test 4</p>
-						</div>-->
-					</div>
+					<!--<div class="smartsets-list">-->
+					<ul class="smartsets-list" data-role="listview">
+						<li class="smartset" id="test_smartset_0000">
+							<a>test 1</a><a data-icon="edit"></a>
+						</li>
+						<li class="smartset" id="test_smartset_0001">
+							<a>test 2</a><a data-icon="edit"></a>
+						</li>
+						<li class="smartset" id="test_smartset_0002">
+							<a>test 3</a><a data-icon="edit"></a>
+						</li>
+						<li class="smartset" id="test_smartset_0003">
+							<a>test 4</a><a data-icon="edit"></a>
+						</li>
+					</ul>
+					<!--</div>-->
 				</div>
 			</div>
 		</div>
