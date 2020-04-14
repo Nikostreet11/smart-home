@@ -304,6 +304,11 @@ int Profile::getSmartRoomIndex(const String& roomId)
 	return -1;
 }
 
+int Profile::getSmartRoomsSize()
+{
+	return smartRooms.size();
+}
+
 // constructor
 Profile::Profile(LinkedPointerList<Room>& rooms) :
 		id(Profile::currentId),

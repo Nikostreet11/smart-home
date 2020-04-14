@@ -63,6 +63,103 @@ void Database::debugInit()
 	addProfile(testJson);
 	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Lisa\",\"avatar\":\"avatar-11\"}}";
 	addProfile(testJson);
+
+	// test smartset entries
+	testJson = "{\"task\":\"add\",\"new_smartset\":{\"name\":\"work\"}, \"profile_id\":\"profile_0000\", \"room_id\":\"room_0000\"}";
+	addSmartset(testJson);
+	testJson = "{\"task\":\"add\",\"new_smartset\":{\"name\":\"study\"}, \"profile_id\":\"profile_0001\", \"room_id\":\"room_0000\"}";
+	addSmartset(testJson);
+
+	// test smart item entries
+	testJson = "{\"task\":\"add_item\",\"item\":{\"id\":\"item_0000\", \"active\":\"true\"}, \"profile_id\":\"profile_0000\", \"room_id\":\"room_0000\"}";
+	addItemToSmartset(String("smartset_0000"), testJson);
+	testJson = "{\"task\":\"add_item\",\"item\":{\"id\":\"item_0001\", \"active\":\"false\"}, \"profile_id\":\"profile_0000\", \"room_id\":\"room_0000\"}";
+	addItemToSmartset(String("smartset_0000"), testJson);
+	testJson = "{\"task\":\"add_item\",\"item\":{\"id\":\"item_0002\", \"active\":\"true\"}, \"profile_id\":\"profile_0000\", \"room_id\":\"room_0000\"}";
+	addItemToSmartset(String("smartset_0000"), testJson);
+	
+	testJson = "{\"task\":\"add_item\",\"item\":{\"id\":\"item_0001\", \"active\":\"false\"}, \"profile_id\":\"profile_0001\", \"room_id\":\"room_0000\"}";
+	addItemToSmartset(String("smartset_0001"), testJson);
+	testJson = "{\"task\":\"add_item\",\"item\":{\"id\":\"item_0002\", \"active\":\"true\"}, \"profile_id\":\"profile_0001\", \"room_id\":\"room_0000\"}";
+	addItemToSmartset(String("smartset_0001"), testJson);
+	testJson = "{\"task\":\"add_item\",\"item\":{\"id\":\"item_0003\", \"active\":\"false\"}, \"profile_id\":\"profile_0001\", \"room_id\":\"room_0000\"}";
+	addItemToSmartset(String("smartset_0001"), testJson);
+}
+
+void Database::debugProfiles()
+{
+	Serial.println("*** DEBUG profiles");
+	for (int index1 = 0; index1 < profiles.size(); index1++)
+	{
+		Profile* profile = profiles.get(index1);
+		Serial.println();
+		Serial.print("    ");
+		Serial.println(profile->getId());
+		Serial.println("    - smart rooms:");
+		for (int index2 = 0; index2 < profile->getSmartRoomsSize(); index2++)
+		{
+			SmartRoom* smartRoom = profile->getSmartRoom(index2);
+			Serial.print("        ");
+			Serial.println(smartRoom->getId());
+			Serial.println("        - smartsets:");
+			for (int index3 = 0; index3 < smartRoom->getSmartsetsSize(); index3++)
+			{
+				Smartset* smartset = smartRoom->getSmartset(index3);
+				Serial.print("            ");
+				Serial.println(smartset->getId());
+				Serial.println("            - smart items:");
+				for (int index4 = 0; index4 < smartset->getSmartItemsSize(); index4++)
+				{
+					SmartItem* smartItem = smartset->getSmartItem(index4);
+					Serial.print("                ");
+					Serial.println(smartItem->getId());
+					Serial.print("                - active:");
+					Serial.println(smartItem->isActive());
+				}
+			}
+		}
+	}
+	Serial.println();
+}
+
+void Database::debugRooms()
+{
+	Serial.println("*** DEBUG rooms");
+	for (int index1 = 0; index1 < profiles.size(); index1++)
+	{
+		Room* room = rooms.get(index1);
+		Serial.println();
+		Serial.print("    ");
+		Serial.println(room->getId());
+		
+		Serial.println("    - items:");
+		for (int index2 = 0; index2 < room->getSize(); index2++)
+		{
+			Item* item = room->get(index2);
+			Serial.print("        ");
+			Serial.println(item->getId());
+			Serial.print("        - active:");
+			Serial.println(item->isActive());
+		}
+		
+		Serial.println("    - smartsets:");
+		for (int index2 = 0; index2 < room->getSmartsetsSize(); index2++)
+		{
+			Smartset* smartset = room->getSmartset(index2);
+			Serial.print("        ");
+			Serial.println(smartset->getId());
+			Serial.println("        - smart items:");
+			for (int index3 = 0; index3 < smartset->getSmartItemsSize(); index3++)
+			{
+				SmartItem* smartItem = smartset->getSmartItem(index3);
+				Serial.print("            ");
+				Serial.println(smartItem->getId());
+				Serial.print("            - active:");
+				Serial.println(smartItem->isActive());
+			}
+		}
+	}
+	Serial.println();
 }
 
 /********** SEARCH **************************************************************/
@@ -536,8 +633,8 @@ String Database::addItem(String data)
 String Database::addSmartset(String data)
 {	
 	deserializeJson(requestJson, data);
+	
 	JsonObject smartsetJson = requestJson["new_smartset"];
-
 	String profileId = requestJson["profile_id"];
 	String roomId = requestJson["room_id"];
 

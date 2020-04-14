@@ -92,6 +92,8 @@ void SmartHomeServer::initializeNTP()
 	Serial.println();
 
 	database.debugInit();
+	database.debugProfiles();
+	database.debugRooms();
 }
 
 /********** GETTERS *************************************************************/

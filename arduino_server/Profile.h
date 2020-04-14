@@ -46,6 +46,7 @@ public:
 	SmartRoom* getSmartRoom(int index);
 	SmartRoom* getSmartRoom(const String& roomId);
 	int getSmartRoomIndex(const String& roomId);
+	int getSmartRoomsSize();
 
 	// static constants
 	static const int MAX_PROFILES = 1024;

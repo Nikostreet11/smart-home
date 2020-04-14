@@ -427,7 +427,6 @@ var app = {
 				}
 				else {
 					// hold
-					$.mobile.navigate("#smartsets-panel");
 					/*var roomId = this.getAttribute("id");
 					var roomSmart;
 					if ($(this).attr("smart") == "true") {
@@ -988,7 +987,20 @@ var app = {
 			let room = rooms[index];
 			let prettifiedName = app.prettyfy(room.name);
 			container.append(
-				'<button type="submit" ' +
+				'<div ' +
+					'class="room" ' +
+					'id="' + room.id + '" ' +
+					'smartsets="' + room.smartsets + '" ' +
+				'>' +
+					'<a class="ui-btn">' +
+						'<img src="img/rooms/' + room.icon +
+						'.png" width="130px" height="130px"/>' +
+						'<h3>' + prettifiedName + '</h3>' +
+					'</a>' +
+				'</div>'
+			);
+				
+				/*'<button type="submit" ' +
 				'id="' + room.id + '" ' +
 				'class="room" ' +
 				'smart="' + room.smart + '" ' +
@@ -996,7 +1008,7 @@ var app = {
 				'<img src="img/rooms/' + room.icon +
 				'.png" width="130px" height="130px"/>' +
 				'<h3>' + prettifiedName + '</h3>' +
-				'</button>');
+				'</button>');*/
 		}
 		$(container).enhanceWithin();
 		

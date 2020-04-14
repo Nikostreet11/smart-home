@@ -21,6 +21,8 @@ public:
 
 	// debug
 	void debugInit();
+	void debugProfiles();
+	void debugRooms();
 
 	// search
 	Profile* searchProfile(String profileId);
