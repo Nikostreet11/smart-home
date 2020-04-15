@@ -388,52 +388,9 @@
 			</div>
 			
 			<div class="main" data-role="ui-content">
-				<div class="items-list"><!--
-					<div class="item" id="test-item_0000"
-						 	active="false"
-						 	smart="false">
-						<button type="submit" class="active-btn">
-							<img src="img/items/011-light-bulb.png"
-								 width="50px"
-								 height="50px"/>
-							<h3>test item</h3>
-						</button>
-						<div class="smart-container">
-							<div class="smart">
-								<button type="submit" class="on-btn">
-									<p>smart on</p>
-								</button>
-							</div>
-							<div class="smart">
-								<button type="submit" class="off-btn">
-									<p>smart off</p>
-								</button>
-							</div>
-						</div>
-					</div>
-					<hr>
-					<div class="item" id="test-item_0001"
-						 	active="false"
-						 	smart="false">
-						<button type="submit" class="active-btn">
-							<img src="img/items/011-light-bulb.png"
-								 width="50px"
-								 height="50px"/>
-							<h3>test item</h3>
-						</button>
-						<div class="smart-container">
-							<div class="smart">
-								<button type="submit" class="on-btn">
-									<p>smart on</p>
-								</button>
-							</div>
-							<div class="smart">
-								<button type="submit" class="off-btn">
-									<p>smart off</p>
-								</button>
-							</div>
-						</div>
-					</div>-->
+				<a class="view-saved-smartsets-btn ui-btn">smartsets</a>
+				
+				<div class="items-list">
 					<!--filled dynamically-->
 				</div>
 				
@@ -444,7 +401,9 @@
 				<div class="smartsets-panel">
 					<div class="ui-bar ui-bar-a" data-role="header">
 						<h3 class="title">add to...</h3>
-						<a href="#popup" data-rel="popup" class="ui-btn ui-btn-inline ui-btn-right">+new smartset</a>
+						<a class="ui-btn ui-btn-inline ui-btn-right">
+							+new smartset
+						</a>
 					</div>
 
 					<ul class="smartsets-list add-item-to-smartset"
@@ -548,24 +507,62 @@
 		</div>
 		
 		
-<!---------- BLANK ------------------------------------------------------------>
+<!---------- SMARTSETS PAGE ------------------------------------------------->
 		
 		
-		<div data-role="page" id="blank">
-			<div data-role="header">
+		<div data-role="page" id="smartsets-page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="back-btn" value="&lt back">
+				</div>
 				
+				<div class="header-center">
+					<h2>smartsets</h2>
+				</div>
+				
+				<!--<div class="header-right">
+					<input type="button" class="edit-btn" value="edit">
+				</div>-->
 			</div>
 			
 			<div class="main" data-role="ui-content">
-				
+				<ul class="smartsets-list" data-role="listview">
+					<!--filled dinamically-->
+				</ul>
 			</div>
 		</div>
 		
 		
-<!---------- SMARTSETS DIALOG ------------------------------------------------->
+<!---------- BLANK ------------------------------------------------------------>
 		
 		
-		<div data-role="page" data-dialog="true" id="blank">
+		<div id="smart-items-page" data-role="page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="back-btn" value="&lt back">
+				</div>
+				
+				<div class="header-center">
+					<h2>smart items</h2>
+				</div>
+				
+				<!--<div class="header-right">
+					<input type="button" class="edit-btn" value="edit">
+				</div>-->
+			</div>
+			
+			<div class="main" data-role="ui-content">
+				<ul class="smart-items-list" data-role="listview">
+					<!--filled dinamically-->
+				</ul>
+			</div>
+		</div>
+		
+		
+<!---------- BLANK ------------------------------------------------------------>
+		
+		
+		<div id="blank" data-role="page">
 			<div data-role="header">
 				
 			</div>

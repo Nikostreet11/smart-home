@@ -92,8 +92,8 @@ void SmartHomeServer::initializeNTP()
 	Serial.println();
 
 	database.debugInit();
-	database.debugProfiles();
-	database.debugRooms();
+	//database.debugProfiles();
+	//database.debugRooms();
 }
 
 /********** GETTERS *************************************************************/
@@ -236,7 +236,7 @@ bool SmartHomeServer::handleGET(String path, String query)
 		{
 			roomId = remainingPath.substring(0, itemIdEnd);
 			remainingPath = remainingPath.substring(itemIdEnd);
-
+			
 			// TODO
 		}
 		else
@@ -286,6 +286,40 @@ bool SmartHomeServer::handleGET(String path, String query)
 			{
 				// get the smartset
 				responseText = database.getSmartset(smartsetId, profileId, roomId);
+				return true;
+			}
+		}
+	}
+	else if (path.startsWith("/smart_items/"))
+	{
+		// get the item name
+		String remainingPath = path.substring(String("/smart_items/").length());
+		int smartItemIdEnd = remainingPath.indexOf("/");
+		String smartItemId;
+		String smartsetId = getParameter("smartset_id", query);
+		String roomId = getParameter("room_id", query);
+		String profileId = getParameter("profile_id", query);
+		if (smartItemIdEnd != -1)
+		{
+			roomId = remainingPath.substring(0, smartItemIdEnd);
+			remainingPath = remainingPath.substring(smartItemIdEnd);
+			
+			// TODO
+		}
+		else
+		{
+			smartItemId = remainingPath;
+			if (smartItemId == "")
+			{
+				// get all smart items
+				responseText = database.getSmartItems(smartsetId, roomId, profileId);
+				return true;
+			}
+			else
+			{
+				// get the smart item
+				responseText = database.getSmartItem(
+						smartItemId, smartsetId, roomId, profileId);
 				return true;
 			}
 		}

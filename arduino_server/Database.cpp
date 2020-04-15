@@ -499,6 +499,99 @@ String Database::getSmartset(String smartsetId, String profileId, String roomId)
 	return getLog();
 }
 
+String Database::getSmartItems(String smartsetId, String roomId, String profileId)
+{
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		SmartRoom* smartRoom = profile->getSmartRoom(roomId);
+		if (!smartRoom)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "smart room not found";
+		}
+		else
+		{
+			Smartset* smartset = smartRoom->getSmartset(smartsetId);
+			if (!smartset)
+			{
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "smartset not found";
+			}
+			else
+			{
+				// send the smart items
+				responseJson["outcome"] = "success";
+	
+				JsonArray jsonSmartItems = responseJson.createNestedArray("smart_items");
+				for (int index = 0; index < smartset->getSmartItemsSize(); index++)
+				{
+					SmartItem* smartItem = smartset->getSmartItem(index);
+					JsonObject jsonSmartItem = jsonSmartItems.createNestedObject();
+					smartItemToJson(smartItem, jsonSmartItem);
+				}
+			}
+		}
+	}
+	log(responseJson);
+	
+	return getLog();
+}
+
+String Database::getSmartItem(
+		String smartItemId, String smartsetId, String roomId, String profileId)
+{
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		SmartRoom* smartRoom = profile->getSmartRoom(roomId);
+		if (!smartRoom)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "smart room not found";
+		}
+		else
+		{
+			Smartset* smartset = smartRoom->getSmartset(smartsetId);
+			if (!smartset)
+			{
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "smartset not found";
+			}
+			else
+			{
+				SmartItem* smartItem = smartset->getSmartItem(smartItemId);
+				if (!smartItem)
+				{
+					responseJson["outcome"] = "failure";
+					responseJson["error"] = "smart item not found";
+				}
+				else
+				{
+					// send the smart item
+					responseJson["outcome"] = "success";
+					
+					JsonObject jsonSmartItem = responseJson.createNestedObject("smart_item");
+					smartItemToJson(smartItem, jsonSmartItem);
+				}
+			}
+		}
+	}
+	log(responseJson);
+	
+	return getLog();
+}
+
 String Database::getAvailablePorts()
 {
 	responseJson["outcome"] = "success";
@@ -1300,6 +1393,12 @@ void Database::smartsetToJson(Smartset* smartset, JsonObject& json)
 	
 	JsonObject ownerJson = json.createNestedObject("owner");
 	profileToJson(smartset->getOwner(), ownerJson);
+}
+
+void Database::smartItemToJson(SmartItem* smartItem, JsonObject& json)
+{
+	json["id"] = smartItem->getId();
+	json["active"] = toStr(smartItem->isActive());
 }
 
 void Database::portToJson(ArduinoPort* port, JsonObject& json)

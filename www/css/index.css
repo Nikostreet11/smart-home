@@ -178,7 +178,7 @@ body {
 }
 
 #manual-panel-page .smartsets-panel {
-	display: block;
+	display: none;
 	position: fixed;
 	bottom: 0px;
 	width: 100%;
