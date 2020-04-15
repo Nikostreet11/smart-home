@@ -1144,9 +1144,9 @@ String Database::addItemToSmartset(String smartsetId, String data)
 String Database::removeItemFromSmartset(String smartsetId, String data)
 {
 	deserializeJson(requestJson, data);
-	String itemId = requestJson["id"];
-	String profileId = requestJson["profile_id"];
+	String itemId = requestJson["item_id"];
 	String roomId = requestJson["room_id"];
+	String profileId = requestJson["profile_id"];
 	
 	Profile* profile = searchProfile(profileId);
 	if (!profile)

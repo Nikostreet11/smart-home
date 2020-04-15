@@ -886,12 +886,35 @@ var app = {
 		});
 		
 		
-/********** SMARTSETS *********************************************************/
+/********** SMART ITEMS *******************************************************/
 		
 		$("#smart-items-page .back-btn").click(function() {
 			app.changePage("#smartsets-page");
 		});
 		
+		$('#smart-items-page')
+		.on('click', '.smart-item .delete-btn', function() {
+			let smartItemId = $(this).parent().attr('id');
+			
+			app.arduino.removeItemFromSmartset(
+					smartItemId,
+					app.currentSmartset,
+					app.currentRoom,
+					app.currentProfile)
+			.then(function(result) {
+				let response = JSON.parse(result);
+
+				if (response.outcome == "success") {
+					app.changePage("#smart-items-page");
+				}
+				else {
+					alert(response.error);
+				}
+			})
+			.catch(function() {
+				alert("removeItemFromSmartset::error");
+			});
+		});
 		
 	},
 /********** FUNCTIONS *********************************************************/
@@ -1200,6 +1223,7 @@ var app = {
 					'id="' + smartItem.id + '" ' +
 				'>' +
 					'<a>' + smartItem.id + ' : ' + smartItem.active + '</a>' +
+					'<a class="delete-btn"></a>' +
 				'</li>'
 			);
 		}
@@ -1881,6 +1905,20 @@ var app = {
 						item : item,
 						profile_id : profile.id,
 						room_id : room.id,
+					}));
+		},
+		
+		removeItemFromSmartset: function(smartItemId, smartset, room, profile) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/smartsets/" + smartset.id +
+							"?action=remove_item",
+					JSON.stringify({
+						"action": "remove_item",
+						item_id : smartItemId,
+						room_id : room.id,
+						profile_id : profile.id,
 					}));
 		},
 		
