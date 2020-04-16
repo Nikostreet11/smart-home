@@ -1674,42 +1674,6 @@ var app = {
 							"/profiles/" + profileId);
 		},
 		
-		addProfile: function(newProfile) {
-			return app.arduino.request(
-					"POST",
-					"http://" + app.connectedDevice.address + "/profiles/" +
-							"?action=add",
-					JSON.stringify({
-						"action": "add",
-						"new_profile": newProfile,
-					}));
-		},
-		
-		editProfile: function(profile, newProfile) {
-			return app.arduino.request(
-					"POST",
-					"http://" + app.connectedDevice.address +
-							"/profiles/" + profile.id +
-							"?action=edit",
-					JSON.stringify({
-						"action": "edit",
-						"profile_id": profile.id,
-						"new_profile": newProfile,
-					}));
-		},
-		
-		removeProfile: function(profile) {
-			return app.arduino.request(
-					"POST",
-					"http://" + app.connectedDevice.address +
-							"/profiles/" + profile.id +
-							"?action=remove",
-					JSON.stringify({
-						"action": "remove",
-						"profile_id": profile.id,
-					}));
-		},
-		
 		getRooms: function(profile) {
 			return app.arduino.request(
 					"GET",
@@ -1724,57 +1688,6 @@ var app = {
 					"http://" + app.connectedDevice.address +
 							"/rooms/" + roomId,
 					"profile_id=" + profile.id);
-		},
-		
-		addRoom: function(newRoom) {
-			return app.arduino.request(
-					"POST",
-					"http://" + app.connectedDevice.address +
-							"/rooms/" +
-							"?action=add",
-					JSON.stringify({
-						"action": "add",
-						"new_room": newRoom,
-					}));
-		},
-		
-		editRoom: function(room, newRoom) {
-			return app.arduino.request(
-					"POST",
-					"http://" + app.connectedDevice.address +
-							"/rooms/" + room.id +
-							"?action=edit",
-					JSON.stringify({
-						"action": "edit",
-						"room_id": room.id,
-						"new_room": newRoom,
-					}));
-		},
-		
-		removeRoom: function(room) {
-			return app.arduino.request(
-					"POST",
-					"http://" + app.connectedDevice.address +
-							"/rooms/" + room.id +
-							"?action=remove",
-					JSON.stringify({
-						"action": "remove",
-						"room_id": room.id,
-					}));
-		},
-		
-		setRoomSmart: function(roomId, roomSmart, profile) {
-			return app.arduino.request(
-					"POST",
-					"http://" + app.connectedDevice.address +
-							"/rooms/" + roomId +
-							"?action=set_smart",
-					JSON.stringify({
-						"action": "set_smart",
-						"room_id": roomId,
-						"room_smart": roomSmart,
-						"profile_id" : profile.id,
-					}));
 		},
 		
 		getItems: function(room, profile) {
@@ -1794,76 +1707,6 @@ var app = {
 					"room_id=" + room.id + "&" +
 							"profile_id=" + profile.id);
 		},
-		
-		addItem: function(newItem, room) {
-			return app.arduino.request(
-					"POST",
-					"http://" + app.connectedDevice.address +
-							"/items/" +
-							"?action=add",
-					JSON.stringify({
-						"action": "add",
-						"new_item": newItem,
-						"room_id": room.id,
-					}));
-		},
-		
-		editItem: function(item, newItem, room) {
-			return app.arduino.request(
-					"POST",
-					"http://" + app.connectedDevice.address +
-							"/items/" + item.id +
-							"?action=edit",
-					JSON.stringify({
-						"action": "edit",
-						"item_id": item.id,
-						"new_item": newItem,
-						"room_id": room.id,
-					}));
-		},
-		
-		removeItem: function(item, room) {
-			return app.arduino.request(
-					"POST",
-					"http://" + app.connectedDevice.address +
-							"/items/" + item.id +
-							"?action=remove",
-					JSON.stringify({
-						"action": "remove",
-						"item_id": item.id,
-						"room_id": room.id,
-					}));
-		},
-		
-		setItemActive: function(itemId, itemActive, room) {
-			return app.arduino.request(
-					"POST",
-					"http://" + app.connectedDevice.address +
-							"/items/" + itemId +
-							"?action=set_status",
-					JSON.stringify({
-						"action": "set_status",
-						"item_id": itemId,
-						"item_active": itemActive,
-						"room_id": room.id,
-					}));
-		},
-		
-		/*setItemSmart: function(itemId, itemSmart, itemActive, room, profile) {
-			return app.arduino.request(
-					"POST",
-					"http://" + app.connectedDevice.address +
-							"/items/" + itemId +
-							"?action=set_smart",
-					JSON.stringify({
-						"action": "set_smart",
-						"item_id": itemId,
-						"item_smart": itemSmart,
-						"item_active": itemActive,
-						"room_id": room.id,
-						"profile_id" : profile.id,
-					}));
-		},*/
 		
 		getSmartsets: function(profile, room) {
 			return app.arduino.request(
@@ -1894,6 +1737,197 @@ var app = {
 							"smartset_id=" + smartset.id + "&");
 		},
 		
+		// TODO: test
+		getSmartItem: function(smartItemId, profile, room, smartset) {
+			return app.arduino.request(
+					"GET",
+					"http://" + app.connectedDevice.address +
+							"/smart_items/" + smartItemId,
+					"profile_id=" + profile.id + "&" +
+							"room_id=" + room.id + "&" +
+							"smartset_id=" + smartset.id + "&");
+		},
+		
+		getPorts: function() {
+			return app.arduino.request(
+					"GET",
+					"http://" + app.connectedDevice.address +
+							"/ports/");
+		},
+		
+		addProfile: function(newProfile) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address + "/profiles/" +
+							"?action=add",
+					JSON.stringify({
+						"action": "add",
+						"new_profile": newProfile,
+					}));
+		},
+		
+		addRoom: function(newRoom) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/rooms/" +
+							"?action=add",
+					JSON.stringify({
+						"action": "add",
+						"new_room": newRoom,
+					}));
+		},
+		
+		addItem: function(newItem, room) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/items/" +
+							"?action=add",
+					JSON.stringify({
+						"action": "add",
+						"new_item": newItem,
+						"room_id": room.id,
+					}));
+		},
+		
+		// TODO: test
+		addSmartset: function(newSmartset, room, profile) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/smartsets/" +
+							"?action=add",
+					JSON.stringify({
+						action: "add",
+						new_smartset: newSmartset,
+						room_id: room.id,
+						profile_id: profile.id,
+					}));
+		},
+		
+		editProfile: function(profile, newProfile) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/profiles/" + profile.id +
+							"?action=edit",
+					JSON.stringify({
+						"action": "edit",
+						"profile_id": profile.id,
+						"new_profile": newProfile,
+					}));
+		},
+		
+		editRoom: function(room, newRoom) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/rooms/" + room.id +
+							"?action=edit",
+					JSON.stringify({
+						"action": "edit",
+						"room_id": room.id,
+						"new_room": newRoom,
+					}));
+		},
+		
+		editItem: function(item, newItem, room) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/items/" + item.id +
+							"?action=edit",
+					JSON.stringify({
+						"action": "edit",
+						"item_id": item.id,
+						"new_item": newItem,
+						"room_id": room.id,
+					}));
+		},
+		
+		// TODO: test
+		editSmartset: function(smartset, newSmartset, room, profile) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/smartsets/" + smartset.id +
+							"?action=edit",
+					JSON.stringify({
+						"action": "edit",
+						"smartset_id": smartset.id,
+						"new_smartset": newSmartset,
+						"room_id": room.id,
+						"profile_id": profile.id,
+					}));
+		},
+		
+		removeProfile: function(profile) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/profiles/" + profile.id +
+							"?action=remove",
+					JSON.stringify({
+						"action": "remove",
+						"profile_id": profile.id,
+					}));
+		},
+		
+		removeRoom: function(room) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/rooms/" + room.id +
+							"?action=remove",
+					JSON.stringify({
+						"action": "remove",
+						"room_id": room.id,
+					}));
+		},
+		
+		removeItem: function(item, room) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/items/" + item.id +
+							"?action=remove",
+					JSON.stringify({
+						"action": "remove",
+						"item_id": item.id,
+						"room_id": room.id,
+					}));
+		},
+		
+		// TODO: test
+		removeSmartset: function(smartsetId, room, profile) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/smartsets/" + smartsetId +
+							"?action=remove",
+					JSON.stringify({
+						"action": "remove",
+						"room_id": room.id,
+						"profile_id": profile.id,
+					}));
+		},
+		
+		setItemActive: function(itemId, itemActive, room) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/items/" + itemId +
+							"?action=set_status",
+					JSON.stringify({
+						"action": "set_status",
+						"item_id": itemId,
+						"item_active": itemActive,
+						"room_id": room.id,
+					}));
+		},
+		
+		// TODO: test
 		addItemToSmartset: function(smartset_id, item, profile, room) {
 			return app.arduino.request(
 					"POST",
@@ -1908,7 +1942,8 @@ var app = {
 					}));
 		},
 		
-		removeItemFromSmartset: function(smartItemId, smartset, room, profile) {
+		// TODO: test
+		removeItemFromSmartset: function(itemId, smartset, room, profile) {
 			return app.arduino.request(
 					"POST",
 					"http://" + app.connectedDevice.address +
@@ -1916,17 +1951,70 @@ var app = {
 							"?action=remove_item",
 					JSON.stringify({
 						"action": "remove_item",
-						item_id : smartItemId,
+						item_id : itemId,
 						room_id : room.id,
 						profile_id : profile.id,
 					}));
 		},
 		
-		getPorts: function() {
+		// TODO: test
+		activateSmartset: function(smartsetId, room, profile) {
 			return app.arduino.request(
-					"GET",
+					"POST",
 					"http://" + app.connectedDevice.address +
-							"/ports/");
+							"/rooms/" + room.id +
+							"?action=activate_smartset",
+					JSON.stringify({
+						"action": "activate_smartset",
+						smartset_id : smartsetId,
+						room_id : room.id,
+						profile_id : profile.id,
+					}));
 		},
+		
+		// TODO: test
+		deactivateSmartset: function(smartsetId, room, profile) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/rooms/" + room.id +
+							"?action=deactivate_smartset",
+					JSON.stringify({
+						"action": "deactivate_smartset",
+						smartset_id : smartsetId,
+						room_id : room.id,
+						profile_id : profile.id,
+					}));
+		},
+		
+		/*setRoomSmart: function(roomId, roomSmart, profile) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/rooms/" + roomId +
+							"?action=set_smart",
+					JSON.stringify({
+						"action": "set_smart",
+						"room_id": roomId,
+						"room_smart": roomSmart,
+						"profile_id" : profile.id,
+					}));
+		},*/
+		
+		/*setItemSmart: function(itemId, itemSmart, itemActive, room, profile) {
+			return app.arduino.request(
+					"POST",
+					"http://" + app.connectedDevice.address +
+							"/items/" + itemId +
+							"?action=set_smart",
+					JSON.stringify({
+						"action": "set_smart",
+						"item_id": itemId,
+						"item_smart": itemSmart,
+						"item_active": itemActive,
+						"room_id": room.id,
+						"profile_id" : profile.id,
+					}));
+		},*/
 	},
 };
