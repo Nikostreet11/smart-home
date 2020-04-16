@@ -713,7 +713,6 @@ var app = {
 				var response = JSON.parse(result);
 
 				if (response.outcome == "success") {
-					alert('bau');
 					$('#manual-panel-page .smartsets-panel').css('display', 'none');
 				}
 				else {
@@ -726,6 +725,53 @@ var app = {
 		});
 		
 		$("#manual-panel-page")
+		.on("click", ".smartsets-list .smartset a", function() {
+			let smartset_id = $(this).parent().attr('id');
+			app.arduino.addItemToSmartset(
+					smartset_id,
+					app.currentItem,
+					app.currentProfile,
+					app.currentRoom)
+			.then(function(result) {
+				var response = JSON.parse(result);
+
+				if (response.outcome == "success") {
+					$('#manual-panel-page .smartsets-panel').css('display', 'none');
+				}
+				else {
+					alert(response.error);
+				}
+			})
+			.catch(function() {
+				alert("addItemToSmartset::error");
+			});
+		});
+		
+		$("#manual-panel-page")
+		.on("click", ".smartsets-list .smartset add-to-new-smartset-btn", function() {
+			alert('bau');
+			/*let smartset_id = $(this).parent().attr('id');
+			app.arduino.addItemToSmartset(
+					smartset_id,
+					app.currentItem,
+					app.currentProfile,
+					app.currentRoom)
+			.then(function(result) {
+				var response = JSON.parse(result);
+
+				if (response.outcome == "success") {
+					$('#manual-panel-page .smartsets-panel').css('display', 'none');
+				}
+				else {
+					alert(response.error);
+				}
+			})
+			.catch(function() {
+				alert("addItemToSmartset::error");
+			});*/
+		});
+		
+		/*$("#manual-panel-page")
 		.on("click", ".item .smart .off-btn", function() {
 			app.arduino.setItemSmart(
 					$(this).parents(".item").attr('id'),
@@ -746,7 +792,7 @@ var app = {
 			.catch(function() {
 				alert("setItemSmart::error");
 			});
-		});
+		});*/
 		
 		/*$("#manual-panel-page")
 		.on("click", ".add-to-new-smartset-btn", function() {
@@ -1303,11 +1349,11 @@ var app = {
 									'<p>smart on</p>' +
 								'</button>' +
 							'</div>' +
-							'<div class="smart">' +
+							/*'<div class="smart">' +
 								'<button type="submit" class="off-btn">' +
 									'<p>smart off</p>' +
 								'</button>' +
-							'</div>' +
+							'</div>' +*/
 						'</div>' +
 					'</div>'
 			);
