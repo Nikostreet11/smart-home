@@ -864,7 +864,7 @@ var app = {
 		});
 		
 		$("#smartsets-page")
-		.on("click", ".smartset a", function() {
+		.on("click", ".smartset .open-btn", function() {
 			app.arduino.getSmartset(
 					$(this).parent().attr('id'),
 					app.currentProfile,
@@ -885,11 +885,78 @@ var app = {
 			});
 		});
 		
+		$("#smartsets-page")
+		.on("click", ".smartset .edit-btn", function() {
+			app.arduino.getSmartset(
+					$(this).parent().attr('id'),
+					app.currentProfile,
+					app.currentRoom)
+			.then(function(result) {
+				let response = JSON.parse(result);
+
+				if (response.outcome == "success") {
+					app.currentSmartset = response.smartset;
+					app.changePage("#edit-smartset-page");
+				}
+				else {
+					alert(response.error);
+				}
+			})
+			.catch(function() {
+				alert("getSmartset::error");
+			});
+		});
+		
+		$("#smartsets-page")
+		.on("click", ".add-btn", function() {
+			app.changePage("#add-smartset-page");
+		});
+		
+/********** ADD SMARTSET ******************************************************/
+		
+		$("#add-smartset-page .cancel-btn").click(function() {
+			app.changePage("#smartsets-page");
+		});
+		
+/********** EDIT SMARTSET *****************************************************/
+		
+		$("#edit-smartset-page .cancel-btn").click(function() {
+			app.changePage("#smartsets-page");
+		});
+		
 		
 /********** SMART ITEMS *******************************************************/
 		
 		$("#smart-items-page .back-btn").click(function() {
 			app.changePage("#smartsets-page");
+		});
+			
+		$('#smart-items-page')
+		.on('click', '.smart-item .active-btn', function() {
+			let itemData = $(this).parent();
+			let item = {
+				id : itemData.attr('id'),
+				active : (!(itemData.attr('active') == 'true')).toString(),
+			};
+			
+			app.arduino.addItemToSmartset(
+					app.currentSmartset.id,
+					item,
+					app.currentProfile,
+					app.currentRoom)
+			.then(function(result) {
+				let response = JSON.parse(result);
+
+				if (response.outcome == "success") {
+					app.changePage("#smart-items-page");
+				}
+				else {
+					alert(response.error);
+				}
+			})
+			.catch(function() {
+				alert("addItemToSmartset::error");
+			});
 		});
 		
 		$('#smart-items-page')
@@ -1177,7 +1244,8 @@ var app = {
 					'class="smartset" ' +
 					'id="' + smartset.id + '" ' +
 				'>' +
-					'<a>' + prettifiedName + '</a>' +
+					'<a class="open-btn">' + prettifiedName + '</a>' +
+					'<a class="edit-btn"></a>' +
 				'</li>'
 			);
 		}
@@ -1221,8 +1289,11 @@ var app = {
 				'<li ' +
 					'class="smart-item" ' +
 					'id="' + smartItem.id + '" ' +
+					'active="' + smartItem.active + '" ' +
 				'>' +
-					'<a>' + smartItem.id + ' : ' + smartItem.active + '</a>' +
+					'<a class="active-btn">' +
+						smartItem.id + ' : ' + smartItem.active +
+					'</a>' +
 					'<a class="delete-btn"></a>' +
 				'</li>'
 			);
@@ -1487,6 +1558,11 @@ var app = {
 			.catch(function() {
 				alert("getSmartsets::error");
 			});
+			break;
+				
+		case "#edit-smartset-page":
+			$("#edit-smartset-page input[name=\"name\"]").val(app.prettyfy(
+					app.currentSmartset.name));
 			break;
 			
 		case "#smart-items-page":

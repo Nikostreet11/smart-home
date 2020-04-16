@@ -526,9 +526,71 @@
 			</div>
 			
 			<div class="main" data-role="ui-content">
-				<ul class="smartsets-list" data-role="listview">
+				<ul class="smartsets-list"
+						data-role="listview"
+						data-split-icon="edit">
 					<!--filled dinamically-->
 				</ul>
+				
+				<div class="float-bottom-right">
+					<input type="button" class="add-btn" value="+">
+				</div>
+			</div>
+		</div>
+		
+		
+<!---------- ADD SMARTSET ----------------------------------------------------->
+		
+		
+		<div data-role="page" id="add-smartset-page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="cancel-btn" value="cancel">
+				</div>
+				
+				<div class="header-center">
+					<h2>Smart Home</h2>
+				</div>
+				
+				<div class="header-right">
+					<input type="button" class="confirm-btn" value="confirm">
+				</div>
+			</div>
+			
+			<div class="main" data-role="ui-content">
+				<form>
+					<h4>name</h4>
+					<input type="text" name="name" placeholder="insert smartset name here"/>
+				</form>
+			</div>
+		</div>
+		
+		
+<!---------- EDIT SMARTSET ---------------------------------------------------->
+		
+		
+		<div data-role="page" id="edit-smartset-page">
+			<div data-role="header" class="header">
+				<div class="header-left">
+					<input type="button" class="cancel-btn" value="cancel">
+				</div>
+				
+				<div class="header-center">
+					<h2>Smart Home</h2>
+				</div>
+				
+				<div class="header-right">
+					<input type="button" class="confirm-btn" value="confirm">
+				</div>
+			</div>
+			
+			<div class="main" data-role="ui-content">
+				<form>
+					<h4>name</h4>
+					<input type="text" name="name" placeholder="insert smartset name here"/>
+					
+					<input type="button" class="remove-btn" value="remove">
+				</form>
 			</div>
 		</div>
 		
