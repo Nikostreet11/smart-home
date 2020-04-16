@@ -918,10 +918,97 @@ var app = {
 			app.changePage("#smartsets-page");
 		});
 		
+		$("#add-smartset-page .confirm-btn").click(function() {
+			var smartset = {
+				name : app.dePrettyfy(
+						$("#add-smartset-page input[name='name']").val()),
+			};
+			
+			if (smartset.name != "") {
+				app.arduino.addSmartset(
+						smartset,
+						app.currentRoom,
+						app.currentProfile)
+				.then(function(response) {
+					var outcome = JSON.parse(response).outcome;
+
+					if (outcome == "success") {
+						// TODO: cleanup
+						app.changePage("#smartsets-page");
+					}
+					else {
+						alert(JSON.parse(response).error);
+					}
+				})
+				.catch(function() {
+					alert("addSmartset::error");
+				});
+			}
+			else {
+				alert("invalid data");
+			}
+		});
+		
 /********** EDIT SMARTSET *****************************************************/
 		
 		$("#edit-smartset-page .cancel-btn").click(function() {
+			app.currentSmartset = undefined;
 			app.changePage("#smartsets-page");
+		});
+		
+		$("#edit-smartset-page .confirm-btn").click(function() {
+			var newSmartset = {
+				name : app.dePrettyfy(
+						$("#edit-smartset-page input[name='name']").val()),
+			};
+			
+			if (newSmartset.name != "") {
+				app.arduino.editSmartset(
+						app.currentSmartset,
+						newSmartset,
+						app.currentRoom,
+						app.currentProfile)
+				.then(function(response) {
+					var outcome = JSON.parse(response).outcome;
+
+					if (outcome == "success") {
+						// TODO: cleanup
+						app.currentSmartset = undefined;
+						app.changePage("#smartsets-page");
+					}
+					else {
+						alert(JSON.parse(response).error);
+					}
+				})
+				.catch(function() {
+					alert("editSmartset::error");
+				});
+			}
+			else {
+				alert("invalid data");
+			}
+		});
+		
+		$("#edit-smartset-page .remove-btn").click(function() {
+			app.arduino.removeSmartset(
+					app.currentSmartset.id,
+					app.currentRoom,
+					app.currentProfile)
+			.then(function(result) {
+				var response = JSON.parse(result);
+
+				if (response.outcome == "success") {
+					// TODO: cleanup
+					app.currentSmartset = undefined;
+					app.changePage("#manual-panel-page");
+				}
+				else {
+					alert(response.error);
+				}
+			})
+			.catch(function() {
+				alert("removeSmartset::error");
+			});
 		});
 		
 		
