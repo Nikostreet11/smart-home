@@ -26,6 +26,7 @@ public:
 	void setId(const String& id);
 	Smartset* getSmartset(int index);
 	Smartset* getSmartset(const String& id);
+	Smartset* getSmartsetByName(const String& name);
 	int getSmartsetIndex(const String& id);
 	int getSmartsetsSize();
 

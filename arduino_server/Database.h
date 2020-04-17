@@ -45,6 +45,7 @@ public:
 	String getItem(String itemId, String roomId, String profileId);
 	String getSmartsets(String profileId, String roomId, String itemId);
 	String getSmartset(String smartsetId, String profileId, String roomId);
+	String getSmartsetByName(String smartsetName, String roomId, String profileId);
 	String getSmartItems(String smartsetId, String roomId, String profileId);
 	String getSmartItem(String smartItemId, String smartsetId, String roomId, String profileId);
 	String getAvailablePorts();

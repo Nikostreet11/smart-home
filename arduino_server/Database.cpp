@@ -499,6 +499,45 @@ String Database::getSmartset(String smartsetId, String profileId, String roomId)
 	return getLog();
 }
 
+String Database::getSmartsetByName(String smartsetName, String roomId, String profileId)
+{
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		SmartRoom* smartRoom = profile->getSmartRoom(roomId);
+		if (!smartRoom)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "smart room not found";
+		}
+		else
+		{
+			Smartset* smartset = smartRoom->getSmartsetByName(smartsetName);
+			if (!smartset)
+			{
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "smartset not found";
+			}
+			else
+			{
+				// send the smartset
+				responseJson["outcome"] = "success";
+				
+				JsonObject jsonSmartset = responseJson.createNestedObject("smartset");
+				smartsetToJson(smartset, jsonSmartset);
+			}
+		}
+	}
+	log(responseJson);
+
+	return getLog();
+}
+
 String Database::getSmartItems(String smartsetId, String roomId, String profileId)
 {
 	Profile* profile = searchProfile(profileId);

@@ -262,9 +262,10 @@ bool SmartHomeServer::handleGET(String path, String query)
 		String remainingPath = path.substring(String("/smartsets/").length());
 		int smartsetIdEnd = remainingPath.indexOf("/");
 		String smartsetId;
-		String profileId = getParameter("profile_id", query);
-		String roomId = getParameter("room_id", query);
+		String smartsetName = getParameter("smartset_name", query);
 		String itemId = getParameter("item_id", query);
+		String roomId = getParameter("room_id", query);
+		String profileId = getParameter("profile_id", query);
 		
 		if (smartsetIdEnd != -1)
 		{
@@ -278,9 +279,18 @@ bool SmartHomeServer::handleGET(String path, String query)
 			smartsetId = remainingPath;
 			if (smartsetId == "")
 			{
-				// get all the selected smartsets
-				responseText = database.getSmartsets(profileId, roomId, itemId);
-				return true;
+				if (smartsetName != "null")
+				{
+					// get the smartset
+					responseText = database.getSmartsetByName(smartsetName, roomId, profileId);
+					return true;
+				}
+				else
+				{
+					// get all the selected smartsets
+					responseText = database.getSmartsets(profileId, roomId, itemId);
+					return true;
+				}
 			}
 			else
 			{

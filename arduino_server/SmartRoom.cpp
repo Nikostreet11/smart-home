@@ -73,6 +73,19 @@ Smartset* SmartRoom::getSmartset(const String& id)
 	return nullptr;
 }
 
+Smartset* SmartRoom::getSmartsetByName(const String& name)
+{
+	for (int index = 0; index < smartsets.size(); index++)
+	{
+		Smartset* smartset = smartsets.get(index);
+		if (smartset->getName() == name)
+		{
+			return smartset;
+		}
+	}
+	return nullptr;
+}
+
 int SmartRoom::getSmartsetIndex(const String& id)
 {
 	for (int index = 0; index < smartsets.size(); index++)
