@@ -428,37 +428,22 @@ var app = {
 				}
 				else {
 					// hold
-					
-					// 	TODO: app.getToom()
-					
-					$('#smartsets-panel').css('display', 'block');
-					/*var roomId = this.getAttribute("id");
-					var roomSmart;
-					if ($(this).attr("smart") == "true") {
-						roomSmart = "false";
-					}
-					else {
-						roomSmart = "true";
-					}
-					
-					app.arduino.setRoomSmart(
-							roomId,
-							roomSmart,
-							app.currentProfile)
+					app.arduino.getRoom(this.getAttribute("id"), app.currentProfile)
 					.then(function(result) {
 						var response = JSON.parse(result);
 
 						if (response.outcome == "success") {
-							$("#control-panel-page #" + roomId).attr(
-									"smart", response["room-smart"]);
+							app.currentRoom = response.room;
+							app.refreshActivateSmartsetPanel();
+							$('#smartsets-panel').css('display', 'block');
 						}
 						else {
 							alert(response.error);
 						}
 					})
 					.catch(function() {
-						alert("setRoomSmart::error");
-					});*/
+						alert("getRoom::error");
+					});
 				}
 			}
 		})
@@ -1388,6 +1373,46 @@ var app = {
 		if (container.html() == "") {
 			container.html("<p>There aren't any items in this room yet</p>");
 		}
+	},
+	
+	refreshActivateSmartsetPanel: function() {
+		app.arduino.getSmartsets(app.currentProfile, app.currentRoom)
+		.then(function(result) {
+			var response = JSON.parse(result);
+
+			if (response.outcome == "success") {
+				app.loadActivateSmartsetPanel(response.smartsets);
+			}
+			else {
+				alert(response.error);
+			}
+		})
+		.catch(function() {
+			alert("getSmartsets::error");
+		});
+	},
+	
+	loadActivateSmartsetPanel: function(smartsets) {
+		var container = $("#control-panel-page .smartsets-list");
+		container.html("");
+		
+		for (let index = 0; index < smartsets.length; index++) {
+			let smartset = smartsets[index];
+			let prettifiedName = app.prettyfy(smartset.name);
+			container.append(
+				'<li ' +
+					'class="smartset" ' +
+					'id="' + smartset.id + '" ' +
+				'>' +
+					'<a>' + prettifiedName + '</a>' +
+				'</li>'
+			);
+		}
+		container.listview( "refresh" );
+		
+		/*if (container.html() == "") {
+			container.html("<p>There aren't any smartsets yet</p>");
+		}*/
 	},
 	
 	loadSmartsetsList: function(smartsets) {
