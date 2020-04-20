@@ -197,7 +197,7 @@ bool Room::addSmartset(Smartset* smartset)
 
 bool Room::remove(int index)
 {
-	if (0 <= index < items.size())
+	if (0 <= index && index < items.size())
 	{
 		delete items.get(index);
 		items.remove(index);
@@ -211,7 +211,8 @@ bool Room::remove(int index)
 
 bool Room::removeSmartset(int index)
 {
-	if (0 <= index < smartsets.size())
+	Serial.println(index);
+	if (0 <= index && index < smartsets.size())
 	{
 		Smartset* targetset = smartsets.get(index);
 		for (int index1 = 0; index1 < targetset->getSmartItemsSize(); index1++)

@@ -89,6 +89,10 @@ body {
 	margin: auto;
 }
 
+#control-panel-page .room[smart="true"] a  {
+	background-color: aqua;
+}
+
 #control-panel-page .float-bottom-right {
 	width: 50px;
 	position: fixed;

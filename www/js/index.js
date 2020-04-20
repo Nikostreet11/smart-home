@@ -361,37 +361,6 @@ var app = {
 			app.changePage("#add-room-page");
 		});
 		
-		$("#control-panel-page").on("click", ".room", function() {
-			/*app.arduino.getRoom(this.getAttribute("id"), app.currentProfile)
-			.then(function(result) {
-				var response = JSON.parse(result);
-
-				if (response.outcome == "success") {
-					app.currentRoom = response.room;
-
-					if (app.EDIT_ROOMS_MODE) {
-						app.changePage("#edit-room-page");
-					}
-					else {
-						app.changePage("#manual-panel-page");
-					}
-				}
-				else {
-					alert(response.error);
-				}
-			})
-			.catch(function() {
-				alert("getRoom::error");
-			});*/
-		});
-		
-		/*$("#control-panel-page")
-		.on("mousedown", ".room", function() {
-			app.timeoutId = setTimeout(function() {
-				//alert('bauuuuuu');
-			}, 1000);
-		});*/
-		
 		$("#control-panel-page")
 		.on("mousedown", ".room", function() {				
 			app.clickManager.active = true;
@@ -433,9 +402,39 @@ var app = {
 						var response = JSON.parse(result);
 
 						if (response.outcome == "success") {
-							app.currentRoom = response.room;
-							app.refreshActivateSmartsetPanel();
-							$('#smartsets-panel').css('display', 'block');
+							if ($('.room[id="' + response.room.id + '"]').attr('smart') == 'true') {
+								let smartsetToDisableId;
+								
+								let smartsets = response.room.smartsets;
+								for (let i = 0; i < smartsets.length; i++) {
+									if (smartsets[i].owner.id == app.currentProfile.id) {
+										smartsetToDisableId = smartsets[i].id;
+									}
+								}
+								
+								app.arduino.deactivateSmartset(
+										smartsetToDisableId,
+										response.room,
+										app.currentProfile)
+								.then(function(result) {
+									var response = JSON.parse(result);
+
+									if (response.outcome == "success") {
+										app.refreshRoomslist();
+									}
+									else {
+										alert(response.error);
+									}
+								})
+								.catch(function() {
+									alert("deactivateSmartset::error");
+								});
+							}
+							else {
+								app.currentRoom = response.room;
+								app.refreshActivateSmartsetPanel();
+								$('#activate-smartsets-panel').css('display', 'block');
+							}
 						}
 						else {
 							alert(response.error);
@@ -453,8 +452,28 @@ var app = {
 			app.timer = null;
 		});
 		
-		$("#control-panel-page").on("click", ".add-smartset-btn", function() {
-			alert('bau');
+		$("#control-panel-page")
+		.on("click", ".smartsets-list .smartset .activate-btn", function() {
+			let smartsetId = $(this).parent().attr('id');
+			
+			app.arduino.activateSmartset(
+					smartsetId,
+					app.currentRoom,
+					app.currentProfile)
+			.then(function(result) {
+				var response = JSON.parse(result);
+
+				if (response.outcome == "success") {
+					$('#activate-smartsets-panel').css('display', 'none');
+					app.refreshRoomslist();
+				}
+				else {
+					alert(response.error);
+				}
+			})
+			.catch(function() {
+				alert("activateSmartset::error");
+			});
 		});
 		
 		
@@ -1293,37 +1312,63 @@ var app = {
 		$(container).enhanceWithin();
 	},
 	
-	refreshRooms: function(rooms) {
+	refreshRoomslist: function() {
+		app.arduino.getRooms(app.currentProfile)
+		.then(function(result) {
+			//alert(result);
+			var response = JSON.parse(result);
+
+			if (response.outcome == "success") {
+				app.loadRoomslist(response.rooms);
+			}
+			else {
+				alert(response.error);
+			}
+		})
+		.catch(function() {
+			alert("getRooms::error");
+		});
+	},
+	
+	loadRoomslist: function(rooms) {
 		var container = $(".rooms-container");
 		container.html("");
 		
 		for (let index = 0; index < rooms.length; index++) {
 			let room = rooms[index];
-			let prettifiedName = app.prettyfy(room.name);
 			container.append(
 				'<div ' +
 					'class="room" ' +
 					'id="' + room.id + '" ' +
-					'smartsets="' + room.smartsets + '" ' +
+					'smart="false" ' +
 				'>' +
 					'<a class="ui-btn">' +
 						'<img src="img/rooms/' + room.icon +
 						'.png" width="130px" height="130px"/>' +
-						'<h3>' + prettifiedName + '</h3>' +
+						'<h3>' + app.prettyfy(room.name) + '</h3>' +
 					'</a>' +
+					'<div class="active-profiles">' +
+					'</div>' +
 				'</div>'
 			);
+			
+			for (let j = 0; j < room.smartsets.length; j++) {
+				let owner = room.smartsets[j].owner;
 				
-				/*'<button type="submit" ' +
-				'id="' + room.id + '" ' +
-				'class="room" ' +
-				'smart="' + room.smart + '" ' +
-				'>' +
-				'<img src="img/rooms/' + room.icon +
-				'.png" width="130px" height="130px"/>' +
-				'<h3>' + prettifiedName + '</h3>' +
-				'</button>');*/
+				$("#" + room.id + " .active-profiles").append(
+					'<div class="active-profile"' +
+							'id="' + owner.id + '"' +
+					'>' +
+						app.prettyfy(owner.name) +
+					'</div>'
+				);
+				
+				if (owner.id == app.currentProfile.id) {
+					$("#" + room.id).attr('smart', 'true');
+				}
+			}
 		}
+		
 		$(container).enhanceWithin();
 		
 		if (container.html() == "") {
@@ -1404,7 +1449,7 @@ var app = {
 					'class="smartset" ' +
 					'id="' + smartset.id + '" ' +
 				'>' +
-					'<a>' + prettifiedName + '</a>' +
+					'<a class="activate-btn">' + prettifiedName + '</a>' +
 				'</li>'
 			);
 		}
@@ -1676,8 +1721,9 @@ var app = {
 			if (app.EDIT_ROOMS_MODE) {
 				app.setEditRoomsMode(false);
 			}
-				
-			app.arduino.getRooms(app.currentProfile)
+			
+			app.refreshRoomslist();
+			/*app.arduino.getRooms(app.currentProfile)
 			.then(function(result) {
 				//alert(result);
 				var response = JSON.parse(result);
@@ -1691,7 +1737,7 @@ var app = {
 			})
 			.catch(function() {
 				alert("getRooms::error");
-			});
+			});*/
 			break;
 				
 		case "#add-room-page":

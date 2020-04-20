@@ -467,10 +467,10 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 				responseText = database.activateSmartset(roomId, data);
 				return true;
 			}
-			else if (getParameter("action", query) == "activate_smartset")
+			else if (getParameter("action", query) == "deactivate_smartset")
 			{
 				responseText = database.deactivateSmartset(roomId, data);
-				return false;
+				return true;
 			}
 		}
 	}
