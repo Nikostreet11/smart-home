@@ -433,7 +433,7 @@ var app = {
 							else {
 								app.currentRoom = response.room;
 								app.refreshActivateSmartsetPanel();
-								$('#activate-smartsets-panel').css('display', 'block');
+								$('#activate-smartset-panel').css('display', 'block');
 							}
 						}
 						else {
@@ -464,6 +464,11 @@ var app = {
 				var response = JSON.parse(result);
 
 				if (response.outcome == "success") {
+					$('#activate-smartsets-panel').css('display', 'none');
+					app.refreshRoomslist();
+				}
+				else if (response.outcome == "partial_success") {
+					alert(response.reason);
 					$('#activate-smartsets-panel').css('display', 'none');
 					app.refreshRoomslist();
 				}

@@ -1320,6 +1320,8 @@ String Database::activateSmartset(String roomId, String data)
 					}
 					else if (modified)
 					{
+						room->addSmartset(insertset);
+						
 						responseJson["outcome"] = "partial_success";
 						responseJson["reason"] = "some items are currently unavailable";
 					}
