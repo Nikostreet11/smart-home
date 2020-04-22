@@ -655,6 +655,12 @@ var app = {
 								"active", response.active);
 						// TODO: change appearance
 					}
+					else if (response.outcome == "partial_success") {
+						$("#manual-panel-page #" + itemId).attr(
+								"active", response.active);
+						alert(response.message);
+						// TODO: change appearance
+					}
 					else {
 						alert(response.error);
 					}
