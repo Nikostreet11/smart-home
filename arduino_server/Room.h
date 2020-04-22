@@ -4,6 +4,7 @@
 #include <LinkedPointerList.h> // linked list library
 #include "Item.h"
 #include "Smartset.h"
+#include "IdManager.h"
 
 class Room
 {

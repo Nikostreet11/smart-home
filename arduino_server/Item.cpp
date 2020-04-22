@@ -1,11 +1,11 @@
 #include "Item.h"
 
-int Item::currentId = 0;
+IdManager Item::idManager(Item::MAX_ITEMS);
 
 // static constructors
 Item* Item::create(PortManager& portManager)
 {
-	if (Item::currentId < Item::MAX_ITEMS)
+	if (idManager.isIdAvailable())
 	{
 		return new Item(portManager);
 	}
@@ -15,21 +15,11 @@ Item* Item::create(PortManager& portManager)
 	}
 }
 
-/*Item* Item::create(String name, String icon, PortManager& portManager)
-{
-	Item* item = create(portManager);
-	
-	if (item)
-	{
-		item->setName(name);
-		item->setIcon(icon);
-	}
-	
-	return item;
-}*/
-
 // destructor
-Item::~Item() {}
+Item::~Item()
+{
+	idManager.freeId(id);
+}
 
 // getters / setters
 int Item::getTrueId() const
@@ -93,26 +83,13 @@ void Item::setActive(bool active)
 	portManager.setActive(port, active);
 }
 
-/*void Item::turnOn()
-{
-	active = true;
-	portManager.turnOn(port);
-}
-
-void Item::turnOff()
-{
-	active = false;
-	portManager.turnOff(port);
-}*/
-
 // constructor
 Item::Item(PortManager& portManager) :
 		portManager(portManager),
-		id(Item::currentId),
+		id(idManager.acquireId()),
 		name("item"),
 		icon("default"),
 		port("none"),
 		active(false)
 {
-	Item::currentId++;
 }

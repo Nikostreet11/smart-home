@@ -6,6 +6,7 @@
 #include "Room.h"
 #include "Item.h"
 #include "SmartRoom.h"
+#include "IdManager.h"
 
 class Profile
 {

@@ -2,14 +2,15 @@
 #define ITEM_H_
 
 #include <WString.h>
+#include <LinkedPointerList.h>		// linked list library
 #include "PortManager.h"
+#include "IdManager.h"
 
 class Item
 {
 public:
 	// static constructors
 	static Item* create(PortManager& portManager);
-	//static Item* create(String name, String icon, PortManager& portManager);
 	
 	// destructor
 	virtual ~Item();
@@ -25,18 +26,16 @@ public:
 	void setPort(const String& port);
 	bool isActive() const;
 	void setActive(bool active);
-	//void turnOn();
-	//void turnOff();
 
 	// static constants
-	static const int MAX_ITEMS = 1024;
+	static const int MAX_ITEMS = 255;
 	
 private:
 	// constructor
 	Item(PortManager& portManager);
-	
-	// static variables
-	static int currentId;
+
+	// static resources
+    static IdManager idManager;
 
 	// resources
 	PortManager& portManager;
