@@ -42,15 +42,18 @@ public:
 	int getSmartsetsSize();
 
 	// static constants
-	static const int MAX_ROOMS = 1024;
+	static const int MAX_ROOMS = 32;
 	static const int MAX_ITEMS = 8;
 	
 private:
 	// constructors
 	Room();
+
+	// static resources
+    static IdManager idManager;
 	
 	// static variables
-	static int currentId;
+	//static int currentId;
 
 	// resources
 	LinkedPointerList<Item> items;

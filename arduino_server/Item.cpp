@@ -18,7 +18,7 @@ Item* Item::create(PortManager& portManager)
 // destructor
 Item::~Item()
 {
-	idManager.freeId(id);
+	idManager.releaseId(id);
 }
 
 // getters / setters

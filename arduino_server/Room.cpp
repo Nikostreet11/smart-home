@@ -1,11 +1,14 @@
 #include "Room.h"
 
-int Room::currentId = 0;
+IdManager Room::idManager(Room::MAX_ROOMS);
+
+//int Room::currentId = 0;
 
 // static constructors
 Room* Room::create()
 {
-	if (Room::currentId < Room::MAX_ROOMS)
+	//if (Room::currentId < Room::MAX_ROOMS)
+	if (idManager.isIdAvailable())
 	{
 		return new Room();
 	}
@@ -27,6 +30,8 @@ Room::~Room()
 	{
 		delete items.get(index);
 	}
+	
+	idManager.releaseId(id);
 }
 
 // search
@@ -286,10 +291,10 @@ int Room::getSmartsetsSize()
 
 // constructors
 Room::Room() :
-		id(Room::currentId),
+		id(idManager.acquireId()),
 		name("default"),
 		icon("default")
 		//smart(false)
 {
-	Room::currentId++;
+	//Room::currentId++;
 }

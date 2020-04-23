@@ -7,17 +7,17 @@ class IdManager
 {
 public:
 	// constructor
-   IdManager(int maxIds);
-     // destructor
+	IdManager(int maxSize);
+	// destructor
     virtual ~IdManager();
 
     int acquireId();
-    bool freeId(int id);
+    bool releaseId(int id);
     bool isIdAvailable();
     
 private:
-	int maxIds;
-	LinkedPointerList<int> freeIds;
+	int maxSize;
+	LinkedPointerList<int> availableIds;
 };
 
 #endif /* ID_MANAGER_H_ */

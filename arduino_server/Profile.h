@@ -30,12 +30,7 @@ public:
 	
 	// smart remove
 	bool removeSmartRoom(String roomId);
-	bool removeSmartItem(String itemId, String roomId);
-
-	// smart
-	bool isItemSmart(String itemId, String roomId);
-	// TODO: maybe use a status object?
-	bool setItemSmart(String itemId, bool smart, bool active, String roomId);
+	//bool removeSmartItem(String itemId, String roomId);
 
 	// getters / setters
 	int getTrueId() const;
@@ -50,14 +45,17 @@ public:
 	int getSmartRoomsSize();
 
 	// static constants
-	static const int MAX_PROFILES = 1024;
+	static const int MAX_PROFILES = 32;
 	
 private:
 	// constructor
 	explicit Profile(LinkedPointerList<Room>& rooms);
+
+	// static resources
+    static IdManager idManager;
 	
 	// static variables
-	static int currentId;
+	//static int currentId;
 	
 	// resources
 	LinkedPointerList<SmartRoom> smartRooms;

@@ -1011,10 +1011,22 @@ String Database::removeItem(String id, String data)
 		{
 			portManager.unlock(room->get(index)->getPort());
 			room->remove(index);
-			for (int index = 0; index < profiles.size(); index++)
+			for (int i = 0; i < profiles.size(); i++)
 			{
-				profiles.get(index)->removeSmartItem(id, roomId);
+				SmartRoom* smartRoom = profiles.get(i)->getSmartRoom(room->getId());
+				
+				for (int j = 0; j < smartRoom->getSmartsetsSize(); j++)
+				{
+					Smartset* smartset = smartRoom->getSmartset(j);
+					
+					int index = smartset->getSmartItemIndex(id);
+					if (index != -1)
+					{
+						smartset->removeSmartItem(index);
+					}
+				}
 			}
+			
 			responseJson["outcome"] = "success";
 		}
 	}

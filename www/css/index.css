@@ -103,7 +103,7 @@ body {
 #control-panel-page #activate-smartset-panel {
 	display: none;
 	position: fixed;
-	bottom: 0px;
+	bottom: 50px;
 	width: 100%;
 }
 

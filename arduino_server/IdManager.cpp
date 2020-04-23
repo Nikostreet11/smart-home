@@ -1,50 +1,51 @@
 #include "IdManager.h"
 
-IdManager::IdManager(int maxIds) :
-		maxIds(maxIds)
+IdManager::IdManager(int maxSize) :
+		maxSize(maxSize)
 {
-	for (int i = 0; i < maxIds; i++)
+	for (int i = 0; i < maxSize; i++)
 	{
+		// TODO: change to availableIds.add(new int(i));
 		int* integer = new int;
 		*integer = i;
-		freeIds.add(integer);
+		availableIds.add(integer);
 	}
 }
 
 IdManager::~IdManager()
 {
-	for (int i = 0; i < freeIds.size(); i++)
+	for (int i = 0; i < availableIds.size(); i++)
 	{
-		delete freeIds.get(i);
+		delete availableIds.get(i);
 	}
 }
 
 int IdManager::acquireId()
 {
-	if (freeIds.size() > 0)
+	if (availableIds.size() > 0)
 	{
-		int id = *(freeIds.get(0));
-		delete freeIds.shift();
+		int id = *(availableIds.get(0));
+		delete availableIds.shift();
 		return id;
 	}
 	
 	return -1;
 }
 
-bool IdManager::freeId(int id)
+bool IdManager::releaseId(int id)
 {
-	if (0 <= id && id < maxIds)
+	if (0 <= id && id < maxSize)
 	{
 		int i = 0;
 		
-		while (*freeIds.get(i) < id)
+		while (i < availableIds.size() && *availableIds.get(i) < id)
 		{
 			i++;
 		}
-		
-		if (*freeIds.get(i) != id)
+
+		if (i == availableIds.size() || *availableIds.get(i) != id)
 		{
-			freeIds.add(i, new int(id));
+			availableIds.add(i, new int(id));
 			return true;
 		}
 	}
@@ -54,7 +55,7 @@ bool IdManager::freeId(int id)
 
 bool IdManager::isIdAvailable()
 {
-	if (freeIds.size() > 0)
+	if (availableIds.size() > 0)
 	{
 		return true;
 	}
