@@ -91,9 +91,9 @@ SmartRoom* Profile::getSmartRoom(int index)
 
 SmartRoom* Profile::getSmartRoom(const String& roomId)
 {
-	for (int index = 0; index < smartRooms.size(); index++)
+	for (int i = 0; i < smartRooms.size(); i++)
 	{
-		SmartRoom* smartRoom = smartRooms.get(index);
+		SmartRoom* smartRoom = smartRooms.get(i);
 		if (smartRoom->getId() == roomId)
 		{
 			return smartRoom;
@@ -104,12 +104,12 @@ SmartRoom* Profile::getSmartRoom(const String& roomId)
 
 int Profile::getSmartRoomIndex(const String& roomId)
 {
-	for (int index = 0; index < smartRooms.size(); index++)
+	for (int i = 0; i < smartRooms.size(); i++)
 	{
-		SmartRoom* smartRoom = smartRooms.get(index);
+		SmartRoom* smartRoom = smartRooms.get(i);
 		if (smartRoom->getId() == roomId)
 		{
-			return index;
+			return i;
 		}
 	}
 	return -1;
@@ -126,8 +126,8 @@ Profile::Profile(LinkedPointerList<Room>& rooms) :
 		name("default"),
 		avatar("default")
 {
-	for (int index = 0; index < rooms.size(); index++)
+	for (int i = 0; i < rooms.size(); i++)
 	{
-		smartRooms.add(SmartRoom::create(rooms.get(index)->getId()));
+		smartRooms.add(SmartRoom::create(rooms.get(i)->getId()));
 	}
 }

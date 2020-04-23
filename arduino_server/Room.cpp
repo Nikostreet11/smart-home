@@ -18,9 +18,9 @@ Room* Room::create()
 // destructor
 Room::~Room()
 {
-	for (int index = 0; index < items.size(); index++)
+	for (int i = 0; i < items.size(); i++)
 	{
-		delete items.get(index);
+		delete items.get(i);
 	}
 	
 	idManager.releaseId(id);
@@ -44,9 +44,9 @@ bool Room::addSmartset(Smartset* smartset)
 {
 	if (smartsets.size() < Smartset::MAX_SMARTSETS)
 	{
-		for (int index = 0; index < smartset->getSmartItemsSize(); index++)
+		for (int i = 0; i < smartset->getSmartItemsSize(); i++)
 		{
-			SmartItem* smartItem = smartset->getSmartItem(index);
+			SmartItem* smartItem = smartset->getSmartItem(i);
 			getItem(smartItem->getId())->setActive(smartItem->isActive());
 		}
 		smartsets.add(smartset);
@@ -78,13 +78,13 @@ bool Room::removeSmartset(int index)
 	if (0 <= index && index < smartsets.size())
 	{
 		Smartset* targetset = smartsets.get(index);
-		for (int index1 = 0; index1 < targetset->getSmartItemsSize(); index1++)
+		for (int i = 0; i < targetset->getSmartItemsSize(); i++)
 		{
-			SmartItem* target = targetset->getSmartItem(index1);
+			SmartItem* target = targetset->getSmartItem(i);
 			bool found = false;
-			for (int index2 = 0; index2 < smartsets.size(); index2++)
+			for (int j = 0; j < smartsets.size(); j++)
 			{
-				Smartset* controlset = smartsets.get(index2);
+				Smartset* controlset = smartsets.get(j);
 				if (controlset != targetset)
 				{
 					SmartItem* control = controlset->getSmartItem(target->getId());
@@ -124,9 +124,9 @@ Smartset* Room::getSmartset(int index)
 
 Item* Room::getItem(const String& id)
 {
-	for (int index = 0; index < items.size(); index++)
+	for (int i = 0; i < items.size(); i++)
 	{
-		Item* currentItem = items.get(index);
+		Item* currentItem = items.get(i);
 		if (id == currentItem->getId())
 		{
 			return currentItem;
@@ -137,9 +137,9 @@ Item* Room::getItem(const String& id)
 
 Smartset* Room::getSmartset(const String& id)
 {
-	for (int index = 0; index < smartsets.size(); index++)
+	for (int i = 0; i < smartsets.size(); i++)
 	{
-		Smartset* smartset = smartsets.get(index);
+		Smartset* smartset = smartsets.get(i);
 		if (smartset->getId() == id)
 		{
 			return smartset;
@@ -150,11 +150,11 @@ Smartset* Room::getSmartset(const String& id)
 
 int Room::getItemIndex(const String& id)
 {
-	for (int index = 0; index < items.size(); index++)
+	for (int i = 0; i < items.size(); i++)
 	{
-		if (items.get(index)->getId() == id)
+		if (items.get(i)->getId() == id)
 		{
-			return index;
+			return i;
 		}
 	}
 	return -1;
@@ -162,11 +162,11 @@ int Room::getItemIndex(const String& id)
 
 int Room::getSmartsetIndex(const String& id)
 {
-	for (int index = 0; index < smartsets.size(); index++)
+	for (int i = 0; i < smartsets.size(); i++)
 	{
-		if (smartsets.get(index)->getId() == id)
+		if (smartsets.get(i)->getId() == id)
 		{
-			return index;
+			return i;
 		}
 	}
 	return -1;

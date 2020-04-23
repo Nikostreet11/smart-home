@@ -10,14 +10,14 @@ Database::Database()
 
 Database::~Database()
 {
-	for (int index = 0; index < profiles.size(); index++)
+	for (int i = 0; i < profiles.size(); i++)
 	{
-		delete profiles.get(index);
+		delete profiles.get(i);
 	}
 
-	for (int index = 0; index < rooms.size(); index++)
+	for (int i = 0; i < rooms.size(); i++)
 	{
-		delete rooms.get(index);
+		delete rooms.get(i);
 	}
 }
 
@@ -89,28 +89,28 @@ void Database::debugInit()
 void Database::debugProfiles()
 {
 	Serial.println("*** DEBUG profiles");
-	for (int index1 = 0; index1 < profiles.size(); index1++)
+	for (int i = 0; i < profiles.size(); i++)
 	{
-		Profile* profile = profiles.get(index1);
+		Profile* profile = profiles.get(i);
 		Serial.println();
 		Serial.print("    ");
 		Serial.println(profile->getId());
 		Serial.println("    - smart rooms:");
-		for (int index2 = 0; index2 < profile->getSmartRoomsSize(); index2++)
+		for (int j = 0; j < profile->getSmartRoomsSize(); j++)
 		{
-			SmartRoom* smartRoom = profile->getSmartRoom(index2);
+			SmartRoom* smartRoom = profile->getSmartRoom(j);
 			Serial.print("        ");
 			Serial.println(smartRoom->getId());
 			Serial.println("        - smartsets:");
-			for (int index3 = 0; index3 < smartRoom->getSmartsetsSize(); index3++)
+			for (int k = 0; k < smartRoom->getSmartsetsSize(); k++)
 			{
-				Smartset* smartset = smartRoom->getSmartset(index3);
+				Smartset* smartset = smartRoom->getSmartset(k);
 				Serial.print("            ");
 				Serial.println(smartset->getId());
 				Serial.println("            - smart items:");
-				for (int index4 = 0; index4 < smartset->getSmartItemsSize(); index4++)
+				for (int l = 0; l < smartset->getSmartItemsSize(); l++)
 				{
-					SmartItem* smartItem = smartset->getSmartItem(index4);
+					SmartItem* smartItem = smartset->getSmartItem(l);
 					Serial.print("                ");
 					Serial.println(smartItem->getId());
 					Serial.print("                - active:");
@@ -125,17 +125,17 @@ void Database::debugProfiles()
 void Database::debugRooms()
 {
 	Serial.println("*** DEBUG rooms");
-	for (int index1 = 0; index1 < profiles.size(); index1++)
+	for (int i = 0; i < profiles.size(); i++)
 	{
-		Room* room = rooms.get(index1);
+		Room* room = rooms.get(i);
 		Serial.println();
 		Serial.print("    ");
 		Serial.println(room->getId());
 		
 		Serial.println("    - items:");
-		for (int index2 = 0; index2 < room->getItemsSize(); index2++)
+		for (int j = 0; j < room->getItemsSize(); j++)
 		{
-			Item* item = room->getItem(index2);
+			Item* item = room->getItem(j);
 			Serial.print("        ");
 			Serial.println(item->getId());
 			Serial.print("        - active:");
@@ -143,15 +143,15 @@ void Database::debugRooms()
 		}
 		
 		Serial.println("    - smartsets:");
-		for (int index2 = 0; index2 < room->getSmartsetsSize(); index2++)
+		for (int j = 0; j < room->getSmartsetsSize(); j++)
 		{
-			Smartset* smartset = room->getSmartset(index2);
+			Smartset* smartset = room->getSmartset(j);
 			Serial.print("        ");
 			Serial.println(smartset->getId());
 			Serial.println("        - smart items:");
-			for (int index3 = 0; index3 < smartset->getSmartItemsSize(); index3++)
+			for (int k = 0; k < smartset->getSmartItemsSize(); k++)
 			{
-				SmartItem* smartItem = smartset->getSmartItem(index3);
+				SmartItem* smartItem = smartset->getSmartItem(k);
 				Serial.print("            ");
 				Serial.println(smartItem->getId());
 				Serial.print("            - active:");
@@ -166,11 +166,12 @@ void Database::debugRooms()
 
 Profile* Database::searchProfile(String profileId)
 {
-	for (int index = 0; index < profiles.size(); index++)
+	for (int i = 0; i < profiles.size(); i++)
 	{
-		if (profiles.get(index)->getId() == profileId)
+		Profile* profile = profiles.get(i);
+		if (profile->getId() == profileId)
 		{
-			return profiles.get(index);
+			return profile;
 		}
 	}
 	return nullptr;
@@ -178,11 +179,12 @@ Profile* Database::searchProfile(String profileId)
 
 Room* Database::searchRoom(String roomId)
 {
-	for (int index = 0; index < rooms.size(); index++)
+	for (int i = 0; i < rooms.size(); i++)
 	{
-		if (rooms.get(index)->getId() == roomId)
+		Room* room = rooms.get(i);
+		if (room->getId() == roomId)
 		{
-			return rooms.get(index);
+			return room;
 		}
 	}
 	return nullptr;
@@ -190,12 +192,12 @@ Room* Database::searchRoom(String roomId)
 
 Item* Database::searchItem(String id)
 {
-	for (int index1 = 0; index1 < rooms.size(); index1++)
+	for (int i = 0; i < rooms.size(); i++)
 	{
-		Room* room = rooms.get(index1);
-		for (int index2 = 0; index2 < room->getItemsSize(); index2++)
+		Room* room = rooms.get(i);
+		for (int j = 0; j < room->getItemsSize(); j++)
 		{
-			Item* item = room->getItem(index2);
+			Item* item = room->getItem(j);
 			if (item->getId() == id)
 			{
 				return item;
@@ -207,11 +209,11 @@ Item* Database::searchItem(String id)
 
 int Database::searchProfileIndex(String profileId)
 {
-	for (int index = 0; index < profiles.size(); index++)
+	for (int i = 0; i < profiles.size(); i++)
 	{
-		if (profiles.get(index)->getId() == profileId)
+		if (profiles.get(i)->getId() == profileId)
 		{
-			return index;
+			return i;
 		}
 	}
 	return -1;
@@ -219,11 +221,11 @@ int Database::searchProfileIndex(String profileId)
 
 int Database::searchRoomIndex(String roomId)
 {
-	for (int index = 0; index < rooms.size(); index++)
+	for (int i = 0; i < rooms.size(); i++)
 	{
-		if (rooms.get(index)->getId() == roomId)
+		if (rooms.get(i)->getId() == roomId)
 		{
-			return index;
+			return i;
 		}
 	}
 	return -1;
@@ -233,9 +235,9 @@ int Database::searchRoomIndex(String roomId)
 
 bool Database::isProfileNameTaken(String profileName)
 {
-	for (int index = 0; index < profiles.size(); index++)
+	for (int i = 0; i < profiles.size(); i++)
 	{
-		if (profileName == profiles.get(index)->getName())
+		if (profileName == profiles.get(i)->getName())
 		{
 			return true;
 		}
@@ -245,9 +247,9 @@ bool Database::isProfileNameTaken(String profileName)
 
 bool Database::isRoomNameTaken(String roomName)
 {
-	for (int index = 0; index < rooms.size(); index++)
+	for (int i = 0; i < rooms.size(); i++)
 	{
-		if (roomName == rooms.get(index)->getName())
+		if (rooms.get(i)->getName() == roomName)
 		{
 			return true;
 		}
@@ -262,10 +264,10 @@ String Database::getProfiles()
 	responseJson["outcome"] = "success";
 	
 	JsonArray jsonProfiles = responseJson.createNestedArray("profiles");
-	for (int index = 0; index < profiles.size(); index++)
+	for (int i = 0; i < profiles.size(); i++)
 	{
 		JsonObject jsonProfile = jsonProfiles.createNestedObject();
-		profileToJson(getProfile(index), jsonProfile);
+		profileToJson(getProfile(i), jsonProfile);
 	}
 	log(responseJson);
 
@@ -298,10 +300,10 @@ String Database::getRooms(String profileId)
 	responseJson["outcome"] = "success";
 	
 	JsonArray jsonRooms = responseJson.createNestedArray("rooms");
-	for (int index = 0; index < rooms.size(); index++)
+	for (int i = 0; i < rooms.size(); i++)
 	{
 		JsonObject jsonRoom = jsonRooms.createNestedObject();
-		roomToJson(getRoom(index), jsonRoom);
+		roomToJson(getRoom(i), jsonRoom);
 	}
 	log(responseJson);
 	
@@ -336,13 +338,13 @@ String Database::getItems(String roomId, String profileId)
 		responseJson["outcome"] = "success";
 		
 		JsonArray jsonItems = responseJson.createNestedArray("items");
-		for (int index1 = 0; index1 < rooms.size(); index1++)
+		for (int i = 0; i < rooms.size(); i++)
 		{
-			Room* room = rooms.get(index1);
-			for (int index2 = 0; index2 < room->getItemsSize(); index2++)
+			Room* room = rooms.get(i);
+			for (int j = 0; j < room->getItemsSize(); j++)
 			{
 				JsonObject jsonItem = jsonItems.createNestedObject();
-				itemToJson(room->getItem(index2), jsonItem);
+				itemToJson(room->getItem(j), jsonItem);
 			}
 		}
 	}
@@ -367,9 +369,9 @@ String Database::getItems(String roomId, String profileId)
 				responseJson["outcome"] = "success";
 				
 				JsonArray jsonItems = responseJson.createNestedArray("items");
-				for (int index = 0; index < room->getItemsSize(); index++)
+				for (int i = 0; i < room->getItemsSize(); i++)
 				{
-					Item* item = room->getItem(index);
+					Item* item = room->getItem(i);
 					JsonObject jsonItem = jsonItems.createNestedObject();
 					itemToJson(item, jsonItem);
 				}
@@ -424,9 +426,9 @@ String Database::getSmartsets(String profileId, String roomId, String itemId)
 			responseJson["outcome"] = "success";
 
 			JsonArray jsonSmartsets = responseJson.createNestedArray("smartsets");
-			for (int index = 0; index < smartRoom->getSmartsetsSize(); index++)
+			for (int i = 0; i < smartRoom->getSmartsetsSize(); i++)
 			{
-				Smartset* smartset = smartRoom->getSmartset(index);
+				Smartset* smartset = smartRoom->getSmartset(i);
 				if (itemId == "null" || smartset->getSmartItem(itemId) != nullptr)
 				{
 					JsonObject jsonSmartset = jsonSmartsets.createNestedObject();
@@ -548,9 +550,9 @@ String Database::getSmartItems(String smartsetId, String roomId, String profileI
 				responseJson["outcome"] = "success";
 	
 				JsonArray jsonSmartItems = responseJson.createNestedArray("smart_items");
-				for (int index = 0; index < smartset->getSmartItemsSize(); index++)
+				for (int i = 0; i < smartset->getSmartItemsSize(); i++)
 				{
-					SmartItem* smartItem = smartset->getSmartItem(index);
+					SmartItem* smartItem = smartset->getSmartItem(i);
 					JsonObject jsonSmartItem = jsonSmartItems.createNestedObject();
 					smartItemToJson(smartItem, jsonSmartItem);
 				}
@@ -618,10 +620,10 @@ String Database::getAvailablePorts()
 	JsonArray jsonPorts = responseJson.createNestedArray("ports");
 	LinkedPointerList<ArduinoPort>& ports = portManager.getAvailablePorts();
 	
-	for (int index = 0; index < ports.size(); index++)
+	for (int i = 0; i < ports.size(); i++)
 	{
 		JsonObject jsonPort = jsonPorts.createNestedObject();
-		portToJson(ports.get(index), jsonPort);
+		portToJson(ports.get(i), jsonPort);
 	}
 	log(responseJson);
 	
@@ -1091,14 +1093,14 @@ String Database::setItemActive(String id, String data)
 		else
 		{
 			bool found = false;
-			for (int index1 = 0; index1 < room->getSmartsetsSize(); index1++)
+			for (int i = 0; i < room->getSmartsetsSize(); i++)
 			{
-				Smartset* controlset = room->getSmartset(index1);
-				int index2 = controlset->getSmartItemIndex(item->getId());
-				if (index2 != -1)
+				Smartset* controlset = room->getSmartset(i);
+				int index = controlset->getSmartItemIndex(item->getId());
+				if (index != -1)
 				{
 					found = true;
-					controlset->removeSmartItem(index2);
+					controlset->removeSmartItem(index);
 				}
 			}
 			item->setActive(active);
@@ -1268,15 +1270,15 @@ String Database::activateSmartset(String roomId, String data)
 					bool conflict = false; // just for debug
 					bool modified = false;
 					
-					for (int index1 = 0; index1 < targetset->getSmartItemsSize(); index1++)
+					for (int i = 0; i < targetset->getSmartItemsSize(); i++)
 					{
-						SmartItem* target = targetset->getSmartItem(index1);
+						SmartItem* target = targetset->getSmartItem(i);
 
 						bool found = false;
 						bool active = false;
-						for (int index2 = 0; index2 < room->getSmartsetsSize(); index2++)
+						for (int j = 0; j < room->getSmartsetsSize(); j++)
 						{
-							Smartset* controlset = room->getSmartset(index2);
+							Smartset* controlset = room->getSmartset(j);
 							SmartItem* control = controlset->getSmartItem(target->getId());
 							if (control)
 							{
@@ -1357,13 +1359,14 @@ String Database::deactivateSmartset(String roomId, String data)
 		else
 		{
 			bool found = false;
-			for (int index = 0; index < room->getSmartsetsSize(); index++)
+			for (int i = 0; i < room->getSmartsetsSize(); i++)
 			{
-				Smartset* smartset = room->getSmartset(index);
-				if (smartset->getOwner() == profile && smartset->getId() == smartsetId)
+				Smartset* smartset = room->getSmartset(i);
+				if (smartset->getOwner() == profile &&
+						smartset->getId() == smartsetId)
 				{
 					found = true;
-					room->removeSmartset(index);
+					room->removeSmartset(i);
 				}
 			}
 			
@@ -1405,10 +1408,10 @@ void Database::roomToJson(Room* room, JsonObject& json)
 	json["icon"] = room->getIcon();
 	
 	JsonArray smartsetsJson = json.createNestedArray("smartsets");
-	for (int index = 0; index < room->getSmartsetsSize(); index++)
+	for (int i = 0; i < room->getSmartsetsSize(); i++)
 	{
 		JsonObject smartsetJson = smartsetsJson.createNestedObject();
-		smartsetToJson(room->getSmartset(index), smartsetJson);
+		smartsetToJson(room->getSmartset(i), smartsetJson);
 	}
 }
 

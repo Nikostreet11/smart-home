@@ -21,7 +21,6 @@ public:
 	bool lock(const String& portName);
 	bool unlock(const String& portName);
 	bool setActive(const String& portName, bool active);
-	/*bool turnOff(const String& portName);*/
 
 	// getters / setters
 	LinkedPointerList<ArduinoPort>& getAvailablePorts();

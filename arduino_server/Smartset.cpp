@@ -23,9 +23,9 @@ Smartset* Smartset::copy(Smartset* origin)
 // destructor
 Smartset::~Smartset()
 {
-	for (int index = 0; index < smartItems.size(); index++)
+	for (int i = 0; i < smartItems.size(); i++)
 	{
-		delete smartItems.get(index);
+		delete smartItems.get(i);
 	}
 }
 
@@ -99,9 +99,9 @@ SmartItem* Smartset::getSmartItem(int index)
 
 SmartItem* Smartset::getSmartItem(const String& id)
 {
-	for (int index = 0; index < smartItems.size(); index++)
+	for (int i = 0; i < smartItems.size(); i++)
 	{
-		SmartItem* smartItem = smartItems.get(index);
+		SmartItem* smartItem = smartItems.get(i);
 		if (id == smartItem->getId())
 		{
 			return smartItem;
@@ -112,11 +112,11 @@ SmartItem* Smartset::getSmartItem(const String& id)
 
 int Smartset::getSmartItemIndex(const String& id)
 {
-	for (int index = 0; index < smartItems.size(); index++)
+	for (int i = 0; i < smartItems.size(); i++)
 	{
-		if (smartItems.get(index)->getId() == id)
+		if (smartItems.get(i)->getId() == id)
 		{
-			return index;
+			return i;
 		}
 	}
 	return -1;
@@ -142,8 +142,8 @@ Smartset::Smartset(Smartset* origin) :
 		name(origin->getName()),
 		owner(origin->getOwner())
 {
-	for (int index = 0; index < origin->getSmartItemsSize(); index++)
+	for (int i = 0; i < origin->getSmartItemsSize(); i++)
 	{
-		addSmartItem(SmartItem::copy(origin->getSmartItem(index)));
+		addSmartItem(SmartItem::copy(origin->getSmartItem(i)));
 	}
 }

@@ -54,7 +54,7 @@ void SmartHomeServer::postResponseHandling()
 	}
 	if (led_blink == true)
 	{
-		for (int index = 0; index < 80; index++) {
+		for (int i = 0; i < 80; i++) {
 			digitalWrite(lControl, !digitalRead(lControl));
 			delay(50);
 		}

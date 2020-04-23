@@ -5,9 +5,9 @@ PortManager::PortManager()
 {
 	int startingPorts[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 15, 16, 17, 18, 19, 20, 21};
 	
-	for (int index = 0; index < sizeof(startingPorts) / sizeof(int); index++)
+	for (int i = 0; i < sizeof(startingPorts) / sizeof(int); i++)
 	{
-		ArduinoPort* port = new ArduinoPort(startingPorts[index]);
+		ArduinoPort* port = new ArduinoPort(startingPorts[i]);
 		pinMode(port->getNumber(), OUTPUT);
 		ports.add(port);
 		availablePorts.add(port);
@@ -26,17 +26,17 @@ void PortManager::debug()
 	Serial.println(ports.size());
 	
 	Serial.print("ports: |");
-	for (int index = 0; index < ports.size(); index++)
+	for (int i = 0; i < ports.size(); i++)
 	{
-		Serial.print(ports.get(index)->getNumber());
+		Serial.print(ports.get(i)->getNumber());
 		Serial.print("|");
 	}
 	Serial.println();
 	
 	Serial.print("available ports: |");
-	for (int index = 0; index < availablePorts.size(); index++)
+	for (int i = 0; i < availablePorts.size(); i++)
 	{
-		Serial.print(availablePorts.get(index)->getNumber());
+		Serial.print(availablePorts.get(i)->getNumber());
 		Serial.print("|");
 	}
 	Serial.println();
@@ -118,18 +118,6 @@ bool PortManager::setActive(const String& portName, bool active)
 	return false;
 }
 
-/*bool PortManager::turnOff(const String& portName)
-{
-	if (isLocked(portName))
-	{
-		int index = getIndex(portName, ports);
-		digitalWrite(ports.get(index)->getNumber(), LOW);
-		return true;
-	}
-
-	return false;
-}*/
-
 // getters / setters
 LinkedPointerList<ArduinoPort>& PortManager::getAvailablePorts()
 {
@@ -139,11 +127,11 @@ LinkedPointerList<ArduinoPort>& PortManager::getAvailablePorts()
 // internal
 int PortManager::getIndex(const String& portName, LinkedPointerList<ArduinoPort>& list)
 {
-	for (int index = 0; index < list.size(); index++)
+	for (int i = 0; i < list.size(); i++)
 	{
-		if (list.get(index)->getName() == portName)
+		if (list.get(i)->getName() == portName)
 		{
-			return index;
+			return i;
 		}
 	}
 
@@ -152,14 +140,13 @@ int PortManager::getIndex(const String& portName, LinkedPointerList<ArduinoPort>
 
 void PortManager::orderedAdd(ArduinoPort* port, LinkedPointerList<ArduinoPort>& list)
 {
-	int index = 0;
-
-	while (index < list.size() && list.get(index)->getNumber() < port->getNumber())
+	int i = 0;
+	while (i < list.size() && list.get(i)->getNumber() < port->getNumber())
 	{
-		index++;
+		i++;
 	}
 
-	list.add(index, port);
+	list.add(i, port);
 }
 
 
