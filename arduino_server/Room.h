@@ -11,39 +11,36 @@ class Room
 public:
 	// static constructors
 	static Room* create();
-	//explicit Room(String name, String icon);
+	
 	// destructor
 	virtual ~Room();
 
-	// search
-	/*Item* searchItem(const String& id);
-	int searchItemIndex(const String& id);*/
+	// operations
+	bool addItem(Item* item);
+	bool addSmartset(Smartset* smartset);
+	bool removeItem(int index);
+	bool removeSmartset(int index);
 
 	// getters / setters
+	Item* getItem(int index);
+	Smartset* getSmartset(int index);
+	Item* getItem(const String& id);
+	Smartset* getSmartset(const String& id);
+	int getItemIndex(const String& id);
+	int getSmartsetIndex(const String& id);
+	int getItemsSize();
+	int getSmartsetsSize();
+
 	int getTrueId() const;
 	String getId() const;
 	const String& getName() const;
 	void setName(const String& name);
 	const String& getIcon() const;
 	void setIcon(const String& icon);
-	//bool isSmart() const;
-	//void setSmart(bool smart);
-	Item* get(int index);
-	Smartset* getSmartset(int index);
-	Item* get(const String& id);
-	Smartset* getSmartset(const String& id);
-	int getIndex(const String& id);
-	int getSmartsetIndex(const String& id);
-	bool add(Item* item);
-	bool addSmartset(Smartset* smartset);
-	bool remove(int index);
-	bool removeSmartset(int index);
-	int getSize();
-	int getSmartsetsSize();
 
 	// static constants
 	static const int MAX_ROOMS = 32;
-	static const int MAX_ITEMS = 8;
+	static const int MAX_ITEMS = 32;
 	
 private:
 	// constructors
@@ -51,9 +48,6 @@ private:
 
 	// static resources
     static IdManager idManager;
-	
-	// static variables
-	//static int currentId;
 
 	// resources
 	LinkedPointerList<Item> items;
@@ -63,7 +57,6 @@ private:
 	int id;
 	String name;
 	String icon;
-	// bool smart;
 };
 
 #endif /* ROOM_H_ */

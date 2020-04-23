@@ -17,20 +17,9 @@ public:
 	// destructor
 	virtual ~Profile();
 
-	// update
-	void updateSmartRooms(LinkedPointerList<Room>& rooms);
-
-	// smart add
+	// operations
 	bool addSmartRoom(String roomId);
-	bool addSmartItem(String itemId, bool active, String roomId, String smartsetId);
-	
-	// smart edit
-	//bool editSmartRoom(String roomId, Room* newRoom);
-	//bool editSmartItem(String itemId, Item* newItem);
-	
-	// smart remove
-	bool removeSmartRoom(String roomId);
-	//bool removeSmartItem(String itemId, String roomId);
+	bool removeSmartRoom(int index);
 
 	// getters / setters
 	int getTrueId() const;
@@ -53,9 +42,6 @@ private:
 
 	// static resources
     static IdManager idManager;
-	
-	// static variables
-	//static int currentId;
 	
 	// resources
 	LinkedPointerList<SmartRoom> smartRooms;

@@ -2,7 +2,6 @@
 #define ITEM_H_
 
 #include <WString.h>
-#include <LinkedPointerList.h>		// linked list library
 #include "PortManager.h"
 #include "IdManager.h"
 

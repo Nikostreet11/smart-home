@@ -40,7 +40,6 @@ public:
 	String getProfile(String profileId);
 	String getRooms(String profileId);
 	String getRoom(String roomId, String profileId);
-	//String getItems(String data);
 	String getItems(String roomId, String profileId);
 	String getItem(String itemId, String roomId, String profileId);
 	String getSmartsets(String profileId, String roomId, String itemId);
@@ -100,16 +99,14 @@ public:
 	Room* getRoom(int index);
 
 	// static constants
-	static const int MAX_PROFILES = 8;
+	static const int MAX_PROFILES = 32;
 	static const int MAX_ROOMS = 32;
-	//static const int MAX_ITEMS_PER_ROOM = 8;
 
 private:
 	// internal
 	void log(JsonDocument& json);
 	String toStr(bool value);
 	bool toBool(String value);
-	void notifyProfiles();
 	
 	// resources
 	StaticJsonDocument<1024> requestJson;

@@ -8,16 +8,21 @@ class IdManager
 public:
 	// constructor
 	IdManager(int maxSize);
+	
 	// destructor
     virtual ~IdManager();
 
+	// operations
     int acquireId();
     bool releaseId(int id);
     bool isIdAvailable();
     
 private:
-	int maxSize;
+	// resources
 	LinkedPointerList<int> availableIds;
+
+	// variables
+	int maxSize;
 };
 
 #endif /* ID_MANAGER_H_ */

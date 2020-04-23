@@ -1,5 +1,6 @@
 #include "IdManager.h"
 
+// constructor
 IdManager::IdManager(int maxSize) :
 		maxSize(maxSize)
 {
@@ -12,6 +13,7 @@ IdManager::IdManager(int maxSize) :
 	}
 }
 
+// destructor
 IdManager::~IdManager()
 {
 	for (int i = 0; i < availableIds.size(); i++)
@@ -20,6 +22,7 @@ IdManager::~IdManager()
 	}
 }
 
+// operations
 int IdManager::acquireId()
 {
 	if (availableIds.size() > 0)
