@@ -70,17 +70,37 @@ body {
 
 /********** PROFILES PAGE *****************************************************/
 
-#profiles-page .profiles-container {
-	width: 220px;
+#profiles-page .profiles-list {
+	width: 400px;
 	margin: auto;
 }
 
-#profiles-page .float-bottom-right {
+/*#profiles-page .float-bottom-right {
 	width: 50px;
 	position: fixed;
 	bottom: 0px;
-	right: 10px;
+	right: 100px;
+}*/
+
+#profiles-page .add-btn {
+	position: fixed;
+	right: 50px;
+	bottom: 0px;
+	/*width: 100px;
+	height: 100px;*/
 }
+
+/*
+#profiles-page .add-btn::after {
+	position: absolute;
+	left: 0px;
+	top: 0px;
+	margin: auto;
+
+	height: 50px;
+	width: 50px;
+}
+*/
 
 /********** CONTROL PANEL PAGE ************************************************/
 

@@ -1208,26 +1208,6 @@ var app = {
 		var container = $(".profiles-container");
 		container.html("");
 		
-		for (let index = 0; index < profiles.length; index++) {			
-			container.append(
-				'<button type=\"submit\" class=\"profile\" ' +
-				"name=\"" + profiles[index].name + "\">" +
-				"<img src=\"img/profiles/" + profiles[index]["avatar"] +
-				".png\" width=\"130px\" height=\"130px\"/>" +
-				"<h3>" + profiles[index]["name"] + "</h3>" +
-				"</button>");
-		}
-		$(container).enhanceWithin();
-		
-		if (container.html() == "") {
-			container.html("<p>There aren't any profiles yet</p>");
-		}
-	},*/
-	
-	refreshProfiles: function(profiles) {
-		var container = $(".profiles-container");
-		container.html("");
-		
 		for (let index = 0; index < profiles.length; index++) {	
 			let profile = profiles[index];
 			container.append(
@@ -1244,6 +1224,57 @@ var app = {
 		
 		if (container.html() == "") {
 			container.html("<p>There aren't any profiles yet</p>");
+		}
+	},*/
+	
+	refreshProfilesList: function() {
+		app.arduino.getProfiles()
+		.then(function(result) {
+			var response = JSON.parse(result);
+
+			if (response.outcome == "success") {
+				app.loadProfilesList(response.profiles);
+			}
+			else {
+				alert(response.error);
+			}
+		})
+		.catch(function() {
+			alert("getProfiles::error");
+		});
+	},
+	
+	loadProfilesList: function(profiles) {
+		var container = $(".profiles-list");
+		container.html("");
+		
+		for (let index = 0; index < profiles.length; index++) {
+			let blockType = app.toblockType(index % 2);
+			let profile = profiles[index];
+			container.append(
+				'<div class="ui-block-' + blockType + '">' +
+					'<a class="profile ui-btn" ' +
+							'id="' + profile.id + '" ' +
+					'">' +
+						'<img src="img/profiles/' + profile.avatar + '.png" ' +
+								'width="130px" height="130px" ' + 
+						'/>' +
+						'<h2>' + profile.name + '</h2>' +
+					'</a>' +
+				'</div>');
+				/*'<button type="submit" ' +
+				'id="' + profile.id + '" ' +
+				'class="profile" ' +
+				'">' +
+				'<img src="img/profiles/' + profile.avatar +
+				'.png" width="130px" height="130px"/>' +
+				'<h3>' + profile.name + '</h3>' +
+				'</button>');*/
+		}
+		$(container).enhanceWithin();
+		
+		if (container.html() == "") {
+			container.html("<p>TODO</p>");
 		}
 	},
 	
@@ -1694,8 +1725,9 @@ var app = {
 			if (app.EDIT_PROFILES_MODE) {
 				app.setEditProfilesMode(false);
 			}
-				
-			app.arduino.getProfiles()
+			
+			app.refreshProfilesList();
+			/*app.arduino.getProfiles()
 				.then(function(result) {
 					var response = JSON.parse(result);
 				
@@ -1709,7 +1741,7 @@ var app = {
 				})
 				.catch(function() {
 					alert("getProfiles::error");
-				});
+				});*/
 			break;
 				
 		case "#add-profile-page":
@@ -1868,6 +1900,10 @@ var app = {
 	
 	dePrettyfy: function(string) {
 		return string.replace(/ /g, "_");
+	},
+	
+	toblockType: function(number) {
+		return String.fromCharCode('a'.charCodeAt(0) + number);
 	},
 	
 	
