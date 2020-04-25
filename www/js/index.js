@@ -30,12 +30,9 @@ var app = {
 	currentRoom: undefined,
 	currentItem: undefined,
 	currentSmartset: undefined,
-	EDIT_PROFILES_MODE: false,
+	editProfilesMode: false,
 	EDIT_ROOMS_MODE: false,
 	EDIT_ITEMS_MODE: false,
-	BINARY_ITEM: 0,
-	LINEAR_ITEM: 1,
-	RADIO_ITEM: 2,
 	AVATARS: ["avatar-0", "avatar-1", "avatar-2", "avatar-3", "avatar-4",
 		"avatar-5", "avatar-6", "avatar-7", "avatar-8", "avatar-9", "avatar-10",
 		"avatar-11",],
@@ -160,7 +157,7 @@ var app = {
 		});
 		
 		$("#profiles-page .edit-btn").click(function() {
-			if (app.EDIT_PROFILES_MODE) {
+			if (app.editProfilesMode) {
 				app.setEditProfilesMode(false);
 			}
 			else {
@@ -181,7 +178,7 @@ var app = {
 					if (response.outcome == "success") {
 						app.currentProfile = response.profile;
 				
-						if (app.EDIT_PROFILES_MODE) {
+						if (app.editProfilesMode) {
 							app.changePage("#edit-profile-page");
 						}
 						else {
@@ -1252,24 +1249,25 @@ var app = {
 			let blockType = app.toblockType(index % 2);
 			let profile = profiles[index];
 			container.append(
-				'<div class="ui-block-' + blockType + '">' +
-					'<a class="profile ui-btn" ' +
-							'id="' + profile.id + '" ' +
+				'<div class="centered-list-block ' +
+						'ui-block-' + blockType +
+				'">' +
+					'<a class="profile-btn ' +
+							'ui-btn ' +/*'ui-icon-edit ui-btn-icon-top" '*/
 					'">' +
-						'<img src="img/profiles/' + profile.avatar + '.png" ' +
-								'width="130px" height="130px" ' + 
-						'/>' +
-						'<h2>' + profile.name + '</h2>' +
+						'<div class="profile" ' +
+								'id="' + profile.id + '" ' +
+						'">' +
+							'<img class="profile-avatar" src="img/profiles/' +
+									profile.avatar + '.png" ' +
+									'width="120px" height="120px" ' + 
+							'/>' +
+							'<h2 class="profile-name">' +
+									profile.name +
+							'</h2>' +
+						'</div>' +
 					'</a>' +
 				'</div>');
-				/*'<button type="submit" ' +
-				'id="' + profile.id + '" ' +
-				'class="profile" ' +
-				'">' +
-				'<img src="img/profiles/' + profile.avatar +
-				'.png" width="130px" height="130px"/>' +
-				'<h3>' + profile.name + '</h3>' +
-				'</button>');*/
 		}
 		$(container).enhanceWithin();
 		
@@ -1669,18 +1667,20 @@ var app = {
 			.checkboxradio("refresh");
 	},
 	
-	setEditProfilesMode: function(boolean) {
-		if (boolean) {
-			$("#profiles-page .edit-btn").val("done");
-			$("#profiles-page .edit-btn").button("refresh");
-			// TODO: change appearances
+	setEditProfilesMode: function(value) {
+		if (value) {
+			/*$("#profiles-page .edit-btn").val("done");
+			$("#profiles-page .edit-btn").button("refresh");*/
+			$("#profiles-page .profile-avatar").addClass('obscured');
+			$("#profiles-page .profile-btn").addClass('ui-icon-edit ui-btn-icon-top');
 		}
 		else {
-			$("#profiles-page .edit-btn").val("edit");
-			$("#profiles-page .edit-btn").button("refresh");
-			// TODO: change appearances
+			/*$("#profiles-page .edit-btn").val("edit");
+			$("#profiles-page .edit-btn").button("refresh");*/
+			$("#profiles-page .profile-avatar").removeClass('obscured');
+			$("#profiles-page .profile-btn").removeClass('ui-icon-edit ui-btn-icon-top');
 		}
-		app.EDIT_PROFILES_MODE = boolean;
+		app.editProfilesMode = value;
 	},
 	
 	setEditRoomsMode: function(boolean) {
@@ -1722,7 +1722,7 @@ var app = {
 			break;
 				
 		case "#profiles-page":
-			if (app.EDIT_PROFILES_MODE) {
+			if (app.editProfilesMode) {
 				app.setEditProfilesMode(false);
 			}
 			

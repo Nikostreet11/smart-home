@@ -139,18 +139,10 @@
 <!---------- PROFILES --------------------------------------------------------->
 		
 		<div data-role="page" id="profiles-page">
-			<div data-role="header" class="header">
-				<div class="header-left">
-					<input type="button" class="log-out-btn" value="log out">
-				</div>
-				
-				<div class="header-center">
-					<h2>Smart Home</h2>
-				</div>
-				
-				<div class="header-right">
-					<input type="button" class="edit-btn" value="edit">
-				</div>
+			<div class="header" data-role="header" data-position="fixed">
+				<a class="log-out-btn">log out</a>
+				<div><h1 class="header-title">Smart Home</h1></div>
+				<a class="edit-btn ui-btn ui-icon-edit ui-btn-icon-notext" data-role="button">bau</a>
 			</div>
 			
 			<div data-role="main" class="ui-content">
@@ -158,9 +150,8 @@
 					<!-- filled dynamically -->
 				</div>
 				
-				<!--<div class="float-bottom-right">-->
-					<a class="add-btn ui-btn ui-icon-plus ui-btn-icon-notext"></a>
-				<!--</div>-->
+				<a class="add-btn fixed-bottom-right rounded-btn
+						ui-btn ui-icon-plus ui-btn-icon-notext"></a>
 			</div>
 		</div>
 		
@@ -284,9 +275,8 @@
 					<!-- filled dynamically -->
 				</div>
 				
-				<div class="float-bottom-right">
-					<input type="button" class="add-btn" value="+">
-				</div>
+				<a class="add-btn fixed-bottom-right rounded-btn
+						ui-btn ui-icon-plus ui-btn-icon-notext"></a>
 				
 				<div id="activate-smartset-panel">
 					<div class="ui-bar ui-bar-a" data-role="header">

@@ -27,9 +27,9 @@ void Database::debugInit()
 {
 	// test profile entries
 	String testJson;
-	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"John\",\"avatar\":\"avatar-1\"}}";
+	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"John\",\"avatar\":\"avatar-9\"}}";
 	addProfile(testJson);
-	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Marie\",\"avatar\":\"avatar-4\"}}";
+	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Marie\",\"avatar\":\"avatar-2\"}}";
 	addProfile(testJson);
 
 	// test room entries
@@ -59,9 +59,17 @@ void Database::debugInit()
 	addItem(testJson);
 
 	// test late profile entries
-	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Andrew\",\"avatar\":\"avatar-7\"}}";
+	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Andrew\",\"avatar\":\"avatar-5\"}}";
 	addProfile(testJson);
-	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Lisa\",\"avatar\":\"avatar-11\"}}";
+	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Lisa\",\"avatar\":\"avatar-10\"}}";
+	addProfile(testJson);
+	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Nico\",\"avatar\":\"avatar-3\"}}";
+	addProfile(testJson);
+	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Uba\",\"avatar\":\"avatar-6\"}}";
+	addProfile(testJson);
+	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Fede\",\"avatar\":\"avatar-1\"}}";
+	addProfile(testJson);
+	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Civi\",\"avatar\":\"avatar-8\"}}";
 	addProfile(testJson);
 
 	// test smartset entries
