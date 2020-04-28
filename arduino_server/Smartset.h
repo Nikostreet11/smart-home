@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <LinkedPointerList.h>
 #include "SmartItem.h"
+//#include "IdManager.h"
 
 // forward declarations
 class Profile;
@@ -34,7 +35,7 @@ public:
 	int getSmartItemsSize();
 
 	// static constants
-	static const int MAX_SMARTSETS = 1024;
+	static const int MAX_SMARTSETS = 32;
 	static const int MAX_SMART_ITEMS = 8;
 	
 private:
@@ -43,6 +44,9 @@ private:
 
 	// copy constructor
 	Smartset(Smartset* origin);
+
+	// static resources
+    //static IdManager idManager;
 	
 	// static variables
 	static int currentId;
@@ -54,6 +58,7 @@ private:
 	int id;
 	String name;
 	Profile* owner;
+	bool isCopy;
 };
 
 #endif /* SMARTSET_H_ */

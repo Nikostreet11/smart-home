@@ -1,11 +1,14 @@
 #include "Smartset.h"
 
+//IdManager Smartset::idManager(Smartset::MAX_SMARTSETS);
+
 int Smartset::currentId = 0;
 
 // static constructors
 Smartset* Smartset::create(Profile* owner)
 {
 	if (Smartset::currentId < Smartset::MAX_SMARTSETS)
+	//if (idManager.isIdAvailable())
 	{
 		return new Smartset(owner);
 	}
@@ -27,6 +30,11 @@ Smartset::~Smartset()
 	{
 		delete smartItems.get(i);
 	}
+
+	/*if (!isCopy)
+	{
+		idManager.releaseId(id);
+	}*/
 }
 
 // operations
@@ -130,8 +138,10 @@ int Smartset::getSmartItemsSize()
 // constructors
 Smartset::Smartset(Profile* owner) :
 		id(Smartset::currentId),
+		//id(idManager.acquireId()),
 		name("default"),
-		owner(owner)
+		owner(owner),
+		isCopy(false)
 {
 	Smartset::currentId++;
 }
@@ -140,7 +150,8 @@ Smartset::Smartset(Profile* owner) :
 Smartset::Smartset(Smartset* origin) :
 		id(origin->getTrueId()),
 		name(origin->getName()),
-		owner(origin->getOwner())
+		owner(origin->getOwner()),
+		isCopy(true)
 {
 	for (int i = 0; i < origin->getSmartItemsSize(); i++)
 	{

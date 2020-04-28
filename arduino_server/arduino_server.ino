@@ -68,7 +68,7 @@ void loop()
 		Serial.println();
 		Serial.println("*** new client");
 		
-		Serial.println("*** request:");
+		//Serial.println("*** request:");
 
 		bool headerEnded = false;		// flag for incoming header
 		bool dataEnded = false;			// flag for incoming data
@@ -90,7 +90,7 @@ void loop()
 			if (client.available())		// if there's bytes to read
 			{
 				char c = client.read();		// read a byte, then
-				Serial.write(c);			// print it out
+				//Serial.write(c);			// print it out
 				
 				if (c == '\n')		// if the byte is a newline character
 				{

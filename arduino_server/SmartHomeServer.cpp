@@ -158,8 +158,8 @@ String SmartHomeServer::getResponseInfo()
 	
 	// DEBUG
 	
-	Serial.println("*** response info:");
-	Serial.println(responseInfo);
+	//Serial.println("*** response info:");
+	//Serial.println(responseInfo);
 	
 
 	return responseInfo;
