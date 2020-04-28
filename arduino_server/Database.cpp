@@ -645,7 +645,7 @@ String Database::addProfile(String data)
 	deserializeJson(requestJson, data);
 	JsonObject profileJson = requestJson["new_profile"];
 	
-	if (profiles.size() == Database::MAX_PROFILES)
+	if (profiles.size() == Profile::MAX_PROFILES)
 	{
 		responseJson["outcome"] = "failure";
 		responseJson["error"] = "max number of profiles reached";
@@ -675,7 +675,7 @@ String Database::addRoom(String data)
 	deserializeJson(requestJson, data);
 	JsonObject roomJson = requestJson["new_room"];
 
-	if (rooms.size() == MAX_ROOMS)
+	if (rooms.size() == Room::MAX_ROOMS)
 	{
 		responseJson["outcome"] = "failure";
 		responseJson["error"] = "max number of rooms reached";

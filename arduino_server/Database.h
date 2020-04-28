@@ -99,10 +99,6 @@ public:
 	Profile* getProfile(int index);
 	Room* getRoom(int index);
 
-	// static constants
-	static const int MAX_PROFILES = 32;
-	static const int MAX_ROOMS = 32;
-
 private:
 	// internal
 	void log(JsonDocument& json);
