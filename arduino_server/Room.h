@@ -39,8 +39,8 @@ public:
 	void setIcon(const String& icon);
 
 	// static constants
-	static const int MAX_ROOMS = 32;
-	static const int MAX_ITEMS = 32;
+	static const int MAX_ROOMS = 8;
+	static const int MAX_ITEMS = 8;
 	
 private:
 	// constructors

@@ -31,7 +31,7 @@ public:
 	int getSmartsetsSize();
 
 	// static constants
-	static const int MAX_SMARTSETS = 32;
+	static const int MAX_SMARTSETS = 16;
 	
 protected:
 	// constructors

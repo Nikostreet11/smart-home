@@ -34,7 +34,7 @@ public:
 	int getSmartRoomsSize();
 
 	// static constants
-	static const int MAX_PROFILES = 32;
+	static const int MAX_PROFILES = 8;
 	
 private:
 	// constructor

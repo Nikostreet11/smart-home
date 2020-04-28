@@ -1436,9 +1436,7 @@ void Database::smartsetToJson(Smartset* smartset, JsonObject& json)
 {
 	json["id"] = smartset->getId();
 	json["name"] = smartset->getName();
-	
-	JsonObject ownerJson = json.createNestedObject("owner");
-	profileToJson(smartset->getOwner(), ownerJson);
+	json["owner-id"] = smartset->getOwner()->getId();
 }
 
 void Database::smartItemToJson(SmartItem* smartItem, JsonObject& json)

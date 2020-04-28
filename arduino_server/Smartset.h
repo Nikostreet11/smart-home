@@ -35,7 +35,7 @@ public:
 	int getSmartItemsSize();
 
 	// static constants
-	static const int MAX_SMARTSETS = 32;
+	static const int MAX_SMARTSETS = 512;
 	static const int MAX_SMART_ITEMS = 8;
 	
 private:

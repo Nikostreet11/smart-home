@@ -27,7 +27,7 @@ public:
 	void setActive(bool active);
 
 	// static constants
-	static const int MAX_ITEMS = 255;
+	static const int MAX_ITEMS = 64;
 	
 private:
 	// constructor
