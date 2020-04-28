@@ -27,12 +27,6 @@ body {
 	text-shadow: 0 0 0 #000;
 }
 
-/*.header-left {
-	position: absolute;
-	top: 0px;
-	left: 10px;
-}*/
-
 .header-title {
 	padding: 0px !important;
 }
@@ -45,13 +39,6 @@ body {
 	text-align: center;
 	margin: auto;
 }
-
-
-/*.header-right {
-	position: absolute;
-	top: 0px;
-	right: 10px;
-}*/
 
 .header-btn {
 	margin: 7px 0px !important;
@@ -80,21 +67,6 @@ body {
 	height: 24px;
 	border-radius: 0px;
 }
-
-/*.header h2 {
-	font-weight: normal;
-	text-align: center;
-	margin: 0px;
-}*/
-
-/*.header {
-	height: 50px;
-}
-*/
-/*.edit-btn {
-	height: 70px;
-	line-height: 70px;
-}*/
 
 .centered-list-block {
 	text-align: center;
@@ -151,11 +123,8 @@ body {
 	padding: 0px;
 	border-color: transparent;
 	background-color: transparent;
+	z-index: 10;
 }
-
-/*#profiles-page .profile-btn img.obscured {
-	filter: brightness(70%);
-}*/
 
 #profiles-page .profile-btn .profile-name {
 	font-size: 20px;
@@ -168,7 +137,8 @@ body {
 	/*-moz-transform: scale(1.5);
 	-webkit-zoom: 1.5;
 	-ms-zoom: 1.5;*/
-	margin: auto;
+	margin: 0px;
+	padding: 0px;
 	left: 15px;
 	top: 15px;
 	height: 30px;
@@ -205,6 +175,13 @@ body {
 	text-align: left;
 	margin: 4px 5px;
 	padding: 0px;
+}
+
+/********** EDIT PROFILE ******************************************************/
+
+#edit-profile-page .avatar {
+	display: block;
+	margin: auto;
 }
 
 /********** MANUAL PANEL PAGE *************************************************/

@@ -170,28 +170,28 @@ var app = {
 		});
 		
 		// must use "on" because .profile is dynamically generated
-		$("#profiles-page").on("click", ".profile", function() {
-			app.arduino.getProfile(this.getAttribute("id"))
-				.then(function(result) {
-					var response = JSON.parse(result);
-				
-					if (response.outcome == "success") {
-						app.currentProfile = response.profile;
-				
-						if (app.editProfilesMode) {
-							app.changePage("#edit-profile-page");
-						}
-						else {
-							app.changePage("#control-panel-page");
-						}
+		$("#profiles-page").on("click", ".profile-btn", function() {
+			app.arduino.getProfile($(this).children(".profile").attr("id"))
+			.then(function(result) {
+				var response = JSON.parse(result);
+
+				if (response.outcome == "success") {
+					app.currentProfile = response.profile;
+
+					if (app.editProfilesMode) {
+						app.changePage("#edit-profile-page");
 					}
 					else {
-						alert(response.error);
+						app.changePage("#control-panel-page");
 					}
-				})
-				.catch(function() {
-					alert("getProfile::error");
-				});
+				}
+				else {
+					alert(response.error);
+				}
+			})
+			.catch(function() {
+				alert("getProfile::error");
+			});
 		});
 		
 		

@@ -153,22 +153,11 @@
 				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
-			<div data-role="content">
+			<div data-role="ui-content">
 				<form>
-					<input type="text" name="name" placeholder="Insert profile name here"/>
+					<img class="avatar" src="img/welcome.jpg" width="200px" height="200px"/>
 					
-					<!--<input type="text" name="name" value="John"/>-->
-					<!--
-					<input type="text" name="password" placeholder="Password"/>
-					<label>
-						<input type="checkbox" name="edit-password-checkbox">
-						Edit password
-					</label>
-					<div class="editPasswordContainer">
-						<input type="text" name="new-password" placeholder="New password"/>
-						<input type="text" name="new-password-check" placeholder="Repeat password"/>
-					</div>
-					-->
+					<input type="text" name="name" placeholder="Insert profile name here"/>
 					
 					<div class="avatars-container">
 						<!-- filled dynamically -->
@@ -188,7 +177,7 @@
 				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
-			<div data-role="content">
+			<div data-role="ui-content">
 				<form>
 					<input type="text" name="name" placeholder="Insert profile name here"/>
 					<!--<input type="text" name="password" placeholder="Password"/>
@@ -214,7 +203,7 @@
 				</div>
 			</div>
 			
-			<div data-role="content">
+			<div data-role="ui-content">
 				<div class="profileContainer">
 					<img src="img/profiles/default.png" width="250px" height="250px"/>
 					<h2>Name</h2>
@@ -292,7 +281,7 @@
 				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
-			<div data-role="content">
+			<div data-role="ui-content">
 				<form>
 					<input type="text" name="name" placeholder="Insert room name here"/>
 					
@@ -519,7 +508,7 @@
 				<!--<a class="edit-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-edit ui-btn-icon-notext"></a>-->
 			</div>
 			
-			<div class="main" data-role="ui-content">
+			<div class="main" data-role="content">
 				<ul class="smartsets-list"
 						data-role="listview"
 						data-split-icon="edit">
@@ -605,7 +594,7 @@
 		
 		
 		<div id="smart-items-page" data-role="page">
-			<div data-role="header" class="header">
+			<!--<div data-role="header" class="header">
 				<div class="header-left">
 					<input type="button" class="back-btn" value="&lt back">
 				</div>
@@ -614,9 +603,15 @@
 					<h2>smart items</h2>
 				</div>
 				
-				<!--<div class="header-right">
+				<div class="header-right">
 					<input type="button" class="edit-btn" value="edit">
-				</div>-->
+				</div>
+			</div>-->
+			
+			<div class="header" data-role="header" data-position="fixed">
+				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<!--<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>-->
 			</div>
 			
 			<div class="main" data-role="ui-content">
