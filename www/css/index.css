@@ -27,45 +27,70 @@ body {
 	text-shadow: 0 0 0 #000;
 }
 
-.header-left {
+/*.header-left {
 	position: absolute;
 	top: 0px;
 	left: 10px;
-}
-
-.header-center {
-	margin: 8px 0px;
-}
-
-.header-right {
-	position: absolute;
-	top: 0px;
-	right: 10px;
-}
-
-.header h2 {
-	font-weight: normal;
-	text-align: center;
-	margin: 0px;
-}
-
-.header {
-	height: 40px;
-}
-.header h1 {
-	font-size: 25px;
-	line-height: 40px;
-}
+}*/
 
 .header-title {
-	/*height: 100px;
-	line-height: 100px;*/
-	font-size: 40px;
+	padding: 0px !important;
+}
+
+.header-title h1 {
+	padding: 10px 0px;
+	line-height: 30px;
+	font-size: 30px;
 	font-weight: normal;
 	text-align: center;
 	margin: auto;
 }
 
+
+/*.header-right {
+	position: absolute;
+	top: 0px;
+	right: 10px;
+}*/
+
+.header-btn {
+	margin: 7px 0px !important;
+	padding: 0px 10px;
+	height: 36px;
+	top: 0px;
+	border-radius: 0px;
+	line-height: 36px;
+}
+
+.no-text-btn {
+	margin: 0px !important;
+	padding: 0px !important;
+	width: 60px;
+}
+
+.header-btn::after {
+	zoom: 150%;
+	/*-moz-transform: scale(1.5);
+	-webkit-zoom: 1.5;
+	-ms-zoom: 1.5;*/
+	left: 0px;
+	top: 0px;
+	margin: auto;
+	width: 40px;
+	height: 24px;
+	border-radius: 0px;
+}
+
+/*.header h2 {
+	font-weight: normal;
+	text-align: center;
+	margin: 0px;
+}*/
+
+/*.header {
+	height: 50px;
+}
+*/
 /*.edit-btn {
 	height: 70px;
 	line-height: 70px;

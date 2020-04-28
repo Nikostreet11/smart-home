@@ -151,7 +151,7 @@ var app = {
 		
 /********** PROFILES **********************************************************/
 		
-		$("#profiles-page .log-out-btn").click(function() {
+		$("#profiles-page .back-btn").click(function() {
 			app.activeUser = undefined;
 			app.changePage("#welcome-page");
 		});
@@ -197,7 +197,7 @@ var app = {
 		
 /********** EDIT PROFILE ******************************************************/
 		
-		$("#edit-profile-page .cancel-btn").click(function() {
+		$("#edit-profile-page .back-btn").click(function() {
 			app.currentProfile = undefined;
 			app.cleanupEditProfilePage();
 			app.changePage("#profiles-page");
@@ -280,7 +280,7 @@ var app = {
 		
 /********** ADD PROFILE *******************************************************/
 		
-		$("#add-profile-page .cancel-btn").click(function() {
+		$("#add-profile-page .back-btn").click(function() {
 			app.cleanupAddProfilePage();
 			app.changePage("#profiles-page");
 		});
@@ -481,7 +481,7 @@ var app = {
 		
 /********** EDIT ROOM *********************************************************/
 		
-		$("#edit-room-page .cancel-btn").click(function() {
+		$("#edit-room-page .back-btn").click(function() {
 			app.currentRoom = undefined;
 			app.cleanupEditRoomPage();
 			app.changePage("#control-panel-page");
@@ -542,7 +542,7 @@ var app = {
 
 /********** ADD ROOM **********************************************************/
 		
-		$("#add-room-page .cancel-btn").click(function() {
+		$("#add-room-page .back-btn").click(function() {
 			app.cleanupAddRoomPage();
 			app.changePage("#control-panel-page");
 		});
@@ -798,7 +798,7 @@ var app = {
 		
 /********** EDIT ITEM *********************************************************/
 		
-		$("#edit-item-page .cancel-btn").click(function() {
+		$("#edit-item-page .back-btn").click(function() {
 			app.currentItem = undefined;
 			app.cleanupEditItemPage();
 			app.changePage("#manual-panel-page");
@@ -862,7 +862,7 @@ var app = {
 		
 /********** ADD ITEM **********************************************************/
 		
-		$("#add-item-page .cancel-btn").click(function() {
+		$("#add-item-page .back-btn").click(function() {
 			app.cleanupAddItemPage();
 			app.changePage("#manual-panel-page");
 		});
@@ -955,7 +955,7 @@ var app = {
 		
 /********** ADD SMARTSET ******************************************************/
 		
-		$("#add-smartset-page .cancel-btn").click(function() {
+		$("#add-smartset-page .back-btn").click(function() {
 			app.changePage("#smartsets-page");
 		});
 		
@@ -1034,7 +1034,7 @@ var app = {
 		
 /********** EDIT SMARTSET *****************************************************/
 		
-		$("#edit-smartset-page .cancel-btn").click(function() {
+		$("#edit-smartset-page .back-btn").click(function() {
 			app.currentSmartset = undefined;
 			app.changePage("#smartsets-page");
 		});

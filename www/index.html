@@ -53,14 +53,9 @@
 <!---------- WELCOME ---------------------------------------------------------->
 		
 		<div data-role="page" id="welcome-page">
-			<div data-role="header" class="header">
-				<div class="header-center">
-					<h2>Smart Home</h2>
-				</div>
-				
-				<div class="header-right">
-					<input type="button" class="connect-btn" value="connect">
-				</div>
+			<div class="header" data-role="header" data-position="fixed">
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<a class="connect-btn header-btn ui-btn ui-btn-right">connect</a>
 			</div>
 		
 			<div data-role="content" class="ui-content">
@@ -74,15 +69,9 @@
 <!---------- SIGN IN ---------------------------------------------------------->
 		
 		<div data-role="page" id="sign-in-page">
-			<div data-role="header" class="header">
-				<div class="header-left">
-					<input type="button" class="back-btn" value="&lt back">
-				</div>
-				
-				<div class="header-center">
-					<h2>Smart Home</h2>
-				</div>
-				<!-- button class="registerBtn" value="register"-->
+			<div class="header" data-role="header" data-position="fixed">
+				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
 			</div>
 			
 			<div data-role="content">
@@ -140,9 +129,9 @@
 		
 		<div data-role="page" id="profiles-page">
 			<div class="header" data-role="header" data-position="fixed">
-				<a class="log-out-btn">log out</a>
-				<div><h1 class="header-title">Smart Home</h1></div>
-				<a class="edit-btn ui-btn ui-icon-edit ui-btn-icon-notext" data-role="button">bau</a>
+				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<a class="edit-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-edit ui-btn-icon-notext"></a>
 			</div>
 			
 			<div data-role="main" class="ui-content">
@@ -158,18 +147,10 @@
 <!---------- EDIT PROFILE ----------------------------------------------------->
 		
 		<div data-role="page" id="edit-profile-page">
-			<div data-role="header" class="header">
-				<div class="header-left">
-					<input type="button" class="cancel-btn" value="cancel">
-				</div>
-				
-				<div class="header-center">
-					<h2>Smart Home</h2>
-				</div>
-				
-				<div class="header-right">
-					<input type="button" class="confirm-btn" value="confirm">
-				</div>
+			<div class="header" data-role="header" data-position="fixed">
+				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
 			<div data-role="content">
@@ -201,18 +182,10 @@
 <!---------- ADD PROFILE ------------------------------------------------------>
 		
 		<div data-role="page" id="add-profile-page">
-			<div data-role="header" class="header">
-				<div class="header-left">
-					<input type="button" class="cancel-btn" value="cancel">
-				</div>
-				
-				<div class="header-center">
-					<h2>Smart Home</h2>
-				</div>
-				
-				<div class="header-right">
-					<input type="button" class="confirm-btn" value="confirm">
-				</div>
+			<div class="header" data-role="header" data-position="fixed">
+				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
 			<div data-role="content">
@@ -256,18 +229,24 @@
 		
 <!---------- CONTROL PANEL ---------------------------------------------------->
 		<div data-role="page" id="control-panel-page">
-			<div data-role="header" class="header">
+			<!--<div data-role="header" class="header">
 				<div class="header-left">
 					<input type="button" class="menu-btn" value="menu">
 				</div>
-				
+
 				<div class="header-center">
 					<h2>Smart Home</h2>
 				</div>
-				
+
 				<div class="header-right">
 					<input type="button" class="edit-btn" value="edit">
 				</div>
+			</div>-->
+			
+			<div class="header" data-role="header" data-position="fixed">
+				<a class="menu-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-bars ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<a class="edit-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-edit ui-btn-icon-notext"></a>
 			</div>
 			
 			<div class="main" data-role="ui-content">
@@ -293,7 +272,7 @@
 <!---------- EDIT ROOM -------------------------------------------------------->
 		
 		<div data-role="page" id="edit-room-page">
-			<div data-role="header" class="header">
+			<!--<div data-role="header" class="header">
 				<div class="header-left">
 					<input type="button" class="cancel-btn" value="cancel">
 				</div>
@@ -305,6 +284,12 @@
 				<div class="header-right">
 					<input type="button" class="confirm-btn" value="confirm">
 				</div>
+			</div>-->
+			
+			<div class="header" data-role="header" data-position="fixed">
+				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
 			<div data-role="content">
@@ -323,7 +308,7 @@
 <!---------- ADD ROOM --------------------------------------------------------->
 		
 		<div data-role="page" id="add-room-page">
-			<div data-role="header" class="header">
+			<!--<div data-role="header" class="header">
 				<div class="header-left">
 					<input type="button" class="cancel-btn" value="cancel">
 				</div>
@@ -335,6 +320,12 @@
 				<div class="header-right">
 					<input type="button" class="confirm-btn" value="confirm">
 				</div>
+			</div>-->
+			
+			<div class="header" data-role="header" data-position="fixed">
+				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
 			<div data-role="content">
@@ -351,7 +342,7 @@
 <!---------- MANUAL PANEL ----------------------------------------------------->
 		
 		<div data-role="page" id="manual-panel-page">
-			<div data-role="header" class="header">
+			<!--<div data-role="header" class="header">
 				<div class="header-left">
 					<input type="button" class="back-btn" value="&lt back">
 				</div>
@@ -363,6 +354,12 @@
 				<div class="header-right">
 					<input type="button" class="edit-btn" value="edit">
 				</div>
+			</div>-->
+			
+			<div class="header" data-role="header" data-position="fixed">
+				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<a class="edit-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-edit ui-btn-icon-notext"></a>
 			</div>
 			
 			<div class="main" data-role="ui-content">
@@ -398,7 +395,7 @@
 <!---------- EDIT ITEM -------------------------------------------------------->
 		
 		<div data-role="page" id="edit-item-page">
-			<div data-role="header" class="header">
+			<!--<div data-role="header" class="header">
 				<div class="header-left">
 					<input type="button" class="cancel-btn" value="cancel">
 				</div>
@@ -410,6 +407,12 @@
 				<div class="header-right">
 					<input type="button" class="confirm-btn" value="confirm">
 				</div>
+			</div>-->
+			
+			<div class="header" data-role="header" data-position="fixed">
+				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
 			<div data-role="content">
@@ -444,7 +447,7 @@
 <!---------- ADD ITEM --------------------------------------------------------->
 		
 		<div data-role="page" id="add-item-page">
-			<div data-role="header" class="header">
+			<!--<div data-role="header" class="header">
 				<div class="header-left">
 					<input type="button" class="cancel-btn" value="cancel">
 				</div>
@@ -456,6 +459,12 @@
 				<div class="header-right">
 					<input type="button" class="confirm-btn" value="confirm">
 				</div>
+			</div>-->
+			
+			<div class="header" data-role="header" data-position="fixed">
+				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
 			<div data-role="content">
@@ -490,7 +499,7 @@
 		
 		
 		<div data-role="page" id="smartsets-page">
-			<div data-role="header" class="header">
+			<!--<div data-role="header" class="header">
 				<div class="header-left">
 					<input type="button" class="back-btn" value="&lt back">
 				</div>
@@ -499,9 +508,15 @@
 					<h2>smartsets</h2>
 				</div>
 				
-				<!--<div class="header-right">
+				<div class="header-right">
 					<input type="button" class="edit-btn" value="edit">
-				</div>-->
+				</div>
+			</div>-->
+			
+			<div class="header" data-role="header" data-position="fixed">
+				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<!--<a class="edit-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-edit ui-btn-icon-notext"></a>-->
 			</div>
 			
 			<div class="main" data-role="ui-content">
@@ -522,7 +537,7 @@
 		
 		
 		<div data-role="page" id="add-smartset-page">
-			<div data-role="header" class="header">
+			<!--<div data-role="header" class="header">
 				<div class="header-left">
 					<input type="button" class="cancel-btn" value="cancel">
 				</div>
@@ -534,6 +549,12 @@
 				<div class="header-right">
 					<input type="button" class="confirm-btn" value="confirm">
 				</div>
+			</div>-->
+			
+			<div class="header" data-role="header" data-position="fixed">
+				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
 			<div class="main" data-role="ui-content">
@@ -549,7 +570,7 @@
 		
 		
 		<div data-role="page" id="edit-smartset-page">
-			<div data-role="header" class="header">
+			<!--<div data-role="header" class="header">
 				<div class="header-left">
 					<input type="button" class="cancel-btn" value="cancel">
 				</div>
@@ -561,6 +582,12 @@
 				<div class="header-right">
 					<input type="button" class="confirm-btn" value="confirm">
 				</div>
+			</div>-->
+			
+			<div class="header" data-role="header" data-position="fixed">
+				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
 			<div class="main" data-role="ui-content">
