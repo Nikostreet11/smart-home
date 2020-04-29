@@ -33,7 +33,7 @@ var app = {
 	editProfilesMode: false,
 	EDIT_ROOMS_MODE: false,
 	EDIT_ITEMS_MODE: false,
-	AVATARS: ["avatar-0", "avatar-1", "avatar-2", "avatar-3", "avatar-4",
+	avatars: ["avatar-0", "avatar-1", "avatar-2", "avatar-3", "avatar-4",
 		"avatar-5", "avatar-6", "avatar-7", "avatar-8", "avatar-9", "avatar-10",
 		"avatar-11",],
 	ROOM_ICONS: ["001-bath", "002-bed", "003-bench", "004-bedside-table",
@@ -68,7 +68,7 @@ var app = {
 
 	
 	initialize: function() {
-		app.refreshAvatars(app.AVATARS);
+		/*app.refreshAvatars(app.AVATARS);*/
 		app.refreshRoomIcons(app.ROOM_ICONS);
 		app.refreshItemIcons(app.ITEM_ICONS);
 		
@@ -206,24 +206,9 @@ var app = {
 		$("#edit-profile-page .confirm-btn").click(function() {
 			var newProfile = {
 				"name" : $("#edit-profile-page input[name='name']").val(),
-				"avatar" : $("#edit-profile-page input[name=\"avatars\"]:checked").val(),
+				"avatar" : $("#edit-profile-page .profile-avatar").attr('name'),
 			};
 			
-			/*if ($("#edit-profile-page input[name='edit-password-checkbox']")[0].checked) {
-				var newPassword = $("#edit-profile-page input[name='new-password']").val();
-				if (newPassword == $("#edit-profile-page input[name='new-password-check']").val())
-					if (newPassword != password)
-						result = app.arduino.editProfile(name, password, avatar, newPassword);
-					else {
-						alert("Error: you must choose a different password");
-						return;
-					}
-				else {
-					alert("Error: passwords not matching");
-					return;
-				}
-			}
-			else*/
 			if (newProfile.name != "" &&
 					!newProfile.name.includes(" ") &&
 					newProfile.avatar != undefined) {
@@ -251,12 +236,14 @@ var app = {
 			}
 		});
 		
-		/*$("#edit-profile-page input[name=\"edit-password-checkBox\"]").change(function() {
-			if (this.checked == true)
-				$("#edit-profile-page .edit-password-container").css("display", "block");
-			else
-				$("#edit-profile-page .edit-password-container").css("display", "none");
-		});*/
+		$('#edit-profile-page').on("click", ".avatar-btn", function() {
+			$('#edit-profile-page .profile-avatar').attr(
+					'name',
+					$(this).find('.avatar').attr('name'));
+			$('#edit-profile-page .profile-avatar').attr(
+					'src',
+					$(this).find('img').attr('src'));
+		});
 		
 		$("#edit-profile-page .remove-btn").click(function() {
 			app.arduino.removeProfile(app.currentProfile)
@@ -1246,7 +1233,7 @@ var app = {
 		container.html("");
 		
 		for (let index = 0; index < profiles.length; index++) {
-			let blockType = app.toblockType(index % 2);
+			let blockType = app.toBlockType(index % 2);
 			let profile = profiles[index];
 			container.append(
 				'<div class="centered-list-block ' +
@@ -1283,7 +1270,7 @@ var app = {
 				"<h2>" + profile.name + "</h2>");
 	},
 	
-	refreshAvatars: function(avatars) {
+	/*refreshAvatars: function(avatars) {
 		var length = avatars.length;
 		
 		if (length > 0) {
@@ -1291,18 +1278,41 @@ var app = {
 			container.html("");
 			
 			for (let i = 0; i < length; i++) {
-				container.append("<label class=\"avatar\">" +
-						"<input type=\"radio\" name=\"avatars\" value=\"" +
-						avatars[i] + "\">" +
-						"<img src=\"img/profiles/" + avatars[i] + ".png\" " +
-						"width=\"100px\" height=\"100px\">" + 
-						"</label>");
+				container.append(
+						'<div class="ui-block-' + app.toBlockType(i % 5) + '">' +
+							'<a class="avatar-btn ui-btn">' +
+								'<div class="profile-avatar" name="' + avatars[i] + '">' +
+									'<img src=\"img/profiles/' + avatars[i] + '.png\" ' +
+									'width=\"70px\" height=\"70px\">' + 
+								'</div>' +
+							'</a>' +
+						'</div>');
 			}
 		}
-		else {
-			container.html("<p>No avatars found</p>");
-		}
 		
+		$(container).enhanceWithin();
+	},*/
+	
+	loadProfileAvatars: function(avatars, container) {		
+		if (avatars.length > 0) {
+			container.html("");
+			for (let i = 0; i < avatars.length; i++) {
+				container.append(
+						'<div class="ui-block-' + app.toBlockType(i % 5) + '">' +
+							'<a class="avatar-btn ui-btn">' +
+								'<div class="avatar" name="' + avatars[i] + '">' +
+									'<img name="' + avatars[i] + '" ' +
+											'src=\"img/profiles/' + avatars[i] + '.png\" ' +
+											'width=\"70px\" height=\"70px\" ' +
+									'>' +
+								'</div>' +
+							'</a>' +
+						'</div>');
+			}
+		}
+		/*else {
+			container.html("<p>No avatars found</p>");
+		}*/
 		$(container).enhanceWithin();
 	},
 	
@@ -1747,13 +1757,18 @@ var app = {
 		case "#add-profile-page":
 			break;
 				
-		case "#edit-profile-page":
-			$("#edit-profile-page input[name=\"name\"]").val(
+		case '#edit-profile-page':
+			$('#edit-profile-page img.profile-avatar').attr(
+					'name',
+					app.currentProfile.avatar);
+			$('#edit-profile-page img.profile-avatar').attr(
+					'src',
+					'img/profiles/' + app.currentProfile.avatar + '.png');
+			$('#edit-profile-page .name input').val(
 					app.currentProfile.name);
-			$("#edit-profile-page input[name=\"avatars\"][value=\"" +
-					app.currentProfile.avatar + "\"]")
-				.prop("checked", true)
-				.checkboxradio("refresh");
+			app.loadProfileAvatars(
+					app.avatars,
+					$('#edit-profile-page .avatars'));
 			break;
 				
 		case "#sign-in-profile-page":
@@ -1902,7 +1917,7 @@ var app = {
 		return string.replace(/ /g, "_");
 	},
 	
-	toblockType: function(number) {
+	toBlockType: function(number) {
 		return String.fromCharCode('a'.charCodeAt(0) + number);
 	},
 	

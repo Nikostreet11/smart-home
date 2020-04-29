@@ -155,16 +155,18 @@
 			
 			<div data-role="ui-content">
 				<form>
-					<img class="avatar" src="img/welcome.jpg" width="200px" height="200px"/>
+					<img class="profile-avatar" name="null" src="" width="200px" height="200px"/>
 					
-					<input type="text" name="name" placeholder="Insert profile name here"/>
+					<div class="input name"><input type="text" placeholder="Insert profile name here"/></div>
 					
-					<div class="avatars-container">
+					<div class="avatars ui-grid-d">
 						<!-- filled dynamically -->
 					</div>
-					
-					<input type="button" class="remove-btn" value="remove">
 				</form>
+			</div>
+			
+			<div class="footer" data-role="footer" data-position="fixed">
+				<a class="remove-btn ui-btn ui-btn-center ui-icon-delete ui-btn-icon-left">remove profile</a>
 			</div>
 		</div>
 		

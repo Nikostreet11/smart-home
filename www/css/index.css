@@ -146,6 +146,41 @@ body {
 	border-radius: 15px;
 }
 
+/********** EDIT PROFILE ******************************************************/
+
+#edit-profile-page .profile-avatar {
+	display: block;
+	margin: 20px auto;
+}
+
+#edit-profile-page .input.name {
+	width: 70%;
+	margin: 20px auto;
+}
+
+#edit-profile-page .avatars {
+	margin: 50px 10px;
+}
+
+#edit-profile-page .avatar-btn {
+	padding: 0px;
+	width: 70px;
+	height: 70px;
+	margin: 5px;
+}
+
+#edit-profile-page .footer {
+	text-align: center;
+}
+
+#edit-profile-page .remove-btn {
+	display: inline-block;
+	margin: 5px 0px;
+	background: transparent;
+	border: none;
+	font-size: 15px;
+}
+
 /********** CONTROL PANEL PAGE ************************************************/
 
 #control-panel-page .rooms-container {
@@ -175,13 +210,6 @@ body {
 	text-align: left;
 	margin: 4px 5px;
 	padding: 0px;
-}
-
-/********** EDIT PROFILE ******************************************************/
-
-#edit-profile-page .avatar {
-	display: block;
-	margin: auto;
 }
 
 /********** MANUAL PANEL PAGE *************************************************/
