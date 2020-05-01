@@ -219,20 +219,23 @@ body {
 	padding-left: 120px;
 }
 
-/*#control-panel-page .rooms-container {
-	width: 220px;
-	margin: auto;
+#control-panel-page .room-manual-btn {
+	width: 60px;
+	z-index: 0;
 }
 
-#control-panel-page .room[smart="true"] a  {
-	background-color: aqua;
-}*/
+#control-panel-page .room-manual-btn::after {
+	zoom: 125%;
+}
 
-#control-panel-page .float-bottom-right {
-	width: 50px;
-	position: fixed;
-	bottom: 0px;
-	right: 10px;
+#control-panel-page .room-smart-btn::after {
+	zoom: 200%;
+	width: 30px;
+	height: 30px;
+	left: 15px;
+	top: 15px;
+	margin: 0px;
+	border-radius: 25px;
 }
 
 #control-panel-page #activate-smartset-panel {

@@ -1,6 +1,9 @@
 /*global module*/
 
 module.exports = {
+	"parserOptions": {
+        "ecmaVersion": 8,
+	},
     "env": {
         "es6": true,
         "browser": true,

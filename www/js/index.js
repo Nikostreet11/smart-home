@@ -31,7 +31,7 @@ var app = {
 	currentItem: undefined,
 	currentSmartset: undefined,
 	editProfilesMode: false,
-	EDIT_ROOMS_MODE: false,
+	editRoomsMode: false,
 	EDIT_ITEMS_MODE: false,
 	avatars: ["avatar-0", "avatar-1", "avatar-2", "avatar-3", "avatar-4",
 		"avatar-5", "avatar-6", "avatar-7", "avatar-8", "avatar-9", "avatar-10",
@@ -344,7 +344,7 @@ var app = {
 		});
 		
 		$("#control-panel-page .edit-btn").click(function() {
-			if (app.EDIT_ROOMS_MODE)
+			if (app.editRoomsMode)
 				app.setEditRoomsMode(false);
 			else
 				app.setEditRoomsMode(true);
@@ -354,7 +354,115 @@ var app = {
 			app.changePage("#add-room-page");
 		});
 		
+		/*$("#btn").on("click", async () => {
+			const user = await getUser("tylermcginnis");
+			const weather = await getWeather(user.location);
+
+			updateUI({
+					user,
+					weather
+				});
+		});*/
+		
 		$("#control-panel-page")
+		.on("click", ".room-smart-btn", async function() {
+			let roomElement = $(this).parent();
+			let response1 = JSON.parse(await app.arduino.getRoom(
+					$(this).parent().attr("room-id"),
+					app.currentProfile));
+
+			if (response1.outcome == "success") {
+				app.currentRoom = response1.room;
+
+				if (app.editRoomsMode) {
+					app.changePage("#edit-room-page");
+				}
+				else if (roomElement.attr('smart') == 'false') {
+					app.showSmartsets(app.currentRoom.id);
+				}
+				else {
+					let smartset = app.findSmartset(
+							app.currentProfile,
+							response1.smartsets);
+					
+					let response2 = JSON.parse(await app.arduino.deactivateSmartset(
+							smartset.id,
+							app.currentRoom,
+							app.currentProfile));
+					
+					if (response2.outcome == "success") {
+						app.refreshRooms();
+					}
+					else {
+						alert(response2.error);
+					}
+				}
+			}
+			else {
+				alert(response1.error);
+			}
+		});
+						/*let smartsetToDisableId;
+
+						let smartsets = response.room.smartsets;
+						for (let i = 0; i < smartsets.length; i++) {
+							if (smartsets[i].owner.id == app.currentProfile.id) {
+								smartsetToDisableId = smartsets[i].id;
+							}
+						}
+
+						app.arduino.deactivateSmartset(
+								smartsetToDisableId,
+								response.room,
+								app.currentProfile)
+						.then(function(result) {
+							var response = JSON.parse(result);
+
+							if (response.outcome == "success") {
+								app.refreshRooms();
+							}
+							else {
+								alert(response.error);
+							}
+						})
+						.catch(function() {
+							alert("deactivateSmartset::error");
+						});
+					}
+					else {
+						app.currentRoom = response.room;
+						app.refreshActivateSmartsetPanel();
+						$('#activate-smartset-panel').css('display', 'block');
+					}*/
+				
+				
+			/*})
+			.catch(function() {
+				alert("getRoom::error");
+			});*/
+		
+		$("#control-panel-page")
+		.on("click", ".room-manual-btn", function() {
+			app.arduino.getRoom(
+					$(this).parent().attr("room-id"),
+					app.currentProfile)
+			.then(function(result) {
+				var response = JSON.parse(result);
+
+				if (response.outcome == "success") {
+					app.currentRoom = response.room;
+					app.changePage("#manual-panel-page");
+				}
+				else {
+					alert(response.error);
+				}
+			})
+			.catch(function() {
+				alert("getRoom::error");
+			});
+		});
+		
+		/*$("#control-panel-page")
 		.on("mousedown", ".room", function() {				
 			app.clickManager.active = true;
 			app.clickManager.timerId = setTimeout(function() {
@@ -373,7 +481,7 @@ var app = {
 						if (response.outcome == "success") {
 							app.currentRoom = response.room;
 
-							if (app.EDIT_ROOMS_MODE) {
+							if (app.editRoomsMode) {
 								app.changePage("#edit-room-page");
 							}
 							else {
@@ -413,7 +521,7 @@ var app = {
 									var response = JSON.parse(result);
 
 									if (response.outcome == "success") {
-										app.refreshRoomslist();
+										app.refreshRooms();
 									}
 									else {
 										alert(response.error);
@@ -443,7 +551,7 @@ var app = {
 			app.clickManager.active = false;
 			clearTimeout(app.timer);
 			app.timer = null;
-		});
+		});*/
 		
 		$("#control-panel-page")
 		.on("click", ".smartsets-list .smartset .activate-btn", function() {
@@ -458,12 +566,12 @@ var app = {
 
 				if (response.outcome == "success") {
 					$('#activate-smartsets-panel').css('display', 'none');
-					app.refreshRoomslist();
+					app.refreshRooms();
 				}
 				else if (response.outcome == "partial_success") {
 					alert(response.reason);
 					$('#activate-smartsets-panel').css('display', 'none');
-					app.refreshRoomslist();
+					app.refreshRooms();
 				}
 				else {
 					alert(response.error);
@@ -1346,14 +1454,15 @@ var app = {
 		$(container).enhanceWithin();
 	},
 	
-	refreshRoomslist: function() {
+	refreshRooms: function() {
 		app.arduino.getRooms(app.currentProfile)
 		.then(function(result) {
-			//alert(result);
 			var response = JSON.parse(result);
 
 			if (response.outcome == "success") {
-				app.loadRoomslist(response.rooms);
+				app.loadRooms(
+						response.rooms,
+						$("#control-panel-page .rooms"));
 			}
 			else {
 				alert(response.error);
@@ -1364,14 +1473,47 @@ var app = {
 		});
 	},
 	
-	loadRoomslist: function(rooms) {
-		var container = $(".rooms-container");
+	loadRooms: function(rooms, container) {
 		container.html("");
-		
 		for (let index = 0; index < rooms.length; index++) {
 			let room = rooms[index];
 			container.append(
-				'<div ' +
+				'<li class="room" room-id="' + room.id + '" smart="false">' +
+					'<a class="room-smart-btn">' +
+						'<img class="room-icon"' +
+								'src="img/rooms/' + room.icon + '.png">' +
+						'<h2 class="room-name">' + room.name + '</h2>' +
+				
+						/*<img class="active-profile-avatar"
+								src="img/profiles/avatar-0.png"
+								width="50px" height="50px">
+						<img class="active-profile-avatar"
+								src="img/profiles/avatar-1.png"
+								width="50px" height="50px">
+						<img class="active-profile-avatar"
+								src="img/profiles/avatar-2.png"
+								width="50px" height="50px">
+						<img class="active-profile-avatar"
+								src="img/profiles/avatar-3.png"
+								width="50px" height="50px">
+						<img class="active-profile-avatar"
+								src="img/profiles/avatar-4.png"
+								width="50px" height="50px">
+						<img class="active-profile-avatar"
+								src="img/profiles/avatar-0.png"
+								width="50px" height="50px">
+						<img class="active-profile-avatar"
+								src="img/profiles/avatar-1.png"
+								width="50px" height="50px">
+						<img class="active-profile-avatar"
+								src="img/profiles/avatar-2.png"
+								width="50px" height="50px">*/
+				
+					'</a>' +
+					'<a class="room-manual-btn" data-icon="gear"></a>' +
+				'</li>'
+			);
+				/*'<div ' +
 					'class="room" ' +
 					'id="' + room.id + '" ' +
 					'smart="false" ' +
@@ -1383,10 +1525,9 @@ var app = {
 					'</a>' +
 					'<div class="active-profiles">' +
 					'</div>' +
-				'</div>'
-			);
+				'</div>'*/
 			
-			for (let j = 0; j < room.smartsets.length; j++) {
+			/*for (let j = 0; j < room.smartsets.length; j++) {
 				let owner = room.smartsets[j].owner;
 				
 				$("#" + room.id + " .active-profiles").append(
@@ -1400,10 +1541,10 @@ var app = {
 				if (owner.id == app.currentProfile.id) {
 					$("#" + room.id).attr('smart', 'true');
 				}
-			}
+			}*/
 		}
 		
-		$(container).enhanceWithin();
+		container.listview("refresh");
 		
 		if (container.html() == "") {
 			container.html("<p>There aren't any rooms yet</p>");
@@ -1663,32 +1804,26 @@ var app = {
 	
 	setEditProfilesMode: function(value) {
 		if (value) {
-			/*$("#profiles-page .edit-btn").val("done");
-			$("#profiles-page .edit-btn").button("refresh");*/
 			$("#profiles-page .profile-avatar").addClass('obscured');
 			$("#profiles-page .profile-btn").addClass('ui-icon-edit ui-btn-icon-top');
 		}
 		else {
-			/*$("#profiles-page .edit-btn").val("edit");
-			$("#profiles-page .edit-btn").button("refresh");*/
 			$("#profiles-page .profile-avatar").removeClass('obscured');
 			$("#profiles-page .profile-btn").removeClass('ui-icon-edit ui-btn-icon-top');
 		}
 		app.editProfilesMode = value;
 	},
 	
-	setEditRoomsMode: function(boolean) {
-		if (boolean) {
-			$("#control-panel-page .edit-btn").val("done");
-			$("#control-panel-page .edit-btn").button("refresh");
-			// TODO: change appearances
+	setEditRoomsMode: function(value) {
+		if (value) {
+			$("#control-panel-page .room-smart-btn").addClass('obscured');
+			$("#control-panel-page .room-smart-btn").addClass('ui-icon-edit ui-btn-icon-left');
 		}
 		else {
-			$("#control-panel-page .edit-btn").val("edit");
-			$("#control-panel-page .edit-btn").button("refresh");
-			// TODO: change appearances
+			$("#control-panel-page .room-smart-btn").removeClass('obscured');
+			$("#control-panel-page .room-smart-btn").removeClass('ui-icon-edit ui-btn-icon-left');
 		}
-		app.EDIT_ROOMS_MODE = boolean;
+		app.editRoomsMode = value;
 	},
 	
 	setEditItemsMode: function(boolean) {
@@ -1769,11 +1904,11 @@ var app = {
 			break;
 				
 		case "#control-panel-page":
-			if (app.EDIT_ROOMS_MODE) {
+			if (app.editRoomsMode) {
 				app.setEditRoomsMode(false);
 			}
 			
-			app.refreshRoomslist();
+			app.refreshRooms();
 			/*app.arduino.getRooms(app.currentProfile)
 			.then(function(result) {
 				//alert(result);
