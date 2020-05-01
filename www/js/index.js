@@ -274,13 +274,13 @@ var app = {
 		
 		$("#add-profile-page .confirm-btn").click(function() {
 			var profile = {
-				"name" : $("#add-profile-page input[name='name']").val(),
-				"avatar" : $("#add-profile-page input[name=\"avatars\"]:checked").val(),
+				name : $("#add-profile-page .profile-name").val(),
+				avatar : $("#add-profile-page .profile-avatar").attr('name'),
 			};
 			
 			if (profile.name != "" &&
 					!profile.name.includes(" ") &&
-					profile.avatar != undefined) {
+					profile.avatar != "") {
 				app.arduino.addProfile(profile)
 				.then(function(response) {
 					var outcome = JSON.parse(response).outcome;
@@ -301,6 +301,15 @@ var app = {
 			else {
 				alert("invalid data");
 			}
+		});
+		
+		$('#add-profile-page').on("click", ".avatar-btn", function() {
+			$('#add-profile-page .profile-avatar').attr(
+					'name',
+					$(this).find('.avatar').attr('name'));
+			$('#add-profile-page .profile-avatar').attr(
+					'src',
+					$(this).find('img').attr('src'));
 		});
 		
 		
@@ -1730,6 +1739,15 @@ var app = {
 			break;
 				
 		case "#add-profile-page":
+			$('#add-profile-page .profile-avatar').attr(
+					'name',
+					app.avatars[0]);
+			$('#add-profile-page .profile-avatar').attr(
+					'src',
+					'img/profiles/' + app.avatars[0] + '.png');
+			app.loadProfileAvatars(
+					app.avatars,
+					$('#add-profile-page .avatars'));
 			break;
 				
 		case '#edit-profile-page':

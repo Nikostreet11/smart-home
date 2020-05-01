@@ -181,6 +181,29 @@ body {
 	font-size: 15px;
 }
 
+/********** EDIT PROFILE ******************************************************/
+
+#add-profile-page .profile-avatar {
+	display: block;
+	margin: 20px auto;
+}
+
+#add-profile-page .profile-name-wrapper {
+	width: 70%;
+	margin: 20px auto;
+}
+
+#add-profile-page .avatars {
+	margin: 50px 10px;
+}
+
+#add-profile-page .avatar-btn {
+	padding: 0px;
+	width: 70px;
+	height: 70px;
+	margin: 5px;
+}
+
 /********** CONTROL PANEL PAGE ************************************************/
 
 #control-panel-page .rooms-container {
