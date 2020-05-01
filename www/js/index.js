@@ -205,13 +205,13 @@ var app = {
 		
 		$("#edit-profile-page .confirm-btn").click(function() {
 			var newProfile = {
-				"name" : $("#edit-profile-page input[name='name']").val(),
-				"avatar" : $("#edit-profile-page .profile-avatar").attr('name'),
+				name : $("#edit-profile-page .profile-name").val(),
+				avatar : $("#edit-profile-page .profile-avatar").attr('name'),
 			};
 			
 			if (newProfile.name != "" &&
 					!newProfile.name.includes(" ") &&
-					newProfile.avatar != undefined) {
+					newProfile.avatar != "") {
 				app.arduino.editProfile(app.currentProfile, newProfile)
 				.then(function(response) {
 					var outcome = JSON.parse(response).outcome;
@@ -1270,29 +1270,6 @@ var app = {
 				"<h2>" + profile.name + "</h2>");
 	},
 	
-	/*refreshAvatars: function(avatars) {
-		var length = avatars.length;
-		
-		if (length > 0) {
-			var container = $(".avatars-container");
-			container.html("");
-			
-			for (let i = 0; i < length; i++) {
-				container.append(
-						'<div class="ui-block-' + app.toBlockType(i % 5) + '">' +
-							'<a class="avatar-btn ui-btn">' +
-								'<div class="profile-avatar" name="' + avatars[i] + '">' +
-									'<img src=\"img/profiles/' + avatars[i] + '.png\" ' +
-									'width=\"70px\" height=\"70px\">' + 
-								'</div>' +
-							'</a>' +
-						'</div>');
-			}
-		}
-		
-		$(container).enhanceWithin();
-	},*/
-	
 	loadProfileAvatars: function(avatars, container) {		
 		if (avatars.length > 0) {
 			container.html("");
@@ -1300,12 +1277,10 @@ var app = {
 				container.append(
 						'<div class="ui-block-' + app.toBlockType(i % 5) + '">' +
 							'<a class="avatar-btn ui-btn">' +
-								'<div class="avatar" name="' + avatars[i] + '">' +
-									'<img name="' + avatars[i] + '" ' +
-											'src=\"img/profiles/' + avatars[i] + '.png\" ' +
-											'width=\"70px\" height=\"70px\" ' +
-									'>' +
-								'</div>' +
+								'<img class="avatar" name="' + avatars[i] + '" ' +
+										'src=\"img/profiles/' + avatars[i] + '.png\" ' +
+										'width=\"70px\" height=\"70px\" ' +
+								'>' +
 							'</a>' +
 						'</div>');
 			}
@@ -1758,13 +1733,13 @@ var app = {
 			break;
 				
 		case '#edit-profile-page':
-			$('#edit-profile-page img.profile-avatar').attr(
+			$('#edit-profile-page .profile-avatar').attr(
 					'name',
 					app.currentProfile.avatar);
-			$('#edit-profile-page img.profile-avatar').attr(
+			$('#edit-profile-page .profile-avatar').attr(
 					'src',
 					'img/profiles/' + app.currentProfile.avatar + '.png');
-			$('#edit-profile-page .name input').val(
+			$('#edit-profile-page .profile-name').val(
 					app.currentProfile.name);
 			app.loadProfileAvatars(
 					app.avatars,
