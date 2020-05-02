@@ -181,7 +181,7 @@ body {
 	font-size: 15px;
 }
 
-/********** EDIT PROFILE ******************************************************/
+/********** ADD PROFILE *******************************************************/
 
 #add-profile-page .profile-avatar {
 	display: block;
@@ -238,17 +238,38 @@ body {
 	border-radius: 25px;
 }
 
-#control-panel-page #activate-smartset-panel {
-	display: none;
-	position: fixed;
-	bottom: 50px;
-	width: 100%;
+#control-panel-page .footer .title {
+	text-align: left;
+	font-size: 20px !important;
+	font-weight: normal;
+	padding: 0px;
+	margin: 10px 30px;
 }
 
-#control-panel-page #smartsets-header-title {
-	text-align: left;
-	margin: 4px 5px;
-	padding: 0px;
+#control-panel-page .footer .hide-footer-btn {
+	width: 30px;
+	height: 30px;
+	border-radius: 15px;
+}
+
+#control-panel-page .footer .hide-footer-btn::after {
+	zoom: 120%;
+	width: 25px;
+	height: 25px;
+	left: 0px;
+	top: 0px;
+	margin: 0px;
+}
+
+#control-panel-page .footer .smartset-btn {
+	z-index: 0;
+	margin-right: 10%;
+}
+
+#control-panel-page .footer .smartset-name {
+	font-size: 16px;
+	font-weight: normal;
+	margin: 0;
 }
 
 /********** MANUAL PANEL PAGE *************************************************/

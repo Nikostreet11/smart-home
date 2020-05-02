@@ -366,40 +366,56 @@ var app = {
 		
 		$("#control-panel-page")
 		.on("click", ".room-smart-btn", async function() {
-			let roomElement = $(this).parent();
-			let response1 = JSON.parse(await app.arduino.getRoom(
-					$(this).parent().attr("room-id"),
-					app.currentProfile));
+			let roomId = $(this).parent().attr("room-id");
+			let profileId = app.currentProfile.id;
+			try {
+				let response1 = JSON.parse(await app.arduino.getRoom(
+						roomId,
+						profileId));
 
-			if (response1.outcome == "success") {
-				app.currentRoom = response1.room;
+				if (response1.outcome == "success") {
+					app.currentRoom = response1.room;
 
-				if (app.editRoomsMode) {
-					app.changePage("#edit-room-page");
-				}
-				else if (roomElement.attr('smart') == 'false') {
-					app.showSmartsets(app.currentRoom.id);
-				}
-				else {
-					let smartset = app.findSmartset(
-							app.currentProfile,
-							response1.smartsets);
-					
-					let response2 = JSON.parse(await app.arduino.deactivateSmartset(
-							smartset.id,
-							app.currentRoom,
-							app.currentProfile));
-					
-					if (response2.outcome == "success") {
-						app.refreshRooms();
+					if (app.editRoomsMode) {
+						app.changePage("#edit-room-page");
 					}
 					else {
-						alert(response2.error);
+						let activeSmartset = app.findSmartset(
+								profileId,
+								response1.room.smartsets);
+						
+						if (activeSmartset == undefined) {
+							alert('show smartsets');
+							//app.refreshActivateSmartsetPanel();
+							//$('#activate-smartset-panel').css('display', 'block');
+						}
+						else {
+							// TODO: test
+							try {
+								let response2 = JSON.parse(await app.arduino.deactivateSmartset(
+										activeSmartset.id,
+										roomId,
+										profileId));
+
+								if (response2.outcome == "success") {
+									app.refreshRooms();
+								}
+								else {
+									alert(response2.error);
+								}
+							}
+							catch (error) {
+								alert("deactivateSmartset::error");
+							}
+						}
 					}
 				}
+				else {
+					alert(response1.error);
+				}
 			}
-			else {
-				alert(response1.error);
+			catch (error) {
+				alert("getRoom::error");
 			}
 		});
 						/*let smartsetToDisableId;
@@ -445,7 +461,7 @@ var app = {
 		.on("click", ".room-manual-btn", function() {
 			app.arduino.getRoom(
 					$(this).parent().attr("room-id"),
-					app.currentProfile)
+					app.currentProfile.id)
 			.then(function(result) {
 				var response = JSON.parse(result);
 
@@ -2049,6 +2065,15 @@ var app = {
 		return String.fromCharCode('a'.charCodeAt(0) + number);
 	},
 	
+	findSmartset: function(profileId, smartsets) {
+		for (let i = 0; i < smartsets.length; i++) {
+			if (smartsets[i].owner_id == profileId) {
+				return smartsets[i];
+			}
+		}
+		return undefined;
+	},
+	
 	
 /********** ARDUINO ***********************************************************/
 	
@@ -2194,12 +2219,12 @@ var app = {
 					"profile_id=" + profile.id);
 		},
 		
-		getRoom: function(roomId, profile) {
+		getRoom: function(roomId, profileId) {
 			return app.arduino.request(
 					"GET",
 					"http://" + app.connectedDevice.address +
 							"/rooms/" + roomId,
-					"profile_id=" + profile.id);
+					"profile_id=" + profileId);
 		},
 		
 		getItems: function(room, profile) {
@@ -2479,7 +2504,6 @@ var app = {
 					}));
 		},
 		
-		// TODO: test
 		activateSmartset: function(smartsetId, room, profile) {
 			return app.arduino.request(
 					"POST",
@@ -2494,18 +2518,17 @@ var app = {
 					}));
 		},
 		
-		// TODO: test
-		deactivateSmartset: function(smartsetId, room, profile) {
+		deactivateSmartset: function(smartsetId, roomId, profileId) {
 			return app.arduino.request(
 					"POST",
 					"http://" + app.connectedDevice.address +
-							"/rooms/" + room.id +
+							"/rooms/" + roomId +
 							"?action=deactivate_smartset",
 					JSON.stringify({
-						"action": "deactivate_smartset",
+						action: "deactivate_smartset",
 						smartset_id : smartsetId,
-						room_id : room.id,
-						profile_id : profile.id,
+						room_id : roomId,
+						profile_id : profileId,
 					}));
 		},
 		
