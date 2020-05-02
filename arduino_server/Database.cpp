@@ -41,6 +41,14 @@ void Database::debugInit()
 	addRoom(testJson);
 	testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Kids'_bedroom\",\"icon\":\"035-bunk\"}}";
 	addRoom(testJson);
+	testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Bau1\",\"icon\":\"020-kitchen-set\"}}";
+	addRoom(testJson);
+	testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Bau2\",\"icon\":\"035-bunk\"}}";
+	addRoom(testJson);
+	testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Bau3\",\"icon\":\"020-kitchen-set\"}}";
+	addRoom(testJson);
+	testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Bau4\",\"icon\":\"035-bunk\"}}";
+	addRoom(testJson);
 
 	// test item entries
 	testJson = "{\"task\":\"add\",\"new_item\":{\"name\":\"Light\",\"icon\":\"011-light-bulb\",\"port\":\"none\"},\"room_id\":\"room_0000\"}";
