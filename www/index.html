@@ -167,7 +167,7 @@
 				</form>
 			</div>
 			
-			<div class="footer" data-role="footer" data-position="fixed">
+			<div class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
 				<a class="remove-btn ui-btn ui-btn-center ui-icon-delete ui-btn-icon-left">remove profile</a>
 			</div>
 		</div>
@@ -223,21 +223,7 @@
 		</div>
 		
 <!---------- CONTROL PANEL ---------------------------------------------------->
-		<div data-role="page" id="control-panel-page">
-			<!--<div data-role="header" class="header">
-				<div class="header-left">
-					<input type="button" class="menu-btn" value="menu">
-				</div>
-
-				<div class="header-center">
-					<h2>Smart Home</h2>
-				</div>
-
-				<div class="header-right">
-					<input type="button" class="edit-btn" value="edit">
-				</div>
-			</div>-->
-			
+		<div data-role="page" id="control-panel-page">			
 			<div class="header" data-role="header" data-position="fixed">
 				<a class="menu-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-bars ui-btn-icon-notext"></a>
 				<div class="header-title ui-title"><h1>Smart Home</h1></div>
@@ -246,102 +232,6 @@
 			
 			<div class="main" data-role="ui-content">
 				<ul class="rooms" data-role="listview">
-					<li class="room" room-id="bau">
-						<a class="room-smart-btn">
-							<img class="room-icon"
-									src="img/rooms/014-desk.png">
-							<h2 class="room-name">Acura</h2>
-							<div class="active-profiles">
-								<img class="active-profile-avatar"
-										src="img/profiles/avatar-0.png"
-										width="50px" height="50px">
-								<img class="active-profile-avatar"
-										src="img/profiles/avatar-1.png"
-										width="50px" height="50px">
-								<img class="active-profile-avatar"
-										src="img/profiles/avatar-2.png"
-										width="50px" height="50px">
-								<img class="active-profile-avatar"
-										src="img/profiles/avatar-3.png"
-										width="50px" height="50px">
-								<img class="active-profile-avatar"
-										src="img/profiles/avatar-4.png"
-										width="50px" height="50px">
-								<img class="active-profile-avatar"
-										src="img/profiles/avatar-0.png"
-										width="50px" height="50px">
-								<img class="active-profile-avatar"
-										src="img/profiles/avatar-1.png"
-										width="50px" height="50px">
-								<img class="active-profile-avatar"
-										src="img/profiles/avatar-2.png"
-										width="50px" height="50px">
-							</div>
-						</a>
-						<a class="room-manual-btn" data-icon="gear"></a>
-					</li>
-					<li class="room">
-						<a class="room-smart-btn">
-							<img class="room-icon"
-									src="img/rooms/014-desk.png">
-							<h2>Audi</h2>
-							<img class="active-profile-avatar"
-									src="img/profiles/avatar-0.png"
-								 	width="50px" height="50px">
-							<img class="active-profile-avatar"
-									src="img/profiles/avatar-2.png"
-								 	width="50px" height="50px">
-							<img class="active-profile-avatar"
-									src="img/profiles/avatar-3.png"
-								 	width="50px" height="50px">
-						</a>
-						<a class="room-manual-btn" data-icon="gear"></a>
-					</li>
-					<li class="room">
-						<a class="room-smart-btn">
-							<img class="room-icon"
-									src="img/rooms/014-desk.png">
-							<h2>BMW</h2>
-							<img class="active-profile-avatar"
-									src="img/profiles/avatar-1.png"
-								 	width="50px" height="50px">
-							<img class="active-profile-avatar"
-									src="img/profiles/avatar-4.png"
-								 	width="50px" height="50px">
-						</a>
-						<a class="room-manual-btn" data-icon="gear"></a>
-					</li>
-					<li class="room">
-						<a class="room-smart-btn">
-							<img class="room-icon"
-									src="img/rooms/014-desk.png">
-							<h2>Cadillac</h2>
-							<img class="active-profile-avatar"
-									src="img/profiles/avatar-0.png"
-								 	width="50px" height="50px">
-							<img class="active-profile-avatar"
-									src="img/profiles/avatar-1.png"
-								 	width="50px" height="50px">
-							<img class="active-profile-avatar"
-									src="img/profiles/avatar-2.png"
-								 	width="50px" height="50px">
-							<img class="active-profile-avatar"
-									src="img/profiles/avatar-3.png"
-								 	width="50px" height="50px">
-						</a>
-						<a class="room-manual-btn" data-icon="gear"></a>
-					</li>
-					<li class="room">
-						<a class="room-smart-btn">
-							<img class="room-icon"
-									src="img/rooms/014-desk.png">
-							<h2>Ferrari</h2>
-							<img class="active-profile-avatar"
-									src="img/profiles/avatar-4.png"
-								 	width="50px" height="50px">
-						</a>
-						<a class="room-manual-btn" data-icon="gear"></a>
-					</li>
 					<!-- filled dynamically -->
 				</ul>
 				
@@ -350,7 +240,6 @@
 				</a>
 			</div>
 			
-			<!--<div class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false">-->
 			<div class="footer">
 				<div data-role="header">
 					<h2 class="title">activate...</h2>
@@ -358,46 +247,6 @@
 				</div>
 
 				<ul class="smartsets" data-role="listview">
-					<li class="smartset" data-icon="false" smartset-id="bau">
-						<a class="smartset-btn">
-							<h3 class="smartset-name">smartset 1</h3>
-						</a>
-					</li>
-					<li class="smartset" data-icon="false">
-						<a class="smartset-btn">
-							<h3 class="smartset-name">smartset 2</h3>
-						</a>
-					</li>
-					<li class="smartset" data-icon="false">
-						<a class="smartset-btn">
-							<h3 class="smartset-name">smartset 3</h3>
-						</a>
-					</li>
-					<li class="smartset" data-icon="false">
-						<a class="smartset-btn">
-							<h3 class="smartset-name">smartset 4</h3>
-						</a>
-					</li>
-					<!--<li class="smartset" data-icon="false" smartset-id="bau">
-						<a class="smartset-btn">
-							<h3 class="smartset-name">smartset 5</h3>
-						</a>
-					</li>
-					<li class="smartset" data-icon="false">
-						<a class="smartset-btn">
-							<h3 class="smartset-name">smartset 6</h3>
-						</a>
-					</li>
-					<li class="smartset" data-icon="false">
-						<a class="smartset-btn">
-							<h3 class="smartset-name">smartset 7</h3>
-						</a>
-					</li>
-					<li class="smartset" data-icon="false">
-						<a class="smartset-btn">
-							<h3 class="smartset-name">smartset 8</h3>-->
-						</a>
-					</li>
 				</ul>
 			</div>
 		</div>
@@ -405,20 +254,6 @@
 <!---------- EDIT ROOM -------------------------------------------------------->
 		
 		<div data-role="page" id="edit-room-page">
-			<!--<div data-role="header" class="header">
-				<div class="header-left">
-					<input type="button" class="cancel-btn" value="cancel">
-				</div>
-				
-				<div class="header-center">
-					<h2>Smart Home</h2>
-				</div>
-				
-				<div class="header-right">
-					<input type="button" class="confirm-btn" value="confirm">
-				</div>
-			</div>-->
-			
 			<div class="header" data-role="header" data-position="fixed">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
 				<div class="header-title ui-title"><h1>Smart Home</h1></div>
@@ -427,45 +262,41 @@
 			
 			<div data-role="ui-content">
 				<form>
-					<input type="text" name="name" placeholder="Insert room name here"/>
+					<img class="room-icon" name="" src="" width="200px" height="200px"/>
 					
-					<div class="room-icons-container">
-						<!-- filled dynamically -->
+					<div class="room-name-wrapper">
+						<input class="room-name" type="text" placeholder="Insert room name here"/>
 					</div>
 					
-					<input type="button" class="remove-btn" value="remove">
+					<div class="icons ui-grid-d">
+						<!-- filled dynamically -->
+					</div>
 				</form>
+			</div>
+			
+			<div class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
+				<a class="remove-btn ui-btn ui-btn-center ui-icon-delete ui-btn-icon-left">remove room</a>
 			</div>
 		</div>
 		
 <!---------- ADD ROOM --------------------------------------------------------->
 		
 		<div data-role="page" id="add-room-page">
-			<!--<div data-role="header" class="header">
-				<div class="header-left">
-					<input type="button" class="cancel-btn" value="cancel">
-				</div>
-				
-				<div class="header-center">
-					<h2>Smart Home</h2>
-				</div>
-				
-				<div class="header-right">
-					<input type="button" class="confirm-btn" value="confirm">
-				</div>
-			</div>-->
-			
 			<div class="header" data-role="header" data-position="fixed">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
 				<div class="header-title ui-title"><h1>Smart Home</h1></div>
 				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
-			<div data-role="content">
+			<div data-role="ui-content">
 				<form>
-					<input type="text" name="name" placeholder="Insert room name here"/>
+					<img class="room-icon" name="" src="" width="200px" height="200px"/>
 					
-					<div class="room-icons-container">
+					<div class="room-name-wrapper">
+						<input class="room-name" type="text" placeholder="Insert room name here"/>
+					</div>
+					
+					<div class="icons ui-grid-d">
 						<!-- filled dynamically -->
 					</div>
 				</form>

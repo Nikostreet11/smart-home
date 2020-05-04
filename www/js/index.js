@@ -33,10 +33,10 @@ var app = {
 	editProfilesMode: false,
 	editRoomsMode: false,
 	EDIT_ITEMS_MODE: false,
-	avatars: ["avatar-0", "avatar-1", "avatar-2", "avatar-3", "avatar-4",
+	profileAvatars: ["avatar-0", "avatar-1", "avatar-2", "avatar-3", "avatar-4",
 		"avatar-5", "avatar-6", "avatar-7", "avatar-8", "avatar-9", "avatar-10",
 		"avatar-11",],
-	ROOM_ICONS: ["001-bath", "002-bed", "003-bench", "004-bedside-table",
+	roomIcons: ["001-bath", "002-bed", "003-bench", "004-bedside-table",
 		"005-book-shelf", "006-book-shelf-1", "007-cabinet", "008-cradle",
 		"009-chair", "010-chair-1", "011-chair-2", "012-closet",
 		"013-coffee-table", "014-desk", "015-desktop", "016-picture",
@@ -69,7 +69,7 @@ var app = {
 	
 	initialize: function() {
 		/*app.refreshAvatars(app.AVATARS);*/
-		app.refreshRoomIcons(app.ROOM_ICONS);
+		/*app.refreshRoomIcons(app.ROOM_ICONS);*/
 		app.refreshItemIcons(app.ITEM_ICONS);
 		
 		
@@ -205,7 +205,7 @@ var app = {
 		
 		$("#edit-profile-page .confirm-btn").click(function() {
 			var newProfile = {
-				name : $("#edit-profile-page .profile-name").val(),
+				name : app.dePrettyfy($("#edit-profile-page .profile-name").val()),
 				avatar : $("#edit-profile-page .profile-avatar").attr('name'),
 			};
 			
@@ -274,7 +274,7 @@ var app = {
 		
 		$("#add-profile-page .confirm-btn").click(function() {
 			var profile = {
-				name : $("#add-profile-page .profile-name").val(),
+				name : app.dePrettyfy($("#add-profile-page .profile-name").val()),
 				avatar : $("#add-profile-page .profile-avatar").attr('name'),
 			};
 			
@@ -442,97 +442,6 @@ var app = {
 			});
 		});
 		
-		/*$("#control-panel-page")
-		.on("mousedown", ".room", function() {				
-			app.clickManager.active = true;
-			app.clickManager.timerId = setTimeout(function() {
-				clearTimeout(app.clickManager.timerId);
-				app.clickManager.timerId = null;
-			}, 500);
-		})
-		.on('mouseup', ".room", function() {
-			if (app.clickManager.active) {
-				if (app.clickManager.timerId) {
-					// click
-					app.arduino.getRoom(this.getAttribute("id"), app.currentProfile)
-					.then(function(result) {
-						var response = JSON.parse(result);
-
-						if (response.outcome == "success") {
-							app.currentRoom = response.room;
-
-							if (app.editRoomsMode) {
-								app.changePage("#edit-room-page");
-							}
-							else {
-								app.changePage("#manual-panel-page");
-							}
-						}
-						else {
-							alert(response.error);
-						}
-					})
-					.catch(function() {
-						alert("getRoom::error");
-					});
-				}
-				else {
-					// hold
-					app.arduino.getRoom(this.getAttribute("id"), app.currentProfile)
-					.then(function(result) {
-						var response = JSON.parse(result);
-
-						if (response.outcome == "success") {
-							if ($('.room[id="' + response.room.id + '"]').attr('smart') == 'true') {
-								let smartsetToDisableId;
-								
-								let smartsets = response.room.smartsets;
-								for (let i = 0; i < smartsets.length; i++) {
-									if (smartsets[i].owner.id == app.currentProfile.id) {
-										smartsetToDisableId = smartsets[i].id;
-									}
-								}
-								
-								app.arduino.deactivateSmartset(
-										smartsetToDisableId,
-										response.room,
-										app.currentProfile)
-								.then(function(result) {
-									var response = JSON.parse(result);
-
-									if (response.outcome == "success") {
-										app.refreshRooms();
-									}
-									else {
-										alert(response.error);
-									}
-								})
-								.catch(function() {
-									alert("deactivateSmartset::error");
-								});
-							}
-							else {
-								app.currentRoom = response.room;
-								app.refreshActivateSmartsetPanel();
-								$('#activate-smartset-panel').css('display', 'block');
-							}
-						}
-						else {
-							alert(response.error);
-						}
-					})
-					.catch(function() {
-						alert("getRoom::error");
-					});
-				}
-			}
-		})
-		.on('mouseleave', ".room", function() {
-			app.clickManager.active = false;
-			clearTimeout(app.timer);
-			app.timer = null;
-		});*/
-		
 		$("#control-panel-page .footer")
 		.on("click", ".close-footer-btn", function() {
 			app.close('#control-panel-page .footer');
@@ -579,9 +488,8 @@ var app = {
 		
 		$("#edit-room-page .confirm-btn").click(function() {
 			var newRoom = {
-				"name" : app.dePrettyfy(
-						$("#edit-room-page input[name='name']").val()),
-				"icon" : $("#edit-room-page input[name=\"room-icons\"]:checked").val(),
+				name : app.dePrettyfy($("#edit-room-page .room-name").val()),
+				icon : $("#edit-room-page .room-icon").attr('name'),
 			};
 			
 			if (newRoom.name != "" &&
@@ -609,6 +517,15 @@ var app = {
 			else {
 				alert("invalid data");
 			}
+		});
+		
+		$('#edit-room-page').on("click", ".icon-btn", function() {
+			$('#edit-room-page .room-icon').attr(
+					'name',
+					$(this).find('.icon').attr('name'));
+			$('#edit-room-page .room-icon').attr(
+					'src',
+					$(this).find('img').attr('src'));
 		});
 		
 		$("#edit-room-page .remove-btn").click(function() {
@@ -639,9 +556,8 @@ var app = {
 		
 		$("#add-room-page .confirm-btn").click(function() {
 			var room = {
-				"name" : app.dePrettyfy(
-						$("#add-room-page input[name='name']").val()),
-				"icon" : $("#add-room-page input[name=\"room-icons\"]:checked").val(),
+				name : app.dePrettyfy($("#add-room-page .room-name").val()),
+				icon : $("#add-room-page .room-icon").attr('name'),
 			};
 			
 			if (room.name != "" &&
@@ -667,6 +583,15 @@ var app = {
 			else {
 				alert("invalid data");
 			}
+		});
+		
+		$('#add-room-page').on("click", ".icon-btn", function() {
+			$('#add-room-page .room-icon').attr(
+					'name',
+					$(this).find('.icon').attr('name'));
+			$('#add-room-page .room-icon').attr(
+					'src',
+					$(this).find('img').attr('src'));
 		});
 		
 		
@@ -1373,7 +1298,7 @@ var app = {
 				"<h2>" + profile.name + "</h2>");
 	},
 	
-	loadProfileAvatars: function(avatars, container) {		
+	loadProfileAvatars: function(avatars, container) {
 		if (avatars.length > 0) {
 			container.html("");
 			for (let i = 0; i < avatars.length; i++) {
@@ -1724,7 +1649,23 @@ var app = {
 	
 	load: function(target, data) {
 		
-		if (target.is($('#control-panel-page .footer .smartsets'))) {
+		if (target.is($("#add-profile-page .avatars")) ||
+				target.is($("#edit-profile-page .avatars"))) {
+			target.html("");
+			for (let i = 0; i < data.length; i++) {
+				target.append(
+						'<div class="ui-block-' + app.toBlockType(i % 5) + '">' +
+							'<a class="avatar-btn ui-btn">' +
+								'<img class="avatar" name="' + data[i] + '" ' +
+										'src=\"img/profiles/' + data[i] + '.png\" ' +
+										'width=\"70px\" height=\"70px\" ' +
+								'>' +
+							'</a>' +
+						'</div>');
+			}
+		}
+		
+		else if (target.is($('#control-panel-page .footer .smartsets'))) {
 			target.html("");
 			
 			for (let i = 0; i < data.length; i++) {
@@ -1774,6 +1715,29 @@ var app = {
 							'src="img/profiles/' + profile.avatar + '.png" ' +
 							'width="50px" height="50px">'
 				);
+			}
+		}
+		
+		else if (target.is($("#add-room-page .icons")) ||
+				target.is($("#edit-room-page .icons"))) {
+			target.html("");
+			for (let i = 0; i < app.roomIcons.length; i++) {
+				target.append(
+					/*"<label class=\"room-icon\">" +
+						"<input type=\"radio\" name=\"room-icons\" value=\"" +
+						data[i] + "\">" +
+						"<img src=\"img/rooms/" + data[i] + ".png\" " +
+						"width=\"100px\" height=\"100px\">" + 
+						"</label>");*/
+				
+						'<div class="ui-block-' + app.toBlockType(i % 5) + '">' +
+							'<a class="icon-btn ui-btn">' +
+								'<img class="icon" name="' + data[i] + '" ' +
+										'src=\"img/rooms/' + data[i] + '.png\" ' +
+										'width=\"70px\" height=\"70px\" ' +
+								'>' +
+							'</a>' +
+						'</div>');
 			}
 		}
 		
@@ -2063,13 +2027,11 @@ var app = {
 		case "#add-profile-page":
 			$('#add-profile-page .profile-avatar').attr(
 					'name',
-					app.avatars[0]);
+					app.profileAvatars[0]);
 			$('#add-profile-page .profile-avatar').attr(
 					'src',
-					'img/profiles/' + app.avatars[0] + '.png');
-			app.loadProfileAvatars(
-					app.avatars,
-					$('#add-profile-page .avatars'));
+					'img/profiles/' + app.profileAvatars[0] + '.png');
+			app.load($('#add-profile-page .avatars'), app.profileAvatars);
 			break;
 				
 		case '#edit-profile-page':
@@ -2081,9 +2043,7 @@ var app = {
 					'img/profiles/' + app.currentProfile.avatar + '.png');
 			$('#edit-profile-page .profile-name').val(
 					app.currentProfile.name);
-			app.loadProfileAvatars(
-					app.avatars,
-					$('#edit-profile-page .avatars'));
+			app.load($('#edit-profile-page .avatars'), app.profileAvatars);
 			break;
 				
 		case "#sign-in-profile-page":
@@ -2099,15 +2059,25 @@ var app = {
 			break;
 				
 		case "#add-room-page":
+			$('#add-room-page .room-icon').attr(
+					'name',
+					app.roomIcons[16]);
+			$('#add-room-page .room-icon').attr(
+					'src',
+					'img/rooms/' + app.roomIcons[16] + '.png');
+			app.load($('#add-room-page .icons'), app.roomIcons);
 			break;
 				
-		case "#edit-room-page":
-			$("#edit-room-page input[name=\"name\"]").val(app.prettyfy(
-					app.currentRoom.name));
-			$("#edit-room-page input[name=\"room-icons\"][value=\"" +
-					app.currentRoom.icon + "\"]")
-				.prop("checked", true)
-				.checkboxradio("refresh");
+		case '#edit-room-page':
+			$('#edit-room-page .room-icon').attr(
+					'name',
+					app.currentRoom.icon);
+			$('#edit-room-page .room-icon').attr(
+					'src',
+					'img/rooms/' + app.currentRoom.icon + '.png');
+			$('#edit-room-page .room-name').val(
+					app.currentRoom.name);
+			app.load($('#edit-room-page .icons'), app.roomIcons);
 			break;
 				
 		case "#manual-panel-page":
