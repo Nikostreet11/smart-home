@@ -32,7 +32,7 @@ var app = {
 	currentSmartset: undefined,
 	editProfilesMode: false,
 	editRoomsMode: false,
-	EDIT_ITEMS_MODE: false,
+	editItemsMode: false,
 	profileAvatars: ["avatar-0", "avatar-1", "avatar-2", "avatar-3", "avatar-4",
 		"avatar-5", "avatar-6", "avatar-7", "avatar-8", "avatar-9", "avatar-10",
 		"avatar-11",],
@@ -603,10 +603,12 @@ var app = {
 		});
 		
 		$("#manual-panel-page .edit-btn").click(function() {
-			if (app.EDIT_ITEMS_MODE)
+			if (app.editItemsMode) {
 				app.setEditItemsMode(false);
-			else
+			}
+			else {
 				app.setEditItemsMode(true);
+			}
 		});
 		
 		$("#manual-panel-page")
@@ -618,7 +620,7 @@ var app = {
 		.on("click", ".item .active-btn", function() {
 			var itemId = $(this).parent().attr("id");
 			
-			if (app.EDIT_ITEMS_MODE) {
+			if (app.editItemsMode) {
 				app.arduino.getItem(itemId, app.currentRoom, app.currentProfile)
 				.then(function(result) {
 					var response1 = JSON.parse(result);
@@ -1977,18 +1979,14 @@ var app = {
 		app.editRoomsMode = value;
 	},
 	
-	setEditItemsMode: function(boolean) {
-		if (boolean) {
-			$("#manual-panel-page .edit-btn").val("done");
-			$("#manual-panel-page .edit-btn").button("refresh");
+	setEditItemsMode: function(value) {
+		if (value) {
 			// TODO: change appearances
 		}
 		else {
-			$("#manual-panel-page .edit-btn").val("edit");
-			$("#manual-panel-page .edit-btn").button("refresh");
 			// TODO: change appearances
 		}
-		app.EDIT_ITEMS_MODE = boolean;
+		app.editItemsMode = value;
 	},
 	
 	changePage: function(destination) {
@@ -2081,7 +2079,7 @@ var app = {
 			break;
 				
 		case "#manual-panel-page":
-			if (app.EDIT_ITEMS_MODE)
+			if (app.editItemsMode)
 				app.setEditItemsMode(false);
 				
 			app.arduino.getItems(
