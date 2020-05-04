@@ -43,6 +43,7 @@ public:
 	String getItems(String roomId, String profileId);
 	String getItem(String itemId, String roomId, String profileId);
 	String getSmartsets(String profileId, String roomId, String itemId);
+	String getActiveSmartsets(String roomId);
 	String getSmartset(String smartsetId, String profileId, String roomId);
 	// TODO: remove later
 	String getSmartsetByName(String smartsetName, String roomId, String profileId);

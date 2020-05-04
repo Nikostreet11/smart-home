@@ -458,6 +458,31 @@ String Database::getSmartsets(String profileId, String roomId, String itemId)
 	return getLog();
 }
 
+String Database::getActiveSmartsets(String roomId) {
+	Room* room = searchRoom(roomId);
+	if (!room)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "room not found";
+	}
+	else
+	{
+		// send the active smartsets
+		responseJson["outcome"] = "success";
+
+		JsonArray jsonSmartsets = responseJson.createNestedArray("active_smartsets");
+		for (int i = 0; i < room->getSmartsetsSize(); i++)
+		{
+			Smartset* smartset = room->getSmartset(i);
+			JsonObject jsonSmartset = jsonSmartsets.createNestedObject();
+			smartsetToJson(smartset, jsonSmartset);
+		}
+	}
+	log(responseJson);
+
+	return getLog();
+}
+
 String Database::getSmartset(String smartsetId, String profileId, String roomId)
 {
 	Profile* profile = searchProfile(profileId);
@@ -1423,12 +1448,12 @@ void Database::roomToJson(Room* room, JsonObject& json)
 	json["name"] = room->getName();
 	json["icon"] = room->getIcon();
 	
-	JsonArray smartsetsJson = json.createNestedArray("smartsets");
+	/*JsonArray smartsetsJson = json.createNestedArray("smartsets");
 	for (int i = 0; i < room->getSmartsetsSize(); i++)
 	{
 		JsonObject smartsetJson = smartsetsJson.createNestedObject();
 		smartsetToJson(room->getSmartset(i), smartsetJson);
-	}
+	}*/
 }
 
 void Database::itemToJson(Item* item, JsonObject& json)
@@ -1444,7 +1469,7 @@ void Database::smartsetToJson(Smartset* smartset, JsonObject& json)
 {
 	json["id"] = smartset->getId();
 	json["name"] = smartset->getName();
-	json["owner-id"] = smartset->getOwner()->getId();
+	json["owner_id"] = smartset->getOwner()->getId();
 }
 
 void Database::smartItemToJson(SmartItem* smartItem, JsonObject& json)

@@ -76,6 +76,10 @@ body {
 	filter: brightness(70%);
 }
 
+.enhanced {
+	filter: sepia(10%) saturate(200%);
+}
+
 .fixed-bottom-right {
 	position: fixed;
 	right: 15px;
@@ -219,6 +223,16 @@ body {
 	padding-left: 120px;
 }
 
+#control-panel-page .room-smart-btn::after {
+	zoom: 200%;
+	width: 30px;
+	height: 30px;
+	left: 15px;
+	top: 15px;
+	margin: 0px;
+	border-radius: 25px;
+}
+
 #control-panel-page .room-manual-btn {
 	width: 60px;
 	z-index: 0;
@@ -228,14 +242,8 @@ body {
 	zoom: 125%;
 }
 
-#control-panel-page .room-smart-btn::after {
-	zoom: 200%;
-	width: 30px;
-	height: 30px;
-	left: 15px;
-	top: 15px;
-	margin: 0px;
-	border-radius: 25px;
+#control-panel-page .room-smart-btn .active-profile-avatar {
+	margin-right: 5px;
 }
 
 .footer{

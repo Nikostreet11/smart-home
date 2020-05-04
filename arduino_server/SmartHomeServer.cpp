@@ -300,6 +300,38 @@ bool SmartHomeServer::handleGET(String path, String query)
 			}
 		}
 	}
+	else if (path.startsWith("/active_smartsets/"))
+	{
+		// get the smartset id
+		String remainingPath = path.substring(String("/active_smartsets/").length());
+		int smartsetIdEnd = remainingPath.indexOf("/");
+		String smartsetId;
+		String roomId = getParameter("room_id", query);
+		
+		if (smartsetIdEnd != -1)
+		{
+			smartsetId = remainingPath.substring(0, smartsetIdEnd);
+			remainingPath = remainingPath.substring(smartsetIdEnd);
+
+			// TODO
+		}
+		else
+		{
+			smartsetId = remainingPath;
+			if (smartsetId == "")
+			{
+				// get all the selected active smartsets
+				responseText = database.getActiveSmartsets(roomId);
+				return true;
+			}
+			else
+			{
+				// get the active smartset
+				//responseText = database.getActiveSmartset(smartsetId, roomId);
+				//return true;
+			}
+		}
+	}
 	else if (path.startsWith("/smart_items/"))
 	{
 		// get the item name
