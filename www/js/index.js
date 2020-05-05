@@ -617,39 +617,27 @@ var app = {
 		});
 		
 		$("#manual-panel-page")
-		.on("click", ".item .active-btn", function() {
-			var itemId = $(this).parent().attr("id");
+		.on("click", ".item .item-active-btn", async function() {
+			var itemId = $(this).parents('.item').attr("item-id");
 			
 			if (app.editItemsMode) {
-				app.arduino.getItem(itemId, app.currentRoom, app.currentProfile)
-				.then(function(result) {
-					var response1 = JSON.parse(result);
-
-					if (response1.outcome == "success") {
-						app.arduino.getPorts()
-						.then(function(result) {
-							var response2 = JSON.parse(result);
-							
-							if (response2.outcome == "success") {
-								app.currentItem = response1.item;
-								app.refreshPorts(response2.ports);
-								app.changePage("#edit-item-page");
-							}
-							else {
-								alert(response2.error);
-							}
-						})
-						.catch(function() {
-							alert("getAvailablePorts::error");
-						});
+				try {
+					let response = JSON.parse(await app.arduino.getItem(
+							itemId,
+							app.currentRoom,
+							app.currentProfile));
+					if (response.outcome != "success") {
+						alert(response.error);
+						return;
 					}
 					else {
-						alert(response1.error);
+						app.currentItem = response.item;
+						app.changePage("#edit-item-page");
 					}
-				})
-				.catch(function() {
+				}
+				catch (error) {
 					alert("getItem::error");
-				});
+				}
 			}
 			else {
 				var itemActive;
@@ -687,22 +675,6 @@ var app = {
 		
 		$("#manual-panel-page .add-btn").click(function() {
 			app.changePage("#add-item-page");
-			
-			app.arduino.getPorts()
-			.then(function(result) {
-				var response = JSON.parse(result);
-
-				if (response.outcome == "success") {
-					app.refreshPorts(response.ports);
-					app.changePage("#add-item-page");
-				}
-				else {
-					alert(response.error);
-				}
-			})
-			.catch(function() {
-				alert("getAvailablePorts::error");
-			});
 		});
 		
 		$("#manual-panel-page")
@@ -782,35 +754,6 @@ var app = {
 		.on("click", ".smartsets-panel .add-to-new-smartset-btn", function() {
 			app.changePage('#add-smartset-page');
 		});
-		
-		/*$("#manual-panel-page")
-		.on("click", ".item .smart .off-btn", function() {
-			app.arduino.setItemSmart(
-					$(this).parents(".item").attr('id'),
-					'false',
-					$(this).parents(".item").attr('active'),
-					app.currentRoom,
-					app.currentProfile)
-			.then(function(result) {
-				var response = JSON.parse(result);
-
-				if (response.outcome == "success") {
-					alert('removed');
-				}
-				else {
-					alert(response.error);
-				}
-			})
-			.catch(function() {
-				alert("setItemSmart::error");
-			});
-		});*/
-		
-		/*$("#manual-panel-page")
-		.on("click", ".add-to-new-smartset-btn", function() {
-			//$.mobile.changePage('#add-edit-smartset-page', 'pop', true, true);
-			$('#popup').popup('open');
-		});*/
 		
 		
 /********** EDIT ITEM *********************************************************/
@@ -1654,6 +1597,21 @@ var app = {
 			}
 		}
 		
+		else if (target.is($("#add-item-page .port-select")) ||
+				target.is($("#edit-item-page .port-select"))) {
+			try {
+				let response = JSON.parse(await app.arduino.getPorts());
+				if (response.outcome != "success") {
+					alert(response.error);
+					return;
+				}
+				app.load(target, response.ports);
+			}
+			catch(error) {
+				alert("getPorts::error");
+			}
+		}
+		
 		else {
 			alert('refresh::error - target not found');
 		}
@@ -1768,6 +1726,30 @@ var app = {
 					'</li>');
 			}
 			target.listview("refresh");
+		}
+		
+		else if (target.is($("#add-item-page .port-select")) ||
+				target.is($("#edit-item-page .port-select"))) {
+			target.html("");
+			if (app.currentItem != undefined &&
+					app.currentItem.port != "none") {
+				target.append(
+					"<option value=\"" + app.currentItem.port + "\">" +
+					app.prettyfy(app.currentItem.port) + "</option>");
+			}
+
+			target.append("<option value=\"none\">none</option>");
+			
+			for (let i = 0; i < data.length; i++) {
+				target.append(
+					"<option value=\"" + data[i].name + "\">" +
+					app.prettyfy(data[i].name) + "</option>");
+			}
+			
+			// i don't know why, but it works...
+			target.trigger("change");
+			target.selectmenu();
+			target.selectmenu('refresh', true);
 		}
 		
 		else {
@@ -1905,7 +1887,7 @@ var app = {
 		}*/
 	},
 	
-	refreshPorts: function(ports) {
+	/*refreshPorts: function(ports) {
 		var container = $("select.port-select");
 		container.html("");
 		
@@ -1931,12 +1913,11 @@ var app = {
 		}
 		else {
 			container.prop("disabled", true);
-			//container.prop("disabled", "disabled");
 		}
 		
 		container.selectmenu().selectmenu("refresh");
 		container.enhanceWithin();
-	},
+	},*/
 	
 	cleanupEditProfilePage: function() {
 		$("#edit-profile-page input[name=\"name\"]").val("");
@@ -2116,7 +2097,6 @@ var app = {
 				var response = JSON.parse(result);
 				
 				if (response.outcome == "success") {
-					//app.refreshItems(response.items);
 					app.refresh('#manual-panel-page .items');
 				}
 				else {
@@ -2129,17 +2109,19 @@ var app = {
 			break;
 				
 		case "#add-item-page":
+			app.refresh('#add-item-page .port-select');
 			break;
 				
 		case "#edit-item-page":
-			$("#edit-item-page input[name=\"name\"]").val(app.prettyfy(
+			/*$("#edit-item-page input[name=\"name\"]").val(app.prettyfy(
 					app.currentItem.name));
 			$("#edit-item-page .port-select option[value=\"" +
 					app.currentItem.port + "\"]").prop("selected", true);
 			$("#edit-item-page input[name=\"item-icons\"][value=\"" +
 					app.currentItem.icon + "\"]")
 				.prop("checked", true)
-				.checkboxradio("refresh");
+				.checkboxradio("refresh");*/
+			app.refresh('#edit-item-page .port-select');
 			break;
 			
 		case "#smartsets-page":
