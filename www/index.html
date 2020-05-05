@@ -329,13 +329,23 @@
 			<div class="main" data-role="ui-content">
 				<a class="view-saved-smartsets-btn ui-btn">smartsets</a>
 				
-				<div class="items-list">
+				<ul class="items" data-role="listview">
 					<!--filled dynamically-->
-				</div>
+					<li class="item" item-id="item.id" active="item.active">
+						<div class="item-inner">
+							<a class="item-active-btn ui-btn">
+								<img src="img/items/011-light-bulb.png"
+										width="60px" height="60px"/>
+							</a>
+							<h2 class="item-name">prettifiedName</h2>
+							<a class="item-smart-btn ui-btn ui-btn-right ui-icon-heart ui-btn-icon-notext"></a>
+						</div>
+					</li>
+				</ul>
 				
-				<div class="float-bottom-right">
-					<input type="button" class="add-btn" value="+">
-				</div>
+				<a class="add-btn fixed-bottom-right rounded-btn
+						ui-btn ui-icon-plus ui-btn-icon-notext">
+				</a>
 				
 				<div class="smartsets-panel">
 					<div class="ui-bar ui-bar-a" data-role="header">

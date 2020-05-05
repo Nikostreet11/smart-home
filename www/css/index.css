@@ -358,71 +358,48 @@ body {
 
 /********** MANUAL PANEL PAGE *************************************************/
 
-#manual-panel-page .items-list {
-	/*width: 220px;*/
-	/*margin: auto;*/
-}
-
 #manual-panel-page .item {
-	position: relative;
-	margin: 0px;
+	height: 60px;
+	padding: 10px 10px 10px 100px;
 }
 
-#manual-panel-page .item .active-btn {
-	display: inline-block;
-	width: 120px;
-	margin: 0px;
-	/*margin: auto;*/
-}
-
-#manual-panel-page .item .active-btn h3 {
-	margin:0px;
-}
-
-#manual-panel-page .item .smart-container {
+#manual-panel-page .item .item-active-btn {
 	position: absolute;
-	bottom: 0px;
-	right: 0px;
+	top: 0px;
+	left: 0px;
+	margin: 10px 20px;
+	padding: 0px;
+	width: 60px;
+	height: 60px;
+	border-radius: 30px;
 }
 
-#manual-panel-page .item .smart-container .smart {
-	position: relative;
-	/*display: inline-block;*/
-	margin: 5px 0px 0px 0px;
-}
-
-#manual-panel-page .item .smart-container .smart button {
-	margin: 0px;
-	padding: 0px 10px;
-}
-
-#manual-panel-page .item .smart-container .smart .on-btn {
-	background-color: #2deb82;
-}
-
-#manual-panel-page .item .smart-container .smart .off-btn {
-	background-color: #cccccc;
-}
-
-#manual-panel-page .item .smart-container .smart p {
-	color: white;
-	margin: 5px 15px;
+#manual-panel-page .item .item-name {
+	font-size: 18px;
 	font-weight: normal;
-	font-size: 15px;
+	margin: 5px 0px;
 }
 
-#manual-panel-page .items-list hr {
-	border: transparent;
-	border-top: 2px solid #dddddd;
-	margin: 15px 0px;
+#manual-panel-page .item .item-smart-btn {
+	position: absolute;
+	top: -1px;
+	right: 0;
+	margin: 0;
+	height: 82px;
+	width: 80px;
 }
 
-#manual-panel-page .float-bottom-right {
-	width: 50px;
-	position: fixed;
-	bottom: 0px;
-	right: 10px;
+#manual-panel-page .item .item-smart-btn::after {
+	zoom: 130%;
+	width: 30px;
+	height: 30px;
+	left: 17px;
+	top: 16px;
+	margin: 0px;
+	border-radius: 150px;
 }
+
+
 
 #manual-panel-page .smartsets-panel {
 	display: none;

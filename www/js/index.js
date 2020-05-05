@@ -1464,7 +1464,7 @@ var app = {
 		}
 	},
 	
-	refreshItems: function(items) {
+	/*refreshItems: function(items) {
 		var container = $(".items-list");
 		container.html("");
 		
@@ -1492,11 +1492,6 @@ var app = {
 									'<p>smart on</p>' +
 								'</button>' +
 							'</div>' +
-							/*'<div class="smart">' +
-								'<button type="submit" class="off-btn">' +
-									'<p>smart off</p>' +
-								'</button>' +
-							'</div>' +*/
 						'</div>' +
 					'</div>'
 			);
@@ -1506,7 +1501,7 @@ var app = {
 		if (container.html() == "") {
 			container.html("<p>There aren't any items in this room yet</p>");
 		}
-	},
+	},*/
 	
 	
 /********** OPEN **************************************************************/
@@ -1641,6 +1636,24 @@ var app = {
 			}
 		}
 		
+		else if (target.is($("#manual-panel-page .items"))) {
+			try {
+				let response = JSON.parse(
+						await app.arduino.getItems(
+								app.currentRoom,
+								app.currentProfile));
+				if (response.outcome == "success") {
+					app.load(target, response.items);
+				}
+				else {
+					alert(response.error);
+				}
+			}
+			catch (error) {
+				alert("getItems::error");
+			}
+		}
+		
 		else {
 			alert('refresh::error - target not found');
 		}
@@ -1723,7 +1736,7 @@ var app = {
 		else if (target.is($("#add-room-page .icons")) ||
 				target.is($("#edit-room-page .icons"))) {
 			target.html("");
-			for (let i = 0; i < app.roomIcons.length; i++) {
+			for (let i = 0; i < data.length; i++) {
 				target.append(
 						'<div class="centered-list-block ui-block-' + app.toBlockType(i % 5) + '">' +
 							'<a class="icon-btn ui-btn">' +
@@ -1734,6 +1747,27 @@ var app = {
 							'</a>' +
 						'</div>');
 			}
+		}
+		
+		else if (target.is($("#manual-panel-page .items"))) {
+			target.html("");
+			for (let i = 0; i < data.length; i++) {
+				target.append(
+					'<li class="item" ' +
+							'item-id="' + data[i].id + '" ' +
+							'active="' + data[i].active + '" ' +
+					'>' +
+						'<div class="item-inner">' +
+							'<a class="item-active-btn ui-btn">' +
+								'<img src="img/items/' + data[i].icon + '.png"' +
+										'width="60px" height="60px"/>' +
+							'</a>' +
+							'<h2 class="item-name">' + app.prettyfy(data[i].name) + '</h2>' +
+							'<a class="item-smart-btn ui-btn ui-btn-right ui-icon-heart ui-btn-icon-notext"></a>' +
+						'</div>' +
+					'</li>');
+			}
+			target.listview("refresh");
 		}
 		
 		else {
@@ -2079,11 +2113,11 @@ var app = {
 					app.currentRoom,
 					app.currentProfile)
 			.then(function(result) {
-				//alert(result);
 				var response = JSON.parse(result);
 				
 				if (response.outcome == "success") {
-					app.refreshItems(response.items);
+					//app.refreshItems(response.items);
+					app.refresh('#manual-panel-page .items');
 				}
 				else {
 					alert(response.error);
