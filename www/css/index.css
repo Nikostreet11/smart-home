@@ -72,6 +72,10 @@ body {
 	text-align: center;
 }
 
+.centered-list-block a {
+	display: inline-block;
+}
+
 .obscured {
 	filter: brightness(70%);
 }
@@ -122,7 +126,6 @@ body {
 }
 
 #profiles-page .profile-btn {
-	display: inline-block;
 	margin: 10px 0px;
 	padding: 0px;
 	border-color: transparent;
@@ -168,9 +171,9 @@ body {
 
 #edit-profile-page .avatar-btn {
 	padding: 0px;
+	margin: 5px 0px;
 	width: 70px;
 	height: 70px;
-	margin: 5px;
 }
 
 #edit-profile-page .footer {
@@ -203,9 +206,9 @@ body {
 
 #add-profile-page .avatar-btn {
 	padding: 0px;
+	margin: 5px 0px;
 	width: 70px;
 	height: 70px;
-	margin: 5px;
 }
 
 /********** CONTROL PANEL PAGE ************************************************/

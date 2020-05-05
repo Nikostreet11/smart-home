@@ -1656,7 +1656,7 @@ var app = {
 			target.html("");
 			for (let i = 0; i < data.length; i++) {
 				target.append(
-						'<div class="ui-block-' + app.toBlockType(i % 5) + '">' +
+						'<div class="centered-list-block ui-block-' + app.toBlockType(i % 5) + '">' +
 							'<a class="avatar-btn ui-btn">' +
 								'<img class="avatar" name="' + data[i] + '" ' +
 										'src=\"img/profiles/' + data[i] + '.png\" ' +
@@ -1725,14 +1725,7 @@ var app = {
 			target.html("");
 			for (let i = 0; i < app.roomIcons.length; i++) {
 				target.append(
-					/*"<label class=\"room-icon\">" +
-						"<input type=\"radio\" name=\"room-icons\" value=\"" +
-						data[i] + "\">" +
-						"<img src=\"img/rooms/" + data[i] + ".png\" " +
-						"width=\"100px\" height=\"100px\">" + 
-						"</label>");*/
-				
-						'<div class="ui-block-' + app.toBlockType(i % 5) + '">' +
+						'<div class="centered-list-block ui-block-' + app.toBlockType(i % 5) + '">' +
 							'<a class="icon-btn ui-btn">' +
 								'<img class="icon" name="' + data[i] + '" ' +
 										'src=\"img/rooms/' + data[i] + '.png\" ' +
