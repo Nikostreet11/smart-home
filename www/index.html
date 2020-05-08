@@ -327,7 +327,23 @@
 			</div>
 			
 			<div class="main" data-role="ui-content">
-				<a class="view-saved-smartsets-btn ui-btn">smartsets</a>
+				<ul class="smartsets"
+						data-role="listview"
+						data-inset="true"
+						data-shadow="false">
+					<li class="smartsets-collapsible"
+							data-role="collapsible"
+							data-inset="false"
+							data-iconpos="right"
+							data-collapsed-icon="carat-d"
+							data-expanded-icon="carat-u">
+						<h2 class="title">smartsets</h2>
+						<ul class="smartsets-listview"
+								data-role="listview">
+							<!--filled dynamically-->
+						</ul>
+					</li>
+				</ul>
 				
 				<ul class="items" data-role="listview">
 					<!--filled dynamically-->
@@ -369,101 +385,59 @@
 <!---------- EDIT ITEM -------------------------------------------------------->
 		
 		<div data-role="page" id="edit-item-page">
-			<!--<div data-role="header" class="header">
-				<div class="header-left">
-					<input type="button" class="cancel-btn" value="cancel">
-				</div>
-				
-				<div class="header-center">
-					<h2>Smart Home</h2>
-				</div>
-				
-				<div class="header-right">
-					<input type="button" class="confirm-btn" value="confirm">
-				</div>
-			</div>-->
-			
 			<div class="header" data-role="header" data-position="fixed">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
 				<div class="header-title ui-title"><h1>Smart Home</h1></div>
 				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
-			<div data-role="content">
+			<div data-role="ui-content">
 				<form>
-					<h4>name</h4>
-					<input type="text" name="name" placeholder="insert item name here"/>
+					<img class="item-icon" name="" src="" width="200px" height="200px"/>
 					
-					<h4>port</h4>
+					<div class="item-name-wrapper">
+						<input class="item-name" type="text" placeholder="Insert item name here"/>
+					</div>
+					
 					<select class="port-select">
 						<!--filled dynamically-->
 					</select>
 					
-					<h4>icon</h4>
-					<div class="item-icons-container">
+					<div class="icons ui-grid-d">
 						<!-- filled dynamically -->
 					</div>
-					
-					<!--<h4>type</h4>
-					<input type="radio" name="type" value="on/off" checked>
-					<input type="radio" name="type" value="linear">
-					<input type="radio" name="type" value="radio">-->
-					
-					<!--<h4>privacy</h4>
-					<input type="radio" name="privacy" value="Public"/> Public
-					<input type="radio" name="privacy" value="Private"/> Private-->
-					
-					<input type="button" class="remove-btn" value="remove">
 				</form>
+			</div>
+			
+			<div class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
+				<a class="remove-btn ui-btn ui-btn-center ui-icon-delete ui-btn-icon-left">remove item</a>
 			</div>
 		</div>
 		
 <!---------- ADD ITEM --------------------------------------------------------->
 		
-		<div data-role="page" id="add-item-page">
-			<!--<div data-role="header" class="header">
-				<div class="header-left">
-					<input type="button" class="cancel-btn" value="cancel">
-				</div>
-				
-				<div class="header-center">
-					<h2>Smart Home</h2>
-				</div>
-				
-				<div class="header-right">
-					<input type="button" class="confirm-btn" value="confirm">
-				</div>
-			</div>-->
-			
+		<div data-role="page" id="add-item-page">			
 			<div class="header" data-role="header" data-position="fixed">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
 				<div class="header-title ui-title"><h1>Smart Home</h1></div>
 				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
-			<div data-role="content">
+			<div data-role="ui-content">
 				<form>
-					<h4>name</h4>
-					<input type="text" name="name" placeholder="Insert item name here"/>
+					<img class="item-icon" name="" src="" width="200px" height="200px"/>
 					
-					<h4>port</h4>
+					<div class="item-name-wrapper">
+						<input class="item-name" type="text" placeholder="Insert item name here"/>
+					</div>
+					
 					<select class="port-select">
 						<!--filled dynamically-->
 					</select>
 					
-					<h4>icon</h4>
-					<div class="item-icons-container">
+					<div class="icons ui-grid-d">
 						<!-- filled dynamically -->
 					</div>
-					
-					<!--<h4>type</h4>
-					<input type="radio" name="type" value="on/off" checked>
-					<input type="radio" name="type" value="linear">
-					<input type="radio" name="type" value="radio">-->
-					
-					<!--<h4>privacy</h4>
-					<input type="radio" name="privacy" value="Public"/> Public
-					<input type="radio" name="privacy" value="Private"/> Private-->
 				</form>
 			</div>
 		</div>

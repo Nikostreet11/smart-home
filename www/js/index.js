@@ -45,7 +45,7 @@ var app = {
 		"024-kitchen-table-1", "025-lamp", "026-nightstand", "027-nightstand-1",
 		"028-office-chair", "029-rocking-chair", "030-shelf", "031-sofa",
 		"032-chair-3", "033-stool", "034-television", "035-bunk", "036-sink",],
-	ITEM_ICONS: ["001-wifi", "002-thermometer", "003-refrigerator", "004-lamp",
+	itemIcons: ["001-wifi", "002-thermometer", "003-refrigerator", "004-lamp",
 		"005-washing-machine", "006-real-estate", "007-eco-house", "008-smart-home",
 		"009-danger", "010-home", "011-light-bulb", "012-smartphone",
 		"013-home-1", "014-setting", "015-house", "016-air-conditioner",
@@ -70,7 +70,7 @@ var app = {
 	initialize: function() {
 		/*app.refreshAvatars(app.AVATARS);*/
 		/*app.refreshRoomIcons(app.ROOM_ICONS);*/
-		app.refreshItemIcons(app.ITEM_ICONS);
+		/*app.refreshItemIcons(app.ITEM_ICONS);*/
 		
 		
 		
@@ -611,9 +611,48 @@ var app = {
 			}
 		});
 		
+		$("#manual-panel-page .smartsets").on( "collapsibleexpand", function() {
+			app.refresh('#manual-panel-page .smartsets');
+		});
+		
 		$("#manual-panel-page")
-		.on("click", ".view-saved-smartsets-btn", function() {
-			app.changePage('#smartsets-page');
+		.on("click", ".smartsets .smartset-btn", async function() {
+			try {
+				let response = JSON.parse(await app.arduino.getSmartset(
+						$(this).parent().attr('smartset-id'),
+						app.currentProfile,
+						app.currentRoom));
+				if (response.outcome == "success") {
+					app.currentSmartset = response.smartset;
+					app.changePage("#smart-items-page");
+				}
+				else {
+					alert(response.error);
+				}
+			}
+			catch(error) {
+				alert("getSmartset::error");
+			}
+		});
+		
+		$("#manual-panel-page")
+		.on("click", ".smartset .edit-smartset-btn", async function() {
+			try {
+				let response = JSON.parse(await app.arduino.getSmartset(
+					$(this).parent().attr('smartset-id'),
+					app.currentProfile,
+					app.currentRoom));
+				if (response.outcome == "success") {
+					app.currentSmartset = response.smartset;
+					app.changePage("#edit-smartset-page");
+				}
+				else {
+					alert(response.error);
+				}
+			}
+			catch(error) {
+				alert("getSmartset::error");
+			}
 		});
 		
 		$("#manual-panel-page")
@@ -1287,7 +1326,7 @@ var app = {
 		$(container).enhanceWithin();
 	},
 	
-	refreshItemIcons: function(icons) {
+	/*refreshItemIcons: function(icons) {
 		var length = icons.length;
 		
 		if (length > 0) {
@@ -1308,7 +1347,7 @@ var app = {
 		}
 		
 		$(container).enhanceWithin();
-	},
+	},*/
 	
 	refreshRooms: function() {
 		app.arduino.getRooms(app.currentProfile)
@@ -1579,6 +1618,24 @@ var app = {
 			}
 		}
 		
+		else if (target.is($("#manual-panel-page .smartsets"))) {
+			try {
+				let response = JSON.parse(
+					await app.arduino.getSmartsets(
+							app.currentProfile,
+							app.currentRoom));
+
+				if (response.outcome != "success") {
+					alert(response.error);
+					return;
+				}
+				app.load(target, response.smartsets);
+			}
+			catch(error) {
+				alert("getSmartsets::error");
+			}
+		}
+		
 		else if (target.is($("#manual-panel-page .items"))) {
 			try {
 				let response = JSON.parse(
@@ -1707,6 +1764,25 @@ var app = {
 			}
 		}
 		
+		else if (target.is($("#manual-panel-page .smartsets"))) {
+			target = target.find('.smartsets-listview');
+			target.html("");
+			for (let i = 0; i < data.length; i++) {
+				let smartset = data[i];
+				target.append(
+					'<li class="smartset" ' +
+							'smartset-id="' + smartset.id + '" ' +
+					'>' +
+						'<a class="smartset-btn">' +
+							app.prettyfy(smartset.name) +
+						'</a>' +
+						'<a class="edit-smartset-btn" data-icon="edit"></a>' +
+					'</li>'
+				);
+			}
+			target.listview("refresh");
+		}
+		
 		else if (target.is($("#manual-panel-page .items"))) {
 			target.html("");
 			for (let i = 0; i < data.length; i++) {
@@ -1750,6 +1826,22 @@ var app = {
 			target.trigger("change");
 			target.selectmenu();
 			target.selectmenu('refresh', true);
+		}
+		
+		else if (target.is($("#add-item-page .icons")) ||
+				target.is($("#edit-item-page .icons"))) {
+			target.html("");
+			for (let i = 0; i < data.length; i++) {
+				target.append(
+						'<div class="centered-list-block ui-block-' + app.toBlockType(i % 5) + '">' +
+							'<a class="icon-btn ui-btn">' +
+								'<img class="icon" name="' + data[i] + '" ' +
+										'src=\"img/items/' + data[i] + '.png\" ' +
+										'width=\"70px\" height=\"70px\" ' +
+								'>' +
+							'</a>' +
+						'</div>');
+			}
 		}
 		
 		else {
@@ -1989,23 +2081,50 @@ var app = {
 	
 	setEditItemsMode: function(value) {
 		if (value) {
-			// TODO: change appearances
+			$("#manual-panel-page .item-active-btn").addClass('ui-icon-edit ui-btn-icon-left');
 		}
 		else {
-			// TODO: change appearances
+			$("#manual-panel-page .item-active-btn").removeClass('ui-icon-edit ui-btn-icon-left');
 		}
 		app.editItemsMode = value;
 	},
 	
+	leavePage: function(page) {
+		alert('TODO: leavePage');
+		/*switch(page) {
+		
+		case "#profiles-page":
+			break;
+		
+		case "#profiles-page":
+			break;
+			
+		case "#profiles-page":
+			break;
+		
+		case "#profiles-page":
+			break;
+		
+		case "#profiles-page":
+			break;
+		
+		case "#profiles-page":
+			break;
+		
+		default:
+			
+		}*/
+	},
+	
 	changePage: function(destination) {
-		$.mobile.navigate(destination);
+		//$.mobile.navigate(destination);
 		
 		switch(destination) {
 				
-		case "#sign-in-page":
-		//case "#registerPage":
+		/*case "#sign-in-page":
+		case "#registerPage":
 			app.refreshDevices();
-			break;
+			break;*/
 				
 		case "#profiles-page":
 			if (app.editProfilesMode) {
@@ -2013,21 +2132,6 @@ var app = {
 			}
 			
 			app.refreshProfilesList();
-			/*app.arduino.getProfiles()
-				.then(function(result) {
-					var response = JSON.parse(result);
-				
-					if (response.outcome == "success") {
-						//alert(JSON.stringify(result));
-						app.refreshProfiles(response.profiles);
-					}
-					else {
-						alert(response.error);
-					}
-				})
-				.catch(function() {
-					alert("getProfiles::error");
-				});*/
 			break;
 				
 		case "#add-profile-page":
@@ -2106,22 +2210,32 @@ var app = {
 			.catch(function() {
 				alert("getItems::error");
 			});
+				
+			//app.refresh('#manual-panel-page .smartsets');
 			break;
 				
 		case "#add-item-page":
+			$('#add-item-page .item-icon').attr(
+					'name',
+					app.itemIcons[10]);
+			$('#add-item-page .item-icon').attr(
+					'src',
+					'img/items/' + app.itemIcons[10] + '.png');
 			app.refresh('#add-item-page .port-select');
+			app.load($('#add-item-page .icons'), app.itemIcons);
 			break;
 				
 		case "#edit-item-page":
-			/*$("#edit-item-page input[name=\"name\"]").val(app.prettyfy(
-					app.currentItem.name));
-			$("#edit-item-page .port-select option[value=\"" +
-					app.currentItem.port + "\"]").prop("selected", true);
-			$("#edit-item-page input[name=\"item-icons\"][value=\"" +
-					app.currentItem.icon + "\"]")
-				.prop("checked", true)
-				.checkboxradio("refresh");*/
+			$('#edit-item-page .item-icon').attr(
+					'name',
+					app.currentItem.icon);
+			$('#edit-item-page .item-icon').attr(
+					'src',
+					'img/items/' + app.currentItem.icon + '.png');
+			$('#edit-item-page .item-name').val(
+					app.currentItem.name);
 			app.refresh('#edit-item-page .port-select');
+			app.load($('#edit-item-page .icons'), app.itemIcons);
 			break;
 			
 		case "#smartsets-page":
@@ -2167,6 +2281,8 @@ var app = {
 			break;
 		default:
 		}
+		
+		$.mobile.navigate(destination);
 	},
 	
 	// Create the XHR object.

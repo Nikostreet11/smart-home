@@ -358,6 +358,18 @@ body {
 
 /********** MANUAL PANEL PAGE *************************************************/
 
+#manual-panel-page .ui-collapsible-heading .ui-btn {
+	border-width: 1px;
+}
+
+#manual-panel-page .ui-collapsible-content {
+	border-width: 0 1px 1px 1px !important;
+}
+
+#manual-panel-page .ui-listview>li h2 {
+	margin: 0;
+}
+
 #manual-panel-page .item {
 	height: 60px;
 	padding: 10px 10px 10px 100px;
@@ -372,6 +384,16 @@ body {
 	width: 60px;
 	height: 60px;
 	border-radius: 30px;
+}
+
+#manual-panel-page .item .item-active-btn::after {
+	zoom: 175%;
+	width: 35px;
+	height: 35px;
+	left: 0px;
+	top: 0px;
+	margin: 0px;
+	border-radius: 18px;
 }
 
 #manual-panel-page .item .item-name {
@@ -398,8 +420,6 @@ body {
 	margin: 0px;
 	border-radius: 150px;
 }
-
-
 
 #manual-panel-page .smartsets-panel {
 	display: none;
