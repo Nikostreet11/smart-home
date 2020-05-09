@@ -612,11 +612,11 @@ var app = {
 		});
 		
 		$("#manual-panel-page .smartsets").on( "collapsibleexpand", function() {
-			app.refresh('#manual-panel-page .smartsets');
+			app.refresh('#manual-panel-page .main .smartsets');
 		});
 		
 		$("#manual-panel-page")
-		.on("click", ".smartsets .smartset-btn", async function() {
+		.on("click", ".main .smartset-btn", async function() {
 			try {
 				let response = JSON.parse(await app.arduino.getSmartset(
 						$(this).parent().attr('smartset-id'),
@@ -680,35 +680,66 @@ var app = {
 			}
 			else {
 				var itemActive;
-				if ($(this).parent().attr("active") == "true") {
-					itemActive = "false";
+				if ($(this).parents('.item').hasClass('active')) {
+					itemActive = 'false';
 				}
 				else {
-					itemActive = "true";
+					itemActive = 'true';
 				}
 				
-				app.arduino.setItemActive(itemId, itemActive, app.currentRoom)
-				.then(function(result) {
-					var response = JSON.parse(result);
+				try {
+					let response = JSON.parse(await app.arduino.setItemActive(itemId, itemActive, app.currentRoom));
 
 					if (response.outcome == "success") {
-						$("#manual-panel-page #" + itemId).attr(
-								"active", response.active);
+						if (response.active == 'true') {
+							$(this).parents('.item').addClass('active');
+						}
+						else {
+							$(this).parents('.item').removeClass('active');
+						}
 						// TODO: change appearance
 					}
 					else if (response.outcome == "partial_success") {
-						$("#manual-panel-page #" + itemId).attr(
-								"active", response.active);
+						if (response.active == 'true') {
+							$(this).parents('.item').addClass('active');
+						}
+						else {
+							$(this).parents('.item').removeClass('active');
+						}
 						alert(response.message);
 						// TODO: change appearance
 					}
 					else {
 						alert(response.error);
 					}
-				})
-				.catch(function() {
-					alert("turnOnItem::error");
-				});
+				}
+				catch (error) {
+					alert("setItemActive::error");
+				}
+			}
+		});
+		
+		$("#manual-panel-page")
+		.on("click", ".item .item-smart-btn", async function() {
+			try {
+				let response = JSON.parse(await app.arduino.getItem(
+						$(this).parents(".item").attr('item-id'),
+						app.currentRoom.id,
+						app.currentProfile.id));
+				if (response.outcome == 'success') {
+					app.currentItem = response.item;
+					if (app.isOpen('#manual-panel-page .smartsets-panel')) {
+						await app.close('#manual-panel-page .smartsets-panel');
+					}
+					app.open('#manual-panel-page .smartsets-panel');
+				}
+				else {
+					alert(response.error);
+				}
+			}
+			catch (error) {
+				alert('getItem::error');
+				console.error(error);
 			}
 		});
 		
@@ -717,33 +748,28 @@ var app = {
 		});
 		
 		$("#manual-panel-page")
-		.on("click", ".item .smart .on-btn", function() {
-			app.currentItem = {
-				id : $(this).parents(".item").attr('id'),
-				active : $(this).parents(".item").attr('active'),
-			};
-			app.refreshSmartsetsPanel();
-			$('#manual-panel-page .smartsets-panel').css('display', 'block');
-			/*app.arduino.getSmartsets(app.currentProfile, app.currentRoom)
-			.then(function(result) {
-				var response = JSON.parse(result);
-
+		.on("click", ".smartsets-panel .smartset-btn", async function() {
+			let smartset_id = $(this).parents('.smartset').attr('smartset-id');
+			try {
+				let response = JSON.parse(await app.arduino.addItemToSmartset(
+						smartset_id,
+						app.currentItem,
+						app.currentRoom.id,
+						app.currentProfile.id));
 				if (response.outcome == "success") {
-					app.loadSmartsets(response.smartsets);
-					$('#manual-panel-page .smartsets-panel').css('display', 'block');
+					app.close('#manual-panel-page .smartsets-panel');
+					alert('saved');
 				}
 				else {
 					alert(response.error);
-					app.currentItem = undefined;
 				}
-			})
-			.catch(function() {
-				alert("getSmartsets::error");
-				app.currentItem = undefined;
-			});*/
+			}
+			catch (error) {
+				alert("addItemToSmartset::error");
+			}
 		});
 		
-		$("#manual-panel-page")
+		/*$("#manual-panel-page")
 		.on("click", ".smartsets-list .smartset a", function() {
 			let smartset_id = $(this).parent().attr('id');
 			app.arduino.addItemToSmartset(
@@ -764,34 +790,16 @@ var app = {
 			.catch(function() {
 				alert("addItemToSmartset::error");
 			});
-		});
-		
-		$("#manual-panel-page")
-		.on("click", ".smartsets-list .smartset a", function() {
-			let smartset_id = $(this).parent().attr('id');
-			app.arduino.addItemToSmartset(
-					smartset_id,
-					app.currentItem,
-					app.currentProfile,
-					app.currentRoom)
-			.then(function(result) {
-				var response = JSON.parse(result);
-
-				if (response.outcome == "success") {
-					$('#manual-panel-page .smartsets-panel').css('display', 'none');
-				}
-				else {
-					alert(response.error);
-				}
-			})
-			.catch(function() {
-				alert("addItemToSmartset::error");
-			});
-		});
+		});*/
 		
 		$("#manual-panel-page")
 		.on("click", ".smartsets-panel .add-to-new-smartset-btn", function() {
 			app.changePage('#add-smartset-page');
+		});
+		
+		$("#manual-panel-page")
+		.on("click", ".smartsets-panel .close-panel-btn", function() {
+			app.close('#manual-panel-page .smartsets-panel');
 		});
 		
 		
@@ -805,11 +813,9 @@ var app = {
 		
 		$("#edit-item-page .confirm-btn").click(function() {
 			var newItem = {
-				"name" : app.dePrettyfy(
-						$("#edit-item-page input[name=\"name\"]").val()),
-				"icon" : $("#edit-item-page input[name=\"item-icons\"]:checked").val(),
-				"port" : $("#edit-item-page .port-select").children("option:selected").val(),
-				// TODO: other properties
+				name : app.dePrettyfy($("#edit-item-page .item-name").val()),
+				icon : $("#edit-item-page .item-icon").attr('name'),
+				"port" : app.dePrettyfy($('#edit-item-page .ports .title-inner').html()),
 			};
 			
 			if (newItem.name != "" && newItem.icon != undefined) {
@@ -840,6 +846,23 @@ var app = {
 			}
 		});
 		
+		$("#edit-item-page")
+		.on("click", ".port-btn", function() {
+			let title = $('#edit-item-page .ports .title-inner');
+			title.html($(this).find('.port-name').html());
+			title.parents('.ports-collapsible').collapsible('collapse');
+		});
+		
+		$('#edit-item-page')
+		.on("click", ".icon-btn", function() {
+			$('#edit-item-page .item-icon').attr(
+					'name',
+					$(this).find('.icon').attr('name'));
+			$('#edit-item-page .item-icon').attr(
+					'src',
+					$(this).find('img').attr('src'));
+		});
+		
 		$("#edit-item-page .remove-btn").click(function() {
 			app.arduino.removeItem(app.currentItem, app.currentRoom)
 			.then(function(result) {
@@ -867,16 +890,14 @@ var app = {
 		});
 		
 		$("#add-item-page .confirm-btn").click(function() {
-			var item = {
-				"name" : app.dePrettyfy(
-						$("#add-item-page input[name=\"name\"]").val()),
-				"icon" : $("#add-item-page input[name=\"item-icons\"]:checked").val(),
-				"port" : $("#add-item-page .port-select").children("option:selected").val(),
-				// TODO: other properties
+			var newItem = {
+				name : app.dePrettyfy($("#add-item-page .item-name").val()),
+				icon : $("#add-item-page .item-icon").attr('name'),
+				"port" : app.dePrettyfy($('#add-item-page .ports .title-inner').html()),
 			};
 			
-			if (item.name != "" && item.icon != undefined) {
-				app.arduino.addItem(item, app.currentRoom)
+			if (newItem.name != "" && newItem.icon != undefined) {
+				app.arduino.addItem(newItem, app.currentRoom)
 				.then(function(result) {
 					var response = JSON.parse(result);
 
@@ -895,6 +916,23 @@ var app = {
 			else {
 				alert("invalid data");
 			}
+		});
+		
+		$("#add-item-page")
+		.on("click", ".port-btn", function() {
+			let title = $('#add-item-page .ports .title-inner');
+			title.html($(this).find('.port-name').html());
+			title.parents('.ports-collapsible').collapsible('collapse');
+		});
+		
+		$('#add-item-page')
+		.on("click", ".icon-btn", function() {
+			$('#add-item-page .item-icon').attr(
+					'name',
+					$(this).find('.icon').attr('name'));
+			$('#add-item-page .item-icon').attr(
+					'src',
+					$(this).find('img').attr('src'));
 		});
 		
 /********** SMARTSETS *********************************************************/
@@ -1499,6 +1537,16 @@ var app = {
 				return false;
 			}
 		}
+		
+		if (target.is($('#manual-panel-page .smartsets-panel'))) {
+			if (target.position().top < $(window).height()) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		}
+		
 		else {
 			alert('isOpen::error - target not found');
 		}
@@ -1507,7 +1555,7 @@ var app = {
 	
 /********** OPEN **************************************************************/
 	
-	open: function(selector) {
+	open: async function(selector) {
 		let target = $(selector);
 		
 		if (target.is($('#control-panel-page .footer'))) {
@@ -1515,6 +1563,14 @@ var app = {
 				'top': $(window).height() - target.height(),
 			}, 300).promise();
 		}
+		
+		if (target.is($('#manual-panel-page .smartsets-panel'))) {
+			await app.refresh(selector + ' ' + '.smartsets');
+			target.animate({
+				'top': $(window).height() - target.height(),
+			}, 300);
+		}
+		
 		else {
 			alert('open::error - target not found');
 		}
@@ -1522,7 +1578,7 @@ var app = {
 	
 /********** CLOSE *************************************************************/
 	
-	close: function(selector) {
+	close: async function(selector) {
 		let target = $(selector);
 		
 		if (target.is($('#control-panel-page .footer'))) {
@@ -1530,6 +1586,13 @@ var app = {
 				'top': $(window).height(),
 			}, 300).promise();
 		}
+		
+		if (target.is($('#manual-panel-page .smartsets-panel'))) {
+			target.animate({
+				'top': $(window).height(),
+			}, 300);
+		}
+		
 		else {
 			alert('close::error - target not found');
 		}
@@ -1541,7 +1604,7 @@ var app = {
 		let target = $(selector);
 		
 		if (target.is($("#control-panel-page .footer .smartsets"))) {
-			return app.arduino.getSmartsets(app.currentProfile, app.currentRoom)
+			return app.arduino.getSmartsets(app.currentRoom, app.currentProfile)
 			.then(function(result) {
 				var response = JSON.parse(result);
 
@@ -1618,12 +1681,12 @@ var app = {
 			}
 		}
 		
-		else if (target.is($("#manual-panel-page .smartsets"))) {
+		else if (target.is($("#manual-panel-page .main .smartsets"))) {
 			try {
 				let response = JSON.parse(
 					await app.arduino.getSmartsets(
-							app.currentProfile,
-							app.currentRoom));
+							app.currentRoom,
+							app.currentProfile));
 
 				if (response.outcome != "success") {
 					alert(response.error);
@@ -1654,8 +1717,41 @@ var app = {
 			}
 		}
 		
-		else if (target.is($("#add-item-page .port-select")) ||
+		else if (target.is($('#manual-panel-page .smartsets-panel .smartsets'))) {
+			try {
+				let response = JSON.parse(
+						await app.arduino.getSmartsets(
+								app.currentRoom,
+								app.currentProfile));
+				if (response.outcome == "success") {
+					app.load(target, response.smartsets);
+				}
+				else {
+					alert(response.error);
+				}
+			}
+			catch (error) {
+				alert("getSmartsets::error");
+			}
+		}
+		
+		/*else if (target.is($("#add-item-page .port-select")) ||
 				target.is($("#edit-item-page .port-select"))) {
+			try {
+				let response = JSON.parse(await app.arduino.getPorts());
+				if (response.outcome != "success") {
+					alert(response.error);
+					return;
+				}
+				app.load(target, response.ports);
+			}
+			catch(error) {
+				alert("getPorts::error");
+			}
+		}*/
+		
+		else if (target.is($("#add-item-page .ports")) ||
+				target.is($("#edit-item-page .ports"))) {
 			try {
 				let response = JSON.parse(await app.arduino.getPorts());
 				if (response.outcome != "success") {
@@ -1764,7 +1860,7 @@ var app = {
 			}
 		}
 		
-		else if (target.is($("#manual-panel-page .smartsets"))) {
+		else if (target.is($("#manual-panel-page .main .smartsets"))) {
 			target = target.find('.smartsets-listview');
 			target.html("");
 			for (let i = 0; i < data.length; i++) {
@@ -1804,28 +1900,60 @@ var app = {
 			target.listview("refresh");
 		}
 		
-		else if (target.is($("#add-item-page .port-select")) ||
-				target.is($("#edit-item-page .port-select"))) {
+		else if (target.is($('#manual-panel-page .smartsets-panel .smartsets'))) {
+			target.html("");
+			for (let i = 0; i < data.length; i++) {
+				let smartset = data[i];
+				target.append(
+					'<li class="smartset"' +
+							'smartset-id="' + smartset.id + '" ' +
+					'>' +
+						'<a class="smartset-btn">' +
+							'<h3 class="smartset-name">' +
+								app.prettyfy(smartset.name) +
+							'</h3>' +
+						'</a>' +
+					'</li>');
+			}
+			target.listview("refresh");
+		}
+		
+		else if (target.is($("#add-item-page .ports")) ||
+				target.is($("#edit-item-page .ports"))) {
+			let title = target.find('.title-inner');
+			target = target.find('.ports-listview');
 			target.html("");
 			if (app.currentItem != undefined &&
 					app.currentItem.port != "none") {
 				target.append(
-					"<option value=\"" + app.currentItem.port + "\">" +
-					app.prettyfy(app.currentItem.port) + "</option>");
+					'<li class="port" data-icon="false">' +
+						'<a class="port-btn">' +
+							'<h3 class="port-name">' +
+								app.prettyfy(app.currentItem.port) +
+							'</h3>' +
+						'</a>' +
+					'</li>');
 			}
-
-			target.append("<option value=\"none\">none</option>");
-			
+			target.append(
+					'<li class="port" data-icon="false">' +
+						'<a class="port-btn">' +
+							'<h3 class="port-name">none</h3>' +
+						'</a>' +
+					'</li>');
 			for (let i = 0; i < data.length; i++) {
+				let port = data[i];
 				target.append(
-					"<option value=\"" + data[i].name + "\">" +
-					app.prettyfy(data[i].name) + "</option>");
+					'<li class="port" data-icon="false">' +
+						'<a class="port-btn">' +
+							'<h3 class="port-name">' +
+								app.prettyfy(port.name) +
+							'</h3>' +
+						'</a>' +
+					'</li>'
+				);
 			}
-			
-			// i don't know why, but it works...
-			target.trigger("change");
-			target.selectmenu();
-			target.selectmenu('refresh', true);
+			title.html(target.children().first().find('.port-name').html());
+			target.listview("refresh");
 		}
 		
 		else if (target.is($("#add-item-page .icons")) ||
@@ -1837,7 +1965,7 @@ var app = {
 							'<a class="icon-btn ui-btn">' +
 								'<img class="icon" name="' + data[i] + '" ' +
 										'src=\"img/items/' + data[i] + '.png\" ' +
-										'width=\"70px\" height=\"70px\" ' +
+										'width=\"60px\" height=\"60px\" ' +
 								'>' +
 							'</a>' +
 						'</div>');
@@ -1850,7 +1978,7 @@ var app = {
 	},
 	
 	refreshActivateSmartsetPanel: function() {
-		app.arduino.getSmartsets(app.currentProfile, app.currentRoom)
+		app.arduino.getSmartsets(app.currentRoom, app.currentProfile)
 		.then(function(result) {
 			var response = JSON.parse(result);
 
@@ -1914,7 +2042,7 @@ var app = {
 	},
 	
 	refreshSmartsetsPanel: function() {
-		app.arduino.getSmartsets(app.currentProfile, app.currentRoom)
+		app.arduino.getSmartsets(app.currentRoom, app.currentProfile)
 		.then(function(result) {
 			var response = JSON.parse(result);
 
@@ -2221,7 +2349,7 @@ var app = {
 			$('#add-item-page .item-icon').attr(
 					'src',
 					'img/items/' + app.itemIcons[10] + '.png');
-			app.refresh('#add-item-page .port-select');
+			app.refresh('#add-item-page .ports');
 			app.load($('#add-item-page .icons'), app.itemIcons);
 			break;
 				
@@ -2234,12 +2362,12 @@ var app = {
 					'img/items/' + app.currentItem.icon + '.png');
 			$('#edit-item-page .item-name').val(
 					app.currentItem.name);
-			app.refresh('#edit-item-page .port-select');
+			app.refresh('#edit-item-page .ports');
 			app.load($('#edit-item-page .icons'), app.itemIcons);
 			break;
 			
 		case "#smartsets-page":
-			app.arduino.getSmartsets(app.currentProfile, app.currentRoom, "null")
+			app.arduino.getSmartsets(app.currentRoom, app.currentProfile)
 			.then(function(result) {
 				var response = JSON.parse(result);
 				
@@ -2494,7 +2622,7 @@ var app = {
 							"profile_id=" + profile.id);
 		},
 		
-		getSmartsets: function(profile, room) {
+		getSmartsets: function(room, profile) {
 			return app.arduino.request(
 					"GET",
 					"http://" + app.connectedDevice.address +
@@ -2732,7 +2860,7 @@ var app = {
 		},
 		
 		// TODO: test
-		addItemToSmartset: function(smartset_id, item, profile, room) {
+		addItemToSmartset: function(smartset_id, item, roomId, profileId) {
 			return app.arduino.request(
 					"POST",
 					"http://" + app.connectedDevice.address +
@@ -2741,8 +2869,8 @@ var app = {
 					JSON.stringify({
 						"action": "add_item",
 						item : item,
-						profile_id : profile.id,
-						room_id : room.id,
+						room_id : roomId,
+						profile_id : profileId,
 					}));
 		},
 		

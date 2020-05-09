@@ -306,20 +306,6 @@
 <!---------- MANUAL PANEL ----------------------------------------------------->
 		
 		<div data-role="page" id="manual-panel-page">
-			<!--<div data-role="header" class="header">
-				<div class="header-left">
-					<input type="button" class="back-btn" value="&lt back">
-				</div>
-				
-				<div class="header-center">
-					<h2>Smart Home</h2>
-				</div>
-				
-				<div class="header-right">
-					<input type="button" class="edit-btn" value="edit">
-				</div>
-			</div>-->
-			
 			<div class="header" data-role="header" data-position="fixed">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
 				<div class="header-title ui-title"><h1>Smart Home</h1></div>
@@ -338,6 +324,7 @@
 							data-collapsed-icon="carat-d"
 							data-expanded-icon="carat-u">
 						<h2 class="title">smartsets</h2>
+						
 						<ul class="smartsets-listview"
 								data-role="listview">
 							<!--filled dynamically-->
@@ -347,38 +334,28 @@
 				
 				<ul class="items" data-role="listview">
 					<!--filled dynamically-->
-					<li class="item" item-id="item.id" active="item.active">
-						<div class="item-inner">
-							<a class="item-active-btn ui-btn">
-								<img src="img/items/011-light-bulb.png"
-										width="60px" height="60px"/>
-							</a>
-							<h2 class="item-name">prettifiedName</h2>
-							<a class="item-smart-btn ui-btn ui-btn-right ui-icon-heart ui-btn-icon-notext"></a>
-						</div>
-					</li>
 				</ul>
 				
 				<a class="add-btn fixed-bottom-right rounded-btn
 						ui-btn ui-icon-plus ui-btn-icon-notext">
 				</a>
-				
-				<div class="smartsets-panel">
-					<div class="ui-bar ui-bar-a" data-role="header">
-						<h3 class="title">add to...</h3>
-						<a class="add-to-new-smartset-btn
-								ui-btn ui-btn-inline ui-btn-right">
-							+new smartset
-						</a>
-					</div>
-
-					<ul class="smartsets-list add-item-to-smartset"
-							data-role="listview">
-						<li class="smartset" id="test2_smartset_0000">
-							<a>WIP</a><a data-icon="edit"></a>
-						</li>
-					</ul>
+			</div>
+			
+			<div class="smartsets-panel">
+				<div data-role="header">
+					<h2 class="title">add to...</h2>
+					
+					<a class="add-to-new-smartset-btn
+							ui-btn ui-btn-right">
+						+new smartset
+					</a>
+					
+					<a class="close-panel-btn ui-btn ui-btn-right ui-icon-arrow-d ui-btn-icon-notext"></a>
 				</div>
+
+				<ul class="smartsets" data-role="listview">
+					<!--filled dynamically-->
+				</ul>
 			</div>
 		</div>
 		
@@ -393,15 +370,40 @@
 			
 			<div data-role="ui-content">
 				<form>
-					<img class="item-icon" name="" src="" width="200px" height="200px"/>
+					<img class="item-icon" name="" src="" width="100px" height="100px"/>
 					
 					<div class="item-name-wrapper">
 						<input class="item-name" type="text" placeholder="Insert item name here"/>
 					</div>
 					
-					<select class="port-select">
-						<!--filled dynamically-->
-					</select>
+					<!--<div class="port-select-wrapper">
+						<select class="port-select">
+							filled dynamically
+						</select>
+					</div>-->
+					
+					<ul class="ports"
+							data-role="listview"
+							data-inset="true"
+							data-shadow="false">
+						<li class="ports-collapsible"
+								data-role="collapsible"
+								data-inset="false"
+								data-iconpos="right"
+								data-collapsed-icon="carat-d"
+								data-expanded-icon="carat-u">
+							<h2 class="title">
+								<div class="title-inner">
+									TODO
+								</div>
+							</h2>
+
+							<ul class="ports-listview"
+									data-role="listview">
+								<!--filled dynamically-->
+							</ul>
+						</li>
+					</ul>
 					
 					<div class="icons ui-grid-d">
 						<!-- filled dynamically -->
@@ -425,15 +427,40 @@
 			
 			<div data-role="ui-content">
 				<form>
-					<img class="item-icon" name="" src="" width="200px" height="200px"/>
+					<img class="item-icon" name="" src="" width="100px" height="100px"/>
 					
 					<div class="item-name-wrapper">
 						<input class="item-name" type="text" placeholder="Insert item name here"/>
 					</div>
 					
-					<select class="port-select">
-						<!--filled dynamically-->
-					</select>
+					<!--<div class="port-select-wrapper">
+						<select class="port-select">
+							filled dynamically
+						</select>
+					</div>-->
+					
+					<ul class="ports"
+							data-role="listview"
+							data-inset="true"
+							data-shadow="false">
+						<li class="ports-collapsible"
+								data-role="collapsible"
+								data-inset="false"
+								data-iconpos="right"
+								data-collapsed-icon="carat-d"
+								data-expanded-icon="carat-u">
+							<h2 class="title">
+								<div class="title-inner">
+									<!--filled dynamically-->
+								</div>
+							</h2>
+
+							<ul class="ports-listview"
+									data-role="listview">
+								<!--filled dynamically-->
+							</ul>
+						</li>
+					</ul>
 					
 					<div class="icons ui-grid-d">
 						<!-- filled dynamically -->

@@ -107,6 +107,23 @@ body {
 	border-radius: 30px;
 }
 
+.ui-collapsible-heading .ui-btn {
+	border-width: 1px;
+}
+
+.ui-collapsible {
+	border: 0px !important;
+	padding: 0px !important;
+}
+
+.ui-collapsible-content {
+	border-width: 0 1px 1px 1px !important;
+}
+
+.ui-listview>li h2, .ui-listview>li h3 {
+	margin: 0;
+}
+
 /********** SIGN IN PAGE ******************************************************/
 
 #sign-in-page .ui-input-text {
@@ -265,12 +282,6 @@ body {
 
 #control-panel-page .footer .smartsets {
 	display: block;
-	/*position: static;*/
-	/*bottom: 0px;*/
-	/*width: 100%;*/
-	/*height: 200px;
-	overflow: auto;
-	background-color: #dddddd;*/
 }
 
 #control-panel-page .footer .close-footer-btn {
@@ -358,16 +369,9 @@ body {
 
 /********** MANUAL PANEL PAGE *************************************************/
 
-#manual-panel-page .ui-collapsible-heading .ui-btn {
-	border-width: 1px;
-}
-
-#manual-panel-page .ui-collapsible-content {
-	border-width: 0 1px 1px 1px !important;
-}
-
-#manual-panel-page .ui-listview>li h2 {
-	margin: 0;
+#manual-panel-page .main .smartsets {
+	width: 90%;
+	margin: 20px auto;
 }
 
 #manual-panel-page .item {
@@ -422,14 +426,110 @@ body {
 }
 
 #manual-panel-page .smartsets-panel {
-	display: none;
 	position: fixed;
-	bottom: 0px;
+	top: 100%;
 	width: 100%;
 }
 
-#manual-panel-page .title {
+#manual-panel-page .smartsets-panel .title {
 	text-align: left;
-	margin: 4px 5px;
+	font-size: 20px !important;
+	font-weight: normal;
 	padding: 0px;
+	margin: 10px 30px;
+}
+
+#manual-panel-page .smartsets-panel .add-to-new-smartset-btn {
+	right: 50px;
+}
+
+#manual-panel-page .smartsets-panel .close-panel-btn {
+	width: 30px;
+	height: 30px;
+	border-radius: 15px;
+}
+
+#manual-panel-page .smartsets-panel .close-panel-btn::after {
+	zoom: 120%;
+	width: 25px;
+	height: 25px;
+	left: 0px;
+	top: 0px;
+	margin: 0px;
+}
+
+#manual-panel-page .smartsets-panel .smartset-name {
+	font-size: 16px;
+	font-weight: normal;
+	margin: 0;
+}
+
+/********** EDIT ITEM *********************************************************/
+
+#edit-item-page .item-icon {
+	position: absolute;
+	margin: 20px;
+}
+
+#edit-item-page .item-name-wrapper {
+	margin: 0px 20px 0px 140px;
+	padding: 40px 0px;
+}
+
+#edit-item-page .ports {
+	width: 70%;
+	margin: 20px auto;
+}
+
+#edit-item-page .icons {
+	margin: 50px 10px;
+}
+
+#edit-item-page .icon-btn {
+	padding: 0px;
+	width: 60px;
+	height: 60px;
+	margin: 5px;
+	border-radius: 35px;
+}
+
+#edit-item-page .footer {
+	text-align: center;
+}
+
+#edit-item-page .remove-btn {
+	display: inline-block;
+	margin: 5px 0px;
+	background: transparent;
+	border: none;
+	font-size: 15px;
+}
+
+/********** ADD ITEM **********************************************************/
+
+#add-item-page .item-icon {
+	position: absolute;
+	margin: 20px;
+}
+
+#add-item-page .item-name-wrapper {
+	margin: 0px 20px 0px 140px;
+	padding: 40px 0px;
+}
+
+#add-item-page .ports {
+	width: 70%;
+	margin: 20px auto;
+}
+
+#add-item-page .icons {
+	margin: 50px 10px;
+}
+
+#add-item-page .icon-btn {
+	padding: 0px;
+	width: 60px;
+	height: 60px;
+	margin: 5px;
+	border-radius: 35px;
 }
