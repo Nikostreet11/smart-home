@@ -81,7 +81,6 @@ var app = {
 		});
 		
 		
-		
 /********** SIGN IN ***********************************************************/
 		
 		$("#sign-in-page .back-btn").click(function() {
@@ -615,33 +614,35 @@ var app = {
 			app.refresh('#manual-panel-page .main .smartsets');
 		});
 		
+		$(document).on("pagecreate", "#manual-panel-page", function() {
+			$("#manual-panel-page")
+			.on("click", ".main .smartset-btn", async function() {
+				try {
+					let response = JSON.parse(await app.arduino.getSmartset(
+							$(this).parent().attr('smartset-id'),
+							app.currentProfile,
+							app.currentRoom));
+					if (response.outcome == "success") {
+						app.currentSmartset = response.smartset;
+						app.open('#manual-panel-page .smartset-popup');
+					}
+					else {
+						alert(response.error);
+					}
+				}
+				catch(error) {
+					alert("getSmartset::error");
+				}
+			});
+		});
+		
 		$("#manual-panel-page")
-		.on("click", ".main .smartset-btn", async function() {
+		.on("click", ".main .edit-smartset-btn", async function() {
 			try {
 				let response = JSON.parse(await app.arduino.getSmartset(
 						$(this).parent().attr('smartset-id'),
 						app.currentProfile,
 						app.currentRoom));
-				if (response.outcome == "success") {
-					app.currentSmartset = response.smartset;
-					app.changePage("#smart-items-page");
-				}
-				else {
-					alert(response.error);
-				}
-			}
-			catch(error) {
-				alert("getSmartset::error");
-			}
-		});
-		
-		$("#manual-panel-page")
-		.on("click", ".smartset .edit-smartset-btn", async function() {
-			try {
-				let response = JSON.parse(await app.arduino.getSmartset(
-					$(this).parent().attr('smartset-id'),
-					app.currentProfile,
-					app.currentRoom));
 				if (response.outcome == "success") {
 					app.currentSmartset = response.smartset;
 					app.changePage("#edit-smartset-page");
@@ -679,8 +680,8 @@ var app = {
 				}
 			}
 			else {
-				var itemActive;
-				if ($(this).parents('.item').hasClass('active')) {
+				let itemActive;
+				if ($(this).parents('.item').attr('active') == 'true') {
 					itemActive = 'false';
 				}
 				else {
@@ -691,23 +692,11 @@ var app = {
 					let response = JSON.parse(await app.arduino.setItemActive(itemId, itemActive, app.currentRoom));
 
 					if (response.outcome == "success") {
-						if (response.active == 'true') {
-							$(this).parents('.item').addClass('active');
-						}
-						else {
-							$(this).parents('.item').removeClass('active');
-						}
-						// TODO: change appearance
+						$(this).parents('.item').attr('active', response.active);
 					}
 					else if (response.outcome == "partial_success") {
-						if (response.active == 'true') {
-							$(this).parents('.item').addClass('active');
-						}
-						else {
-							$(this).parents('.item').removeClass('active');
-						}
+						$(this).parents('.item').attr('active', response.active);
 						alert(response.message);
-						// TODO: change appearance
 					}
 					else {
 						alert(response.error);
@@ -748,6 +737,62 @@ var app = {
 		});
 		
 		$("#manual-panel-page")
+		.on("click", ".smartset-popup .smart-item-active-btn", async function() {
+			let smartItemActive;
+			if ($(this).parents('.smart-item').attr('active') == 'true') {
+				smartItemActive = 'false';
+			}
+			else {
+				smartItemActive = 'true';
+			}
+			
+			let smartItem = {
+				id: $(this).parents('.smart-item').attr("smart-item-id"),
+				active: smartItemActive,
+			};
+
+			try {
+				let response = JSON.parse(await app.arduino.addItemToSmartset(
+					app.currentSmartset.id,
+					smartItem,
+					app.currentRoom.id,
+					app.currentProfile.id));
+
+				if (response.outcome == "success") {
+					app.refresh('#manual-panel-page .smartset-popup .smart-items');
+				}
+				else {
+					alert(response.error);
+				}
+			}
+			catch (error) {
+				alert("addItemToSmartset::error");
+			}
+		});
+		
+		$("#manual-panel-page")
+		.on("click", ".smartset-popup .smart-item-remove-btn", async function() {
+			let smartItemId = $(this).parents('.smart-item').attr("smart-item-id");
+			try {
+				let response = JSON.parse(await app.arduino.removeItemFromSmartset(
+					smartItemId,
+					app.currentSmartset.id,
+					app.currentRoom.id,
+					app.currentProfile.id));
+
+				if (response.outcome == "success") {
+					app.refresh('#manual-panel-page .smartset-popup .smart-items');
+				}
+				else {
+					alert(response.error);
+				}
+			}
+			catch (error) {
+				alert("removeItemFromSmartset::error");
+			}
+		});
+		
+		$("#manual-panel-page")
 		.on("click", ".smartsets-panel .smartset-btn", async function() {
 			let smartset_id = $(this).parents('.smartset').attr('smartset-id');
 			try {
@@ -768,29 +813,6 @@ var app = {
 				alert("addItemToSmartset::error");
 			}
 		});
-		
-		/*$("#manual-panel-page")
-		.on("click", ".smartsets-list .smartset a", function() {
-			let smartset_id = $(this).parent().attr('id');
-			app.arduino.addItemToSmartset(
-					smartset_id,
-					app.currentItem,
-					app.currentProfile,
-					app.currentRoom)
-			.then(function(result) {
-				var response = JSON.parse(result);
-
-				if (response.outcome == "success") {
-					$('#manual-panel-page .smartsets-panel').css('display', 'none');
-				}
-				else {
-					alert(response.error);
-				}
-			})
-			.catch(function() {
-				alert("addItemToSmartset::error");
-			});
-		});*/
 		
 		$("#manual-panel-page")
 		.on("click", ".smartsets-panel .add-to-new-smartset-btn", function() {
@@ -1134,7 +1156,7 @@ var app = {
 		
 /********** SMART ITEMS *******************************************************/
 		
-		$("#smart-items-page .back-btn").click(function() {
+		/*$("#smart-items-page .back-btn").click(function() {
 			app.changePage("#smartsets-page");
 		});
 			
@@ -1188,7 +1210,7 @@ var app = {
 			.catch(function() {
 				alert("removeItemFromSmartset::error");
 			});
-		});
+		});*/
 		
 	},
 /********** FUNCTIONS *********************************************************/
@@ -1564,11 +1586,16 @@ var app = {
 			}, 300).promise();
 		}
 		
-		if (target.is($('#manual-panel-page .smartsets-panel'))) {
+		else if (target.is($('#manual-panel-page .smartsets-panel'))) {
 			await app.refresh(selector + ' ' + '.smartsets');
 			target.animate({
 				'top': $(window).height() - target.height(),
 			}, 300);
+		}
+		
+		else if (target.is($('#manual-panel-page .smartset-popup'))) {
+			await app.refresh('#manual-panel-page .smartset-popup .smart-items');
+			$('#manual-panel-page .smartset-popup').popup("open");
 		}
 		
 		else {
@@ -1699,12 +1726,58 @@ var app = {
 			}
 		}
 		
+		else if (target.is($('#manual-panel-page .smartset-popup .smart-items'))) {
+			let currentSmartsetId = app.currentSmartset.id;
+			let currentRoomId = app.currentRoom.id;
+			let currentProfileId = app.currentProfile.id;
+			try {
+				let response = JSON.parse(
+						await app.arduino.getItems(
+								currentRoomId,
+								currentProfileId));
+				if (response.outcome != "success") {
+					alert(response.error);
+					return;
+				}
+				let items = response.items;
+				try {
+					let response = JSON.parse(
+							await app.arduino.getSmartItems(
+							currentSmartsetId,
+							currentRoomId,
+							currentProfileId));
+					if (response.outcome != "success") {
+						alert(response.error);
+						return;
+					}
+					let smartItems = response.smart_items;
+					for (let smartItem of smartItems) {
+						let originItem = undefined;
+						for (let item of items) {
+							if (item.id == smartItem.id) {
+								originItem = item;
+							}
+						}
+						smartItem.name = originItem.name;
+						smartItem.icon = originItem.icon;
+					}
+					app.load(target, smartItems);
+				}
+				catch (error) {
+					alert('getSmartItems::error');
+				}
+			}
+			catch (error) {
+				alert('getItems::error');
+			}
+		}
+		
 		else if (target.is($("#manual-panel-page .items"))) {
 			try {
 				let response = JSON.parse(
 						await app.arduino.getItems(
-								app.currentRoom,
-								app.currentProfile));
+								app.currentRoom.id,
+								app.currentProfile.id));
 				if (response.outcome == "success") {
 					app.load(target, response.items);
 				}
@@ -1879,6 +1952,32 @@ var app = {
 			target.listview("refresh");
 		}
 		
+		else if (target.is($('#manual-panel-page .smartset-popup .smart-items'))) {
+			target.html("");
+			for (let i = 0; i < data.length; i++) {
+				let smartItem = data[i];
+				target.append(
+						'<li class="smart-item" ' +
+								'smart-item-id="' + smartItem.id + '" ' +
+								'active="' + smartItem.active + '" ' +
+						'>' +
+							'<a class="smart-item-active-btn ui-btn">' +
+								'<img src="img/items/' + smartItem.icon + '.png" ' +
+								'width="60px" height="60px">' +
+							'</a>' +
+							'<div class="smart-item-inner">' +
+								'<h2 class="smart-item-name">' +
+									smartItem.name +
+								'</h2>' +
+							'</div>' +
+							'<a class="smart-item-remove-btn ' +
+									'ui-btn ui-btn-right ' +
+									'ui-icon-delete ui-btn-icon-notext"></a>' +
+						'</li>');
+			}
+			target.listview("refresh");
+		}
+		
 		else if (target.is($("#manual-panel-page .items"))) {
 			target.html("");
 			for (let i = 0; i < data.length; i++) {
@@ -1893,8 +1992,10 @@ var app = {
 										'width="60px" height="60px"/>' +
 							'</a>' +
 							'<h2 class="item-name">' + app.prettyfy(data[i].name) + '</h2>' +
-							'<a class="item-smart-btn ui-btn ui-btn-right ui-icon-heart ui-btn-icon-notext"></a>' +
 						'</div>' +
+						'<a class="item-smart-btn ' +
+								'ui-btn ui-btn-right ' +
+							'ui-icon-heart ui-btn-icon-notext"></a>' +
 					'</li>');
 			}
 			target.listview("refresh");
@@ -2323,8 +2424,8 @@ var app = {
 				app.setEditItemsMode(false);
 				
 			app.arduino.getItems(
-					app.currentRoom,
-					app.currentProfile)
+					app.currentRoom.id,
+					app.currentProfile.id)
 			.then(function(result) {
 				var response = JSON.parse(result);
 				
@@ -2604,13 +2705,13 @@ var app = {
 					"profile_id=" + profileId);
 		},
 		
-		getItems: function(room, profile) {
+		getItems: function(roomId, profileId) {
 			return app.arduino.request(
 					"GET",
 					"http://" + app.connectedDevice.address +
 							"/items/",
-					"room_id=" + room.id + "&" +
-							"profile_id=" + profile.id);
+					"room_id=" + roomId + "&" +
+							"profile_id=" + profileId);
 		},
 		
 		getItem: function(itemId, room, profile) {
@@ -2659,14 +2760,14 @@ var app = {
 							"profile_id=" + profile.id + "&");
 		},
 		
-		getSmartItems: function(profile, room, smartset) {
+		getSmartItems: function(smartsetId, roomId, profileId) {
 			return app.arduino.request(
 					"GET",
 					"http://" + app.connectedDevice.address +
 							"/smart_items/",
-					"profile_id=" + profile.id + "&" +
-							"room_id=" + room.id + "&" +
-							"smartset_id=" + smartset.id + "&");
+					"profile_id=" + profileId + "&" +
+							"room_id=" + roomId + "&" +
+							"smartset_id=" + smartsetId + "&");
 		},
 		
 		// TODO: test
@@ -2875,17 +2976,17 @@ var app = {
 		},
 		
 		// TODO: test
-		removeItemFromSmartset: function(itemId, smartset, room, profile) {
+		removeItemFromSmartset: function(itemId, smartsetId, roomId, profileId) {
 			return app.arduino.request(
 					"POST",
 					"http://" + app.connectedDevice.address +
-							"/smartsets/" + smartset.id +
+							"/smartsets/" + smartsetId +
 							"?action=remove_item",
 					JSON.stringify({
 						"action": "remove_item",
 						item_id : itemId,
-						room_id : room.id,
-						profile_id : profile.id,
+						room_id : roomId,
+						profile_id : profileId,
 					}));
 		},
 		

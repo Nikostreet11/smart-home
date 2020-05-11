@@ -43,7 +43,7 @@
 		<link rel="stylesheet" type="text/css"
             href="css/jquery.mobile-1.4.5.min.css"/>
         <link rel="stylesheet" type="text/css" href="css/index.css">
-		<script type="text/javascript" src="js/jquery-2.2.4.min.js"></script>
+		<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 		<script type="text/javascript"
             src="js/jquery.mobile-1.4.5.min.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
@@ -332,6 +332,42 @@
 					</li>
 				</ul>
 				
+				<!--<a class="popup-btn ui-btn ui-corner-all ui-shadow ui-btn-inline"
+						data-transition="pop" data-rel="popup">
+					Open Popup
+				</a>-->
+				
+				<div class="smartset-popup"
+						data-role="popup"
+					 	data-position-to="window">
+					<ul class="smart-items" data-role="listview">
+						<li class="smart-item" item-id="test_0000" active="false">
+							<a class="smart-item-active-btn ui-btn">
+								<img src="img/items/011-light-bulb.png" width="60px" height="60px">
+							</a>
+							<div class="smart-item-inner">
+								<h2 class="smart-item-name">Test 1</h2>
+							</div>
+						</li>
+						<li class="smart-item" item-id="test_0000" active="false">
+							<a class="item-active-btn ui-btn">
+								<img src="img/items/011-light-bulb.png" width="60px" height="60px">
+							</a>
+							<div class="item-inner">
+								<h2 class="item-name">Test 2</h2>
+							</div>
+						</li>
+						<li class="smart-item" item-id="test_0000" active="false">
+							<a class="item-active-btn ui-btn">
+								<img src="img/items/011-light-bulb.png" width="60px" height="60px">
+							</a>
+							<div class="item-inner">
+								<h2 class="item-name">Test 3</h2>
+							</div>
+						</li>
+					</ul>
+				</div>
+				
 				<ul class="items" data-role="listview">
 					<!--filled dynamically-->
 				</ul>
@@ -375,12 +411,6 @@
 					<div class="item-name-wrapper">
 						<input class="item-name" type="text" placeholder="Insert item name here"/>
 					</div>
-					
-					<!--<div class="port-select-wrapper">
-						<select class="port-select">
-							filled dynamically
-						</select>
-					</div>-->
 					
 					<ul class="ports"
 							data-role="listview"
@@ -433,12 +463,6 @@
 						<input class="item-name" type="text" placeholder="Insert item name here"/>
 					</div>
 					
-					<!--<div class="port-select-wrapper">
-						<select class="port-select">
-							filled dynamically
-						</select>
-					</div>-->
-					
 					<ul class="ports"
 							data-role="listview"
 							data-inset="true"
@@ -473,39 +497,24 @@
 <!---------- SMARTSETS -------------------------------------------------------->
 		
 		
-		<div data-role="page" id="smartsets-page">
-			<!--<div data-role="header" class="header">
-				<div class="header-left">
-					<input type="button" class="back-btn" value="&lt back">
-				</div>
-				
-				<div class="header-center">
-					<h2>smartsets</h2>
-				</div>
-				
-				<div class="header-right">
-					<input type="button" class="edit-btn" value="edit">
-				</div>
-			</div>-->
-			
+		<!--<div data-role="page" id="smartsets-page">
 			<div class="header" data-role="header" data-position="fixed">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
 				<div class="header-title ui-title"><h1>Smart Home</h1></div>
-				<!--<a class="edit-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-edit ui-btn-icon-notext"></a>-->
 			</div>
 			
 			<div class="main" data-role="content">
 				<ul class="smartsets-list"
 						data-role="listview"
 						data-split-icon="edit">
-					<!--filled dinamically-->
+					filled dinamically
 				</ul>
 				
 				<div class="float-bottom-right">
 					<input type="button" class="add-btn" value="+">
 				</div>
 			</div>
-		</div>
+		</div>-->
 		
 		
 <!---------- ADD SMARTSET ----------------------------------------------------->
@@ -579,35 +588,20 @@
 <!---------- SMART ITEMS ------------------------------------------------------>
 		
 		
-		<div id="smart-items-page" data-role="page">
-			<!--<div data-role="header" class="header">
-				<div class="header-left">
-					<input type="button" class="back-btn" value="&lt back">
-				</div>
-				
-				<div class="header-center">
-					<h2>smart items</h2>
-				</div>
-				
-				<div class="header-right">
-					<input type="button" class="edit-btn" value="edit">
-				</div>
-			</div>-->
-			
+		<!--<div id="smart-items-page" data-role="page">
 			<div class="header" data-role="header" data-position="fixed">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
 				<div class="header-title ui-title"><h1>Smart Home</h1></div>
-				<!--<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>-->
 			</div>
 			
 			<div class="main" data-role="ui-content">
-				<ul class="smart-items-list"
+				<ul class="smart-items"
 						data-role="listview"
 						data-split-icon="delete">
-					<!--filled dinamically-->
+					filled dinamically
 				</ul>
 			</div>
-		</div>
+		</div>-->
 		
 		
 <!---------- BLANK ------------------------------------------------------------>

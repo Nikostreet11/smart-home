@@ -374,12 +374,29 @@ body {
 	margin: 20px auto;
 }
 
-#manual-panel-page .item {
-	height: 60px;
-	padding: 10px 10px 10px 100px;
+#manual-panel-page .ui-popup-container {
+    width: 70%;
 }
 
-#manual-panel-page .item .item-active-btn {
+#manual-panel-page .item,
+#manual-panel-page .smart-item {
+	height: 60px;
+	padding: 10px 10px 10px 100px;
+	border-width: 1px 0 0;
+    border-style: solid;
+	border-color: #ddd;
+}
+
+#manual-panel-page .items :last-child {
+	border-width: 1px 0;
+}
+
+#manual-panel-page .smart-items :first-child {
+	border-width: 0;
+}
+
+#manual-panel-page .item .item-active-btn,
+#manual-panel-page .smart-item .smart-item-active-btn {
 	position: absolute;
 	top: 0px;
 	left: 0px;
@@ -390,7 +407,14 @@ body {
 	border-radius: 30px;
 }
 
-#manual-panel-page .item .item-active-btn::after {
+#manual-panel-page .item[active="true"],
+#manual-panel-page .smart-item[active="true"] {
+	background-color: #fafafa;
+	filter: sepia(10%) saturate(250%);
+}
+
+#manual-panel-page .item .item-active-btn::after,
+#manual-panel-page .smart-item .smart-item-active-btn::after {
 	zoom: 175%;
 	width: 35px;
 	height: 35px;
@@ -400,22 +424,26 @@ body {
 	border-radius: 18px;
 }
 
-#manual-panel-page .item .item-name {
+#manual-panel-page .item .item-name,
+#manual-panel-page .smart-item .smart-item-name {
 	font-size: 18px;
 	font-weight: normal;
 	margin: 5px 0px;
 }
 
-#manual-panel-page .item .item-smart-btn {
+#manual-panel-page .item .item-smart-btn,
+#manual-panel-page .smart-item .smart-item-remove-btn {
 	position: absolute;
 	top: -1px;
 	right: 0;
+	padding: 0;
 	margin: 0;
-	height: 82px;
+	height: 80px;
 	width: 80px;
 }
 
-#manual-panel-page .item .item-smart-btn::after {
+#manual-panel-page .item .item-smart-btn::after,
+#manual-panel-page .smart-item .smart-item-remove-btn::after {
 	zoom: 130%;
 	width: 30px;
 	height: 30px;
