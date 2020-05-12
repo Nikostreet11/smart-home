@@ -808,6 +808,7 @@ String Database::addSmartset(String data)
 			smartRoom->addSmartset(smartset);
 			
 			responseJson["outcome"] = "success";
+			responseJson["smartset_id"] = smartset->getId();
 		}
 	}
 	log(responseJson);

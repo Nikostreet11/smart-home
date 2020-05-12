@@ -332,40 +332,48 @@
 					</li>
 				</ul>
 				
-				<!--<a class="popup-btn ui-btn ui-corner-all ui-shadow ui-btn-inline"
-						data-transition="pop" data-rel="popup">
-					Open Popup
-				</a>-->
-				
 				<div class="smartset-popup"
 						data-role="popup"
 					 	data-position-to="window">
 					<ul class="smart-items" data-role="listview">
-						<li class="smart-item" item-id="test_0000" active="false">
-							<a class="smart-item-active-btn ui-btn">
-								<img src="img/items/011-light-bulb.png" width="60px" height="60px">
-							</a>
-							<div class="smart-item-inner">
-								<h2 class="smart-item-name">Test 1</h2>
-							</div>
-						</li>
-						<li class="smart-item" item-id="test_0000" active="false">
-							<a class="item-active-btn ui-btn">
-								<img src="img/items/011-light-bulb.png" width="60px" height="60px">
-							</a>
-							<div class="item-inner">
-								<h2 class="item-name">Test 2</h2>
-							</div>
-						</li>
-						<li class="smart-item" item-id="test_0000" active="false">
-							<a class="item-active-btn ui-btn">
-								<img src="img/items/011-light-bulb.png" width="60px" height="60px">
-							</a>
-							<div class="item-inner">
-								<h2 class="item-name">Test 3</h2>
-							</div>
-						</li>
 					</ul>
+				</div>
+				
+				<div class="add-smartset-popup" data-role="popup">
+					<div data-role="header">
+						<h2>add smartset</h2>
+					</div>
+					<div role="main" class="ui-content">
+						<form>
+							<div class="smartset-name-wrapper">
+								<input class="smartset-name" type="text"
+										placeholder="insert smartset name here"/>
+							</div>
+						</form>
+						<a class="cancel-btn ui-btn ui-btn-inline">cancel</a>
+						<a class="confirm-btn ui-btn ui-btn-inline">confirm</a>
+					</div>
+				</div>
+				
+				<div class="edit-smartset-popup" data-role="popup">
+					<div data-role="header">
+						<h2>edit smartset</h2>
+					</div>
+					<div role="main" class="ui-content">
+						<form>
+							<div class="smartset-name-wrapper">
+								<input class="smartset-name" type="text"
+										placeholder="insert smartset name here"/>
+							</div>
+						</form>
+						<a class="remove-btn
+								ui-btn ui-btn-center
+								ui-icon-delete ui-btn-icon-left">
+							remove smartset
+						</a>
+						<a class="cancel-btn ui-btn ui-btn-inline">cancel</a>
+						<a class="confirm-btn ui-btn ui-btn-inline">confirm</a>
+					</div>
 				</div>
 				
 				<ul class="items" data-role="listview">
@@ -583,25 +591,6 @@
 				</form>
 			</div>
 		</div>
-		
-		
-<!---------- SMART ITEMS ------------------------------------------------------>
-		
-		
-		<!--<div id="smart-items-page" data-role="page">
-			<div class="header" data-role="header" data-position="fixed">
-				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
-				<div class="header-title ui-title"><h1>Smart Home</h1></div>
-			</div>
-			
-			<div class="main" data-role="ui-content">
-				<ul class="smart-items"
-						data-role="listview"
-						data-split-icon="delete">
-					filled dinamically
-				</ul>
-			</div>
-		</div>-->
 		
 		
 <!---------- BLANK ------------------------------------------------------------>
