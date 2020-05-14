@@ -33,9 +33,13 @@ var app = {
 	editProfilesMode: false,
 	editRoomsMode: false,
 	editItemsMode: false,
+	profileAvatarsPath: 'img/profiles/',
+	defaultProfileAvatar: 'avatar-0',
 	profileAvatars: ["avatar-0", "avatar-1", "avatar-2", "avatar-3", "avatar-4",
 		"avatar-5", "avatar-6", "avatar-7", "avatar-8", "avatar-9", "avatar-10",
 		"avatar-11",],
+	roomIconsPath: 'img/rooms/',
+	defaultRoomIcon: '017-furniture',
 	roomIcons: ["001-bath", "002-bed", "003-bench", "004-bedside-table",
 		"005-book-shelf", "006-book-shelf-1", "007-cabinet", "008-cradle",
 		"009-chair", "010-chair-1", "011-chair-2", "012-closet",
@@ -45,6 +49,8 @@ var app = {
 		"024-kitchen-table-1", "025-lamp", "026-nightstand", "027-nightstand-1",
 		"028-office-chair", "029-rocking-chair", "030-shelf", "031-sofa",
 		"032-chair-3", "033-stool", "034-television", "035-bunk", "036-sink",],
+	itemIconsPath: 'img/items/',
+	defaultItemIcon: '011-light-bulb',
 	itemIcons: ["001-wifi", "002-thermometer", "003-refrigerator", "004-lamp",
 		"005-washing-machine", "006-real-estate", "007-eco-house", "008-smart-home",
 		"009-danger", "010-home", "011-light-bulb", "012-smartphone",
@@ -58,21 +64,12 @@ var app = {
 		"039-smart-home-4", "040-weather", "041-degree", "042-temperature",
 		"043-scales", "044-modem", "045-smart-lock", "046-recycle-bin",
 		"047-light-bulb-1", "048-water", "049-house-1", "050-vision",],
-	clickManager: {
-		timerId: null,
-		active: false,
-	},
 	// DEBUG
 	debugHost: 8,
 	//--------------------
 
 	
 	initialize: function() {
-		/*app.refreshAvatars(app.AVATARS);*/
-		/*app.refreshRoomIcons(app.ROOM_ICONS);*/
-		/*app.refreshItemIcons(app.ITEM_ICONS);*/
-		
-		
 		
 /********** WELCOME ***********************************************************/
 		
@@ -150,6 +147,15 @@ var app = {
 		
 /********** PROFILES **********************************************************/
 		
+		$('#profiles-page').on('pagehide', function() {
+		});
+		
+		$('#profiles-page').on('pagebeforeshow', function() {
+			app.currentRoom = undefined;
+			app.setEditProfilesMode(false);
+			app.refresh('#profiles-page .profiles');
+		});
+		
 		$("#profiles-page .back-btn").click(function() {
 			app.activeUser = undefined;
 			app.changePage("#welcome-page");
@@ -178,7 +184,7 @@ var app = {
 					app.currentProfile = response.profile;
 
 					if (app.editProfilesMode) {
-						app.changePage("#edit-profile-page");
+						$.mobile.navigate('#edit-profile-page');
 					}
 					else {
 						app.changePage("#control-panel-page");
@@ -196,13 +202,25 @@ var app = {
 		
 /********** EDIT PROFILE ******************************************************/
 		
-		$("#edit-profile-page .back-btn").click(function() {
+		$("#edit-profile-page").on("pagehide", function() {
 			app.currentProfile = undefined;
-			app.cleanupEditProfilePage();
-			app.changePage("#profiles-page");
 		});
 		
-		$("#edit-profile-page .confirm-btn").click(function() {
+		$("#edit-profile-page").on("pagebeforeshow", function() {
+			$('#edit-profile-page .profile-avatar').attr('name',
+					app.currentProfile.avatar);
+			$('#edit-profile-page .profile-avatar').attr('src',
+					'img/profiles/' + app.currentProfile.avatar + '.png');
+			$('#edit-profile-page .profile-name').val(app.currentProfile.name);
+			app.load('#edit-profile-page .avatars', app.profileAvatars);
+		});
+		
+		$("#edit-profile-page .back-btn").click(async function() {
+			await app.changePage("#profiles-page");
+			app.onLeave('#edit-profile-page');
+		});
+		
+		$("#edit-profile-page .confirm-btn").click(async function() {
 			var newProfile = {
 				name : app.dePrettyfy($("#edit-profile-page .profile-name").val()),
 				avatar : $("#edit-profile-page .profile-avatar").attr('name'),
@@ -212,15 +230,14 @@ var app = {
 					!newProfile.name.includes(" ") &&
 					newProfile.avatar != "") {
 				app.arduino.editProfile(app.currentProfile, newProfile)
-				.then(function(response) {
+				.then(async function(response) {
 					var outcome = JSON.parse(response).outcome;
 
 					if (outcome == "success") {
 						//alert("Profile saved successfully");
 
-						app.currentProfile = undefined;
-						app.cleanupEditProfilePage();
-						app.changePage("#profiles-page");
+						await app.changePage("#profiles-page");
+						app.onLeave('#edit-profile-page');
 					}
 					else {
 						alert(JSON.parse(response).error);
@@ -244,15 +261,15 @@ var app = {
 					$(this).find('img').attr('src'));
 		});
 		
-		$("#edit-profile-page .remove-btn").click(function() {
+		$("#edit-profile-page .remove-btn").click(async function() {
 			app.arduino.removeProfile(app.currentProfile)
-			.then(function(response) {
+			.then(async function(response) {
 				var outcome = JSON.parse(response).outcome;
 
 				if (outcome == "success") {
 					app.currentProfile = undefined;
-					app.cleanupEditProfilePage();
-					app.changePage("#profiles-page");
+					await app.changePage("#profiles-page");
+					app.onLeave('#edit-profile-page');
 				}
 				else {
 					alert(JSON.parse(response).error);
@@ -266,12 +283,24 @@ var app = {
 		
 /********** ADD PROFILE *******************************************************/
 		
-		$("#add-profile-page .back-btn").click(function() {
-			app.cleanupAddProfilePage();
-			app.changePage("#profiles-page");
+		$("#add-profile-page").on("pagehide", function() {
 		});
 		
-		$("#add-profile-page .confirm-btn").click(function() {
+		$("#add-profile-page").on("pagebeforeshow", function() {
+			$('#add-profile-page .profile-avatar').attr('name',
+					app.defaultProfileAvatar);
+			$('#add-profile-page .profile-avatar').attr('src',
+					app.profileAvatarsPath + app.defaultProfileAvatar + '.png');
+			$('#add-profile-page .profile-name').val('');
+			app.load('#add-profile-page .avatars', app.profileAvatars);
+		});
+		
+		$("#add-profile-page .back-btn").click(async function() {
+			await app.changePage("#profiles-page");
+			app.onLeave('#add-profile-page');
+		});
+		
+		$("#add-profile-page .confirm-btn").click(async function() {
 			var profile = {
 				name : app.dePrettyfy($("#add-profile-page .profile-name").val()),
 				avatar : $("#add-profile-page .profile-avatar").attr('name'),
@@ -281,13 +310,13 @@ var app = {
 					!profile.name.includes(" ") &&
 					profile.avatar != "") {
 				app.arduino.addProfile(profile)
-				.then(function(response) {
+				.then(async function(response) {
 					var outcome = JSON.parse(response).outcome;
 
 					if (outcome == "success") {
 
-						app.cleanupAddProfilePage();
-						app.changePage("#profiles-page");
+						await app.changePage("#profiles-page");
+						app.onLeave('#add-profile-page');
 					}
 					else {
 						alert(JSON.parse(response).error);
@@ -335,6 +364,16 @@ var app = {
 		
 		
 /********** CONTROL PANEL *****************************************************/
+		
+		$('#control-panel-page').on('pagehide', function() {
+		});
+		
+		$('#control-panel-page').on('pagebeforeshow', function() {
+			app.currentItem = undefined;
+			app.setEditRoomsMode(false);
+			app.refresh('#control-panel-page .rooms');
+			app.close('#control-panel-page .footer', 0);
+		});
 		
 		$("#control-panel-page .menu-btn").click(function() {
 			//TODO: replace these operation with: open side menu
@@ -479,13 +518,25 @@ var app = {
 		
 /********** EDIT ROOM *********************************************************/
 		
-		$("#edit-room-page .back-btn").click(function() {
+		$('#edit-room-page').on('pagehide', function() {
 			app.currentRoom = undefined;
-			app.cleanupEditRoomPage();
-			app.changePage("#control-panel-page");
 		});
 		
-		$("#edit-room-page .confirm-btn").click(function() {
+		$('#edit-room-page').on('pagebeforeshow', function() {
+			$('#edit-room-page .room-icon').attr('name',
+					app.currentRoom.icon);
+			$('#edit-room-page .room-icon').attr('src',
+					app.roomIconsPath + app.currentRoom.icon + '.png');
+			$('#edit-room-page .room-name').val(app.currentRoom.name);
+			app.load('#edit-room-page .icons', app.roomIcons);
+		});
+		
+		$("#edit-room-page .back-btn").click(async function() {
+			await app.changePage("#control-panel-page");
+			app.onLeave('#edit-room-page');
+		});
+		
+		$("#edit-room-page .confirm-btn").click(async function() {
 			var newRoom = {
 				name : app.dePrettyfy($("#edit-room-page .room-name").val()),
 				icon : $("#edit-room-page .room-icon").attr('name'),
@@ -495,15 +546,14 @@ var app = {
 					!newRoom.name.includes(" ") &&
 					newRoom.icon != undefined) {
 				app.arduino.editRoom(app.currentRoom, newRoom)
-				.then(function(response) {
+				.then(async function(response) {
 					var outcome = JSON.parse(response).outcome;
 
 					if (outcome == "success") {
 						//alert("Room saved successfully");
 
-						app.currentRoom = undefined;
-						app.cleanupEditRoomPage();
-						app.changePage("#control-panel-page");
+						await app.changePage("#control-panel-page");
+						app.onLeave('#edit-room-page');
 					}
 					else {
 						alert(JSON.parse(response).error);
@@ -527,15 +577,14 @@ var app = {
 					$(this).find('img').attr('src'));
 		});
 		
-		$("#edit-room-page .remove-btn").click(function() {
+		$("#edit-room-page .remove-btn").click(async function() {
 			app.arduino.removeRoom(app.currentRoom)
-			.then(function(response) {
+			.then(async function(response) {
 				var outcome = JSON.parse(response).outcome;
 
 				if (outcome == "success") {
-					app.currentRoom = undefined;
-					app.cleanupEditRoomPage();
-					app.changePage("#control-panel-page");
+					await app.changePage("#control-panel-page");
+					app.onLeave('#edit-room-page');
 				}
 				else {
 					alert(JSON.parse(response).error);
@@ -548,12 +597,24 @@ var app = {
 
 /********** ADD ROOM **********************************************************/
 		
-		$("#add-room-page .back-btn").click(function() {
-			app.cleanupAddRoomPage();
-			app.changePage("#control-panel-page");
+		$('#add-room-page').on('pagehide', function() {
 		});
 		
-		$("#add-room-page .confirm-btn").click(function() {
+		$('#add-room-page').on('pagebeforeshow', function() {
+			$('#add-room-page .room-icon').attr('name',
+					app.defaultRoomIcon);
+			$('#add-room-page .room-icon').attr('src',
+					app.roomIconsPath + app.defaultRoomIcon + '.png');
+			$('#add-room-page .room-name').val('');
+			app.load('#add-room-page .icons', app.roomIcons);
+		});
+		
+		$("#add-room-page .back-btn").click(async function() {
+			await app.changePage("#control-panel-page");
+			app.onLeave('#add-room-page');
+		});
+		
+		$("#add-room-page .confirm-btn").click(async function() {
 			var room = {
 				name : app.dePrettyfy($("#add-room-page .room-name").val()),
 				icon : $("#add-room-page .room-icon").attr('name'),
@@ -563,13 +624,12 @@ var app = {
 					!room.name.includes(" ") &&
 					room.icon != undefined) {
 				app.arduino.addRoom(room)
-				.then(function(response) {
+				.then(async function(response) {
 					var outcome = JSON.parse(response).outcome;
 
 					if (outcome == "success") {
-
-						app.cleanupAddRoomPage();
-						app.changePage("#control-panel-page");
+						await app.changePage("#control-panel-page");
+						app.onLeave('#add-room-page');
 					}
 					else {
 						alert(JSON.parse(response).error);
@@ -594,7 +654,17 @@ var app = {
 		});
 		
 		
-/********** MANUAL PANEL *****************************************************/
+/********** MANUAL PANEL ******************************************************/
+		
+		$('#manual-panel-page').on('pagehide', function() {
+		});
+		
+		$('#manual-panel-page').on('pagebeforeshow', function() {
+			app.setEditItemsMode(false);
+			app.refresh('#manual-panel-page .items');
+			app.close('#manual-panel-page .smartsets-collapsible', 0);
+			app.close('#manual-panel-page .smartsets-panel', 0);
+		});
 		
 		$("#manual-panel-page .back-btn").click(function() {
 			app.currentRoom = undefined;
@@ -610,7 +680,7 @@ var app = {
 			}
 		});
 		
-		$("#manual-panel-page .smartsets").on( "collapsibleexpand", function() {
+		$("#manual-panel-page .smartsets").on("collapsibleexpand", async function() {
 			app.refresh('#manual-panel-page .main .smartsets');
 		});
 		
@@ -923,6 +993,20 @@ var app = {
 		
 /********** EDIT ITEM *********************************************************/
 		
+		$('#edit-item-page').on('pagehide', function() {
+			app.currentItem = undefined;
+		});
+		
+		$('#edit-item-page').on('pagebeforeshow', function() {
+			$('#edit-item-page .item-icon').attr('name',
+					app.currentItem.icon);
+			$('#edit-item-page .item-icon').attr('src',
+					app.itemIconsPath + app.currentItem.icon + '.png');
+			$('#edit-item-page .item-name').val(app.currentItem.name);
+			app.refresh('#edit-item-page .ports');
+			app.load('#edit-item-page .icons', app.itemIcons);
+		});
+		
 		$("#edit-item-page .back-btn").click(function() {
 			app.currentItem = undefined;
 			app.cleanupEditItemPage();
@@ -1002,6 +1086,19 @@ var app = {
 		
 /********** ADD ITEM **********************************************************/
 		
+		$('#add-item-page').on('pagehide', function() {
+		});
+		
+		$('#add-item-page').on('pagebeforeshow', function() {
+			$('#add-item-page .item-icon').attr('name',
+					app.defaultItemIcon);
+			$('#add-item-page .item-icon').attr('src',
+					app.itemIconsPath + app.defaultItemIcon + '.png');
+			$('#add-item-page .item-name').val('');
+			app.refresh('#add-item-page .ports');
+			app.load('#add-item-page .icons', app.itemIcons);
+		});
+		
 		$("#add-item-page .back-btn").click(function() {
 			app.cleanupAddItemPage();
 			app.changePage("#manual-panel-page");
@@ -1055,7 +1152,7 @@ var app = {
 		
 /********** SMARTSETS *********************************************************/
 		
-		$("#smartsets-page .back-btn").click(function() {
+		/*$("#smartsets-page .back-btn").click(function() {
 			app.changePage("#manual-panel-page");
 		});
 		
@@ -1106,11 +1203,11 @@ var app = {
 		$("#smartsets-page")
 		.on("click", ".add-btn", function() {
 			app.changePage("#add-smartset-page");
-		});
+		});*/
 		
 /********** ADD SMARTSET ******************************************************/
 		
-		$("#add-smartset-page .back-btn").click(function() {
+		/*$("#add-smartset-page .back-btn").click(function() {
 			app.changePage("#smartsets-page");
 		});
 		
@@ -1185,11 +1282,11 @@ var app = {
 			else {
 				alert("invalid data");
 			}
-		});
+		});*/
 		
 /********** EDIT SMARTSET *****************************************************/
 		
-		$("#edit-smartset-page .back-btn").click(function() {
+		/*$("#edit-smartset-page .back-btn").click(function() {
 			app.currentSmartset = undefined;
 			app.changePage("#smartsets-page");
 		});
@@ -1247,7 +1344,7 @@ var app = {
 			.catch(function() {
 				alert("removeSmartset::error");
 			});
-		});
+		});*/
 		
 		
 /********** SMART ITEMS *******************************************************/
@@ -1379,7 +1476,7 @@ var app = {
 		}
 	},*/
 	
-	refreshProfilesList: function() {
+	/*refreshProfilesList: function() {
 		app.arduino.getProfiles()
 		.then(function(result) {
 			var response = JSON.parse(result);
@@ -1394,9 +1491,9 @@ var app = {
 		.catch(function() {
 			alert("getProfiles::error");
 		});
-	},
+	},*/
 	
-	loadProfilesList: function(profiles) {
+	/*loadProfilesList: function(profiles) {
 		var container = $(".profiles-list");
 		container.html("");
 		
@@ -1408,7 +1505,7 @@ var app = {
 						'ui-block-' + blockType +
 				'">' +
 					'<a class="profile-btn ' +
-							'ui-btn ' +/*'ui-icon-edit ui-btn-icon-top" '*/
+							'ui-btn ' +'ui-icon-edit ui-btn-icon-top" '
 					'">' +
 						'<div class="profile" ' +
 								'id="' + profile.id + '" ' +
@@ -1429,7 +1526,7 @@ var app = {
 		if (container.html() == "") {
 			container.html("<p>TODO</p>");
 		}
-	},
+	},*/
 	
 	refreshProfileInfo: function(profile) {
 		var container = $(".profile-container");
@@ -1699,7 +1796,7 @@ var app = {
 		}
 		
 		else if (target.is($('#manual-panel-page .edit-smartset-popup'))) {
-			app.load($('#manual-panel-page .edit-smartset-popup form'));
+			app.load('#manual-panel-page .edit-smartset-popup form');
 			$('#manual-panel-page .edit-smartset-popup').popup("open");
 		}
 		
@@ -1710,27 +1807,34 @@ var app = {
 	
 /********** CLOSE *************************************************************/
 	
-	close: async function(selector) {
+	close: function(selector, animationtime) {
 		let target = $(selector);
+		if (animationtime == undefined) {
+			animationtime = 300;
+		}
 		
 		if (target.is($('#control-panel-page .footer'))) {
-			return target.animate({
-				'top': $(window).height(),
-			}, 300).promise();
+			return target.animate(
+					{'top': $(window).height(),},
+					animationtime).promise();
+		}
+		
+		if (target.is($('#manual-panel-page .smartsets-collapsible'))) {
+			return target.collapsible('collapse').promise();
 		}
 		
 		if (target.is($('#manual-panel-page .smartsets-panel'))) {
-			target.animate({
-				'top': $(window).height(),
-			}, 300);
+			return target.animate(
+					{'top': $(window).height(),},
+					animationtime).promise();
 		}
 		
 		else if (target.is($('#manual-panel-page .add-smartset-popup'))) {
-			$('#manual-panel-page .add-smartset-popup').popup('close');
+			return target.popup('close').promise();
 		}
 		
 		else if (target.is($('#manual-panel-page .edit-smartset-popup'))) {
-			$('#manual-panel-page .edit-smartset-popup').popup('close');
+			return target.popup('close').promise();
 		}
 		
 		else {
@@ -1743,13 +1847,30 @@ var app = {
 	refresh: async function(selector) {
 		let target = $(selector);
 		
-		if (target.is($("#control-panel-page .footer .smartsets"))) {
+		if (target.is($("#profiles-page .profiles"))) {
+			try {
+				let response = JSON.parse(await app.arduino.getProfiles());
+
+				if (response.outcome == "success") {
+					app.load(selector, response.profiles);
+					//app.loadProfilesList(response.profiles);
+				}
+				else {
+					alert(response.error);
+				}
+			}
+			catch (error) {
+				alert("getProfiles::error");
+			}
+		}
+		
+		else if (target.is($("#control-panel-page .footer .smartsets"))) {
 			return app.arduino.getSmartsets(app.currentRoom, app.currentProfile)
 			.then(function(result) {
 				var response = JSON.parse(result);
 
 				if (response.outcome == "success") {
-					app.load(target, response.smartsets);
+					app.load(selector, response.smartsets);
 				}
 				else {
 					alert(response.error);
@@ -1769,7 +1890,7 @@ var app = {
 					alert(response.error);
 					return;
 				}
-				app.load(target, response.rooms);
+				app.load(selector, response.rooms);
 				let cachedProfiles = [];
 				for (let room of response.rooms) {
 					try {
@@ -1807,9 +1928,8 @@ var app = {
 								$(selector + ' .room[room-id="' + room.id + '"] .room-smart-btn').addClass('enhanced');
 							}
 						}
-						let innerSelector = '.room[room-id="' + room.id + '"] .active-profiles';
-						let target = $(selector + ' ' + innerSelector);
-						app.load(target, activeProfiles);
+						selector += ' .room[room-id="' + room.id + '"] .active-profiles';
+						app.load(selector, activeProfiles);
 					}
 					catch (e) {
 						alert('getActiveSmartsets::error');
@@ -1822,17 +1942,31 @@ var app = {
 		}
 		
 		else if (target.is($("#manual-panel-page .main .smartsets"))) {
+			/*return app.arduino.getSmartsets(
+							app.currentRoom,
+							app.currentProfile)
+			.then(function(result) {
+				var response = JSON.parse(result);
+				
+				if (response.outcome != "success") {
+					alert(response.error);
+					return;
+				}
+				app.load(selector, response.smartsets);
+			})
+			.catch(function() {
+				alert("getSmartsets::error");
+			});*/
 			try {
 				let response = JSON.parse(
 					await app.arduino.getSmartsets(
 							app.currentRoom,
 							app.currentProfile));
-
 				if (response.outcome != "success") {
 					alert(response.error);
 					return;
 				}
-				app.load(target, response.smartsets);
+				app.load(selector, response.smartsets);
 			}
 			catch(error) {
 				alert("getSmartsets::error");
@@ -1874,7 +2008,7 @@ var app = {
 						smartItem.name = originItem.name;
 						smartItem.icon = originItem.icon;
 					}
-					app.load(target, smartItems);
+					app.load(selector, smartItems);
 				}
 				catch (error) {
 					alert('getSmartItems::error');
@@ -1892,7 +2026,7 @@ var app = {
 								app.currentRoom.id,
 								app.currentProfile.id));
 				if (response.outcome == "success") {
-					app.load(target, response.items);
+					app.load(selector, response.items);
 				}
 				else {
 					alert(response.error);
@@ -1910,7 +2044,7 @@ var app = {
 								app.currentRoom,
 								app.currentProfile));
 				if (response.outcome == "success") {
-					app.load(target, response.smartsets);
+					app.load(selector, response.smartsets);
 				}
 				else {
 					alert(response.error);
@@ -1944,7 +2078,7 @@ var app = {
 					alert(response.error);
 					return;
 				}
-				app.load(target, response.ports);
+				app.load(selector, response.ports);
 			}
 			catch(error) {
 				alert("getPorts::error");
@@ -1959,9 +2093,44 @@ var app = {
 	
 /********** LOAD **************************************************************/
 	
-	load: function(target, data) {
+	load: function(selector, data) {
+		let target = $(selector);
 		
-		if (target.is($("#add-profile-page .avatars")) ||
+		if (target.is($('#profiles-page .profiles'))) {
+			target.html("");
+
+			for (let i = 0; i < data.length; i++) {
+				let blockType = app.toBlockType(i % 2);
+				let profile = data[i];
+				target.append(
+					'<div class="centered-list-block ' +
+							'ui-block-' + blockType +
+					'">' +
+						'<a class="profile-btn ' +
+								'ui-btn ' +
+						'">' +
+							'<div class="profile" ' +
+									'id="' + profile.id + '" ' +
+							'">' +
+								'<img class="profile-avatar" src="img/profiles/' +
+										profile.avatar + '.png" ' +
+										'width="120px" height="120px" ' + 
+								'/>' +
+								'<h2 class="profile-name">' +
+										profile.name +
+								'</h2>' +
+							'</div>' +
+						'</a>' +
+					'</div>');
+			}
+			//$(container).enhanceWithin();
+
+			/*if (container.html() == "") {
+				container.html("<p>TODO</p>");
+			}*/
+		}
+		
+		else if (target.is($("#add-profile-page .avatars")) ||
 				target.is($("#edit-profile-page .avatars"))) {
 			target.html("");
 			for (let i = 0; i < data.length; i++) {
@@ -2435,37 +2604,54 @@ var app = {
 		app.editItemsMode = value;
 	},
 	
-	leavePage: function(page) {
-		alert('TODO: leavePage');
-		/*switch(page) {
+	onLeave: function(page) {
+		switch(page) {
 		
-		case "#profiles-page":
+		case "#add-profile-page":
+			/*$('#add-profile-page .profile-avatar').attr(
+					'src',
+					app.profileAvatarsPath + app.defaultProfileAvatar + '.png');
+			$('#add-profile-page .profile-name').val('');*/
 			break;
 		
-		case "#profiles-page":
+		case "#edit-profile-page":
+			/*app.currentProfile = undefined;
+			$('#edit-profile-page .profile-avatar').attr(
+					'src',
+					app.profileAvatarsPath + app.defaultProfileAvatar + '.png');
+			$('#edit-profile-page .profile-name').val('');*/
 			break;
 			
-		case "#profiles-page":
+		case "#add-room-page":
+			/*$('#add-room-page .room-icon').attr(
+					'src',
+					app.roomIconsPath + app.defaultRoomIcon + '.png');
+			$('#add-room-page .room-name').val('');*/
 			break;
 		
-		case "#profiles-page":
+		case "#edit-room-page":
+			/*app.currentRoom = undefined;
+			$('#edit-room-page .room-icon').attr(
+					'src',
+					app.roomIconsPath + app.defaultRoomIcon + '.png');
+			$('#edit-room-page .room-name').val('');*/
 			break;
 		
-		case "#profiles-page":
+		case "#add-item-page":
 			break;
 		
-		case "#profiles-page":
+		case "#edit-item-page":
 			break;
 		
 		default:
 			
-		}*/
+		}
 	},
 	
-	changePage: function(destination) {
+	changePage: function(page) {
 		//$.mobile.navigate(destination);
 		
-		switch(destination) {
+		switch(page) {
 				
 		/*case "#sign-in-page":
 		case "#registerPage":
@@ -2473,25 +2659,25 @@ var app = {
 			break;*/
 				
 		case "#profiles-page":
-			if (app.editProfilesMode) {
+			/*if (app.editProfilesMode) {
 				app.setEditProfilesMode(false);
 			}
 			
-			app.refreshProfilesList();
+			app.refreshProfilesList();*/
 			break;
 				
 		case "#add-profile-page":
-			$('#add-profile-page .profile-avatar').attr(
+			/*$('#add-profile-page .profile-avatar').attr(
 					'name',
 					app.profileAvatars[0]);
 			$('#add-profile-page .profile-avatar').attr(
 					'src',
 					'img/profiles/' + app.profileAvatars[0] + '.png');
-			app.load($('#add-profile-page .avatars'), app.profileAvatars);
+			app.load('#add-profile-page .avatars', app.profileAvatars);*/
 			break;
 				
 		case '#edit-profile-page':
-			$('#edit-profile-page .profile-avatar').attr(
+			/*$('#edit-profile-page .profile-avatar').attr(
 					'name',
 					app.currentProfile.avatar);
 			$('#edit-profile-page .profile-avatar').attr(
@@ -2499,33 +2685,32 @@ var app = {
 					'img/profiles/' + app.currentProfile.avatar + '.png');
 			$('#edit-profile-page .profile-name').val(
 					app.currentProfile.name);
-			app.load($('#edit-profile-page .avatars'), app.profileAvatars);
+			app.load('#edit-profile-page .avatars', app.profileAvatars);*/
 			break;
 				
 		case "#sign-in-profile-page":
-			app.refreshProfileInfo(app.currentProfile);
+			/*app.refreshProfileInfo(app.currentProfile);*/
 			break;
 				
 		case "#control-panel-page":
-			if (app.editRoomsMode) {
+			/*if (app.editRoomsMode) {
 				app.setEditRoomsMode(false);
 			}
-			//app.refreshRooms();
-			app.refresh('#control-panel-page .rooms');
+			app.refresh('#control-panel-page .rooms');*/
 			break;
 				
 		case "#add-room-page":
-			$('#add-room-page .room-icon').attr(
+			/*$('#add-room-page .room-icon').attr(
 					'name',
 					app.roomIcons[16]);
 			$('#add-room-page .room-icon').attr(
 					'src',
 					'img/rooms/' + app.roomIcons[16] + '.png');
-			app.load($('#add-room-page .icons'), app.roomIcons);
+			app.load('#add-room-page .icons', app.roomIcons);*/
 			break;
 				
 		case '#edit-room-page':
-			$('#edit-room-page .room-icon').attr(
+			/*$('#edit-room-page .room-icon').attr(
 					'name',
 					app.currentRoom.icon);
 			$('#edit-room-page .room-icon').attr(
@@ -2533,11 +2718,11 @@ var app = {
 					'img/rooms/' + app.currentRoom.icon + '.png');
 			$('#edit-room-page .room-name').val(
 					app.currentRoom.name);
-			app.load($('#edit-room-page .icons'), app.roomIcons);
+			app.load('#edit-room-page .icons', app.roomIcons);*/
 			break;
 				
 		case "#manual-panel-page":
-			if (app.editItemsMode)
+			/*if (app.editItemsMode)
 				app.setEditItemsMode(false);
 				
 			app.arduino.getItems(
@@ -2555,24 +2740,24 @@ var app = {
 			})
 			.catch(function() {
 				alert("getItems::error");
-			});
+			});*/
 				
 			//app.refresh('#manual-panel-page .smartsets');
 			break;
 				
 		case "#add-item-page":
-			$('#add-item-page .item-icon').attr(
+			/*$('#add-item-page .item-icon').attr(
 					'name',
 					app.itemIcons[10]);
 			$('#add-item-page .item-icon').attr(
 					'src',
 					'img/items/' + app.itemIcons[10] + '.png');
 			app.refresh('#add-item-page .ports');
-			app.load($('#add-item-page .icons'), app.itemIcons);
+			app.load('#add-item-page .icons', app.itemIcons);*/
 			break;
 				
 		case "#edit-item-page":
-			$('#edit-item-page .item-icon').attr(
+			/*$('#edit-item-page .item-icon').attr(
 					'name',
 					app.currentItem.icon);
 			$('#edit-item-page .item-icon').attr(
@@ -2581,10 +2766,10 @@ var app = {
 			$('#edit-item-page .item-name').val(
 					app.currentItem.name);
 			app.refresh('#edit-item-page .ports');
-			app.load($('#edit-item-page .icons'), app.itemIcons);
+			app.load('#edit-item-page .icons', app.itemIcons);*/
 			break;
 			
-		case "#smartsets-page":
+		/*case "#smartsets-page":
 			app.arduino.getSmartsets(app.currentRoom, app.currentProfile)
 			.then(function(result) {
 				var response = JSON.parse(result);
@@ -2624,11 +2809,11 @@ var app = {
 			.catch(function() {
 				alert("getSmartItems::error");
 			});
-			break;
+			break;*/
 		default:
 		}
 		
-		$.mobile.navigate(destination);
+		$.mobile.navigate(page);
 	},
 	
 	// Create the XHR object.
