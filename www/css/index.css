@@ -124,6 +124,10 @@ body {
 	margin: 0;
 }
 
+.ui-listview .ui-first-child .ui-btn {
+	margin: 0px;
+}
+
 /********** SIGN IN PAGE ******************************************************/
 
 #sign-in-page .ui-input-text {

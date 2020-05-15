@@ -211,7 +211,7 @@ var app = {
 					app.currentProfile.avatar);
 			$('#edit-profile-page .profile-avatar').attr('src',
 					'img/profiles/' + app.currentProfile.avatar + '.png');
-			$('#edit-profile-page .profile-name').val(app.currentProfile.name);
+			$('#edit-profile-page .profile-name').val(app.prettyfy(app.currentProfile.name));
 			app.load('#edit-profile-page .avatars', app.profileAvatars);
 		});
 		
@@ -527,7 +527,7 @@ var app = {
 					app.currentRoom.icon);
 			$('#edit-room-page .room-icon').attr('src',
 					app.roomIconsPath + app.currentRoom.icon + '.png');
-			$('#edit-room-page .room-name').val(app.currentRoom.name);
+			$('#edit-room-page .room-name').val(app.prettyfy(app.currentRoom.name));
 			app.load('#edit-room-page .icons', app.roomIcons);
 		});
 		
@@ -657,13 +657,14 @@ var app = {
 /********** MANUAL PANEL ******************************************************/
 		
 		$('#manual-panel-page').on('pagehide', function() {
+			app.close('#manual-panel-page .smartsets-collapsible', 0);
+			app.close('#manual-panel-page .smartsets-panel', 0);
 		});
 		
 		$('#manual-panel-page').on('pagebeforeshow', function() {
 			app.setEditItemsMode(false);
+			app.refresh('#manual-panel-page .main .smartsets');
 			app.refresh('#manual-panel-page .items');
-			app.close('#manual-panel-page .smartsets-collapsible', 0);
-			app.close('#manual-panel-page .smartsets-panel', 0);
 		});
 		
 		$("#manual-panel-page .back-btn").click(function() {
@@ -678,10 +679,6 @@ var app = {
 			else {
 				app.setEditItemsMode(true);
 			}
-		});
-		
-		$("#manual-panel-page .smartsets").on("collapsibleexpand", async function() {
-			app.refresh('#manual-panel-page .main .smartsets');
 		});
 		
 		$(document).on("pagecreate", "#manual-panel-page", function() {
@@ -872,7 +869,8 @@ var app = {
 		$("#manual-panel-page")
 		.on("click", ".add-smartset-popup .confirm-btn", async function() {
 			let newSmartset = {
-				name : $('#manual-panel-page .add-smartset-popup .smartset-name').val(),
+				name : app.dePrettyfy(
+						$('#manual-panel-page .add-smartset-popup .smartset-name').val()),
 			};
 			try {
 				let response = JSON.parse(await app.arduino.addSmartset(
@@ -897,6 +895,7 @@ var app = {
 					}
 					app.refresh('#manual-panel-page .main .smartsets');
 					app.close('#manual-panel-page .add-smartset-popup');
+					app.close('#manual-panel-page .smartsets-panel');
 				}
 				catch (error) {
 					alert("addItemToSmartset::error");
@@ -915,7 +914,8 @@ var app = {
 		$("#manual-panel-page")
 		.on("click", ".edit-smartset-popup .confirm-btn", async function() {
 			let newSmartset = {
-				name : $('#manual-panel-page .edit-smartset-popup .smartset-name').val(),
+				name : app.dePrettyfy(
+						$('#manual-panel-page .edit-smartset-popup .smartset-name').val()),
 			};
 			try {
 				let response = JSON.parse(await app.arduino.editSmartset(
@@ -929,6 +929,7 @@ var app = {
 					return;
 				}
 				app.refresh('#manual-panel-page .main .smartsets');
+				app.refresh('#manual-panel-page .smartsets-panel .smartsets');
 				app.close('#manual-panel-page .edit-smartset-popup');
 			}
 			catch (error) {
@@ -967,7 +968,6 @@ var app = {
 						app.currentProfile.id));
 				if (response.outcome == "success") {
 					app.close('#manual-panel-page .smartsets-panel');
-					alert('saved');
 				}
 				else {
 					alert(response.error);
@@ -995,6 +995,7 @@ var app = {
 		
 		$('#edit-item-page').on('pagehide', function() {
 			app.currentItem = undefined;
+			app.close('#edit-item-page .ports-collapsible');
 		});
 		
 		$('#edit-item-page').on('pagebeforeshow', function() {
@@ -1002,7 +1003,7 @@ var app = {
 					app.currentItem.icon);
 			$('#edit-item-page .item-icon').attr('src',
 					app.itemIconsPath + app.currentItem.icon + '.png');
-			$('#edit-item-page .item-name').val(app.currentItem.name);
+			$('#edit-item-page .item-name').val(app.prettyfy(app.currentItem.name));
 			app.refresh('#edit-item-page .ports');
 			app.load('#edit-item-page .icons', app.itemIcons);
 		});
@@ -1087,6 +1088,7 @@ var app = {
 /********** ADD ITEM **********************************************************/
 		
 		$('#add-item-page').on('pagehide', function() {
+			app.close('#add-item-page .ports-collapsible');
 		});
 		
 		$('#add-item-page').on('pagebeforeshow', function() {
@@ -1602,7 +1604,7 @@ var app = {
 		$(container).enhanceWithin();
 	},*/
 	
-	refreshRooms: function() {
+	/*refreshRooms: function() {
 		app.arduino.getRooms(app.currentProfile)
 		.then(function(result) {
 			var response = JSON.parse(result);
@@ -1619,9 +1621,9 @@ var app = {
 		.catch(function() {
 			alert("getRooms::error");
 		});
-	},
+	},*/
 	
-	loadRooms: function(rooms, container) {
+	/*loadRooms: function(rooms, container) {
 		container.html("");
 		for (let index = 0; index < rooms.length; index++) {
 			let room = rooms[index];
@@ -1631,65 +1633,10 @@ var app = {
 						'<img class="room-icon"' +
 								'src="img/rooms/' + room.icon + '.png">' +
 						'<h2 class="room-name">' + room.name + '</h2>' +
-				
-						/*<img class="active-profile-avatar"
-								src="img/profiles/avatar-0.png"
-								width="50px" height="50px">
-						<img class="active-profile-avatar"
-								src="img/profiles/avatar-1.png"
-								width="50px" height="50px">
-						<img class="active-profile-avatar"
-								src="img/profiles/avatar-2.png"
-								width="50px" height="50px">
-						<img class="active-profile-avatar"
-								src="img/profiles/avatar-3.png"
-								width="50px" height="50px">
-						<img class="active-profile-avatar"
-								src="img/profiles/avatar-4.png"
-								width="50px" height="50px">
-						<img class="active-profile-avatar"
-								src="img/profiles/avatar-0.png"
-								width="50px" height="50px">
-						<img class="active-profile-avatar"
-								src="img/profiles/avatar-1.png"
-								width="50px" height="50px">
-						<img class="active-profile-avatar"
-								src="img/profiles/avatar-2.png"
-								width="50px" height="50px">*/
-				
 					'</a>' +
 					'<a class="room-manual-btn" data-icon="gear"></a>' +
 				'</li>'
 			);
-				/*'<div ' +
-					'class="room" ' +
-					'id="' + room.id + '" ' +
-					'smart="false" ' +
-				'>' +
-					'<a class="ui-btn">' +
-						'<img src="img/rooms/' + room.icon +
-						'.png" width="130px" height="130px"/>' +
-						'<h3>' + app.prettyfy(room.name) + '</h3>' +
-					'</a>' +
-					'<div class="active-profiles">' +
-					'</div>' +
-				'</div>'*/
-			
-			/*for (let j = 0; j < room.smartsets.length; j++) {
-				let owner = room.smartsets[j].owner;
-				
-				$("#" + room.id + " .active-profiles").append(
-					'<div class="active-profile"' +
-							'id="' + owner.id + '"' +
-					'>' +
-						app.prettyfy(owner.name) +
-					'</div>'
-				);
-				
-				if (owner.id == app.currentProfile.id) {
-					$("#" + room.id).attr('smart', 'true');
-				}
-			}*/
 		}
 		
 		container.listview("refresh");
@@ -1697,7 +1644,7 @@ var app = {
 		if (container.html() == "") {
 			container.html("<p>There aren't any rooms yet</p>");
 		}
-	},
+	},*/
 	
 	/*refreshItems: function(items) {
 		var container = $(".items-list");
@@ -1819,11 +1766,11 @@ var app = {
 					animationtime).promise();
 		}
 		
-		if (target.is($('#manual-panel-page .smartsets-collapsible'))) {
+		else if (target.is($('#manual-panel-page .smartsets-collapsible'))) {
 			return target.collapsible('collapse').promise();
 		}
 		
-		if (target.is($('#manual-panel-page .smartsets-panel'))) {
+		else if (target.is($('#manual-panel-page .smartsets-panel'))) {
 			return target.animate(
 					{'top': $(window).height(),},
 					animationtime).promise();
@@ -1835,6 +1782,11 @@ var app = {
 		
 		else if (target.is($('#manual-panel-page .edit-smartset-popup'))) {
 			return target.popup('close').promise();
+		}
+		
+		else if (target.is($('#add-item-page .ports-collapsible')) ||
+				target.is($('#edit-item-page .ports-collapsible'))) {
+			return target.collapsible('collapse').promise();
 		}
 		
 		else {
@@ -1928,8 +1880,8 @@ var app = {
 								$(selector + ' .room[room-id="' + room.id + '"] .room-smart-btn').addClass('enhanced');
 							}
 						}
-						selector += ' .room[room-id="' + room.id + '"] .active-profiles';
-						app.load(selector, activeProfiles);
+						let innerSelector = selector + ' .room[room-id="' + room.id + '"] .active-profiles';
+						app.load(innerSelector, activeProfiles);
 					}
 					catch (e) {
 						alert('getActiveSmartsets::error');
@@ -2117,7 +2069,7 @@ var app = {
 										'width="120px" height="120px" ' + 
 								'/>' +
 								'<h2 class="profile-name">' +
-										profile.name +
+										app.prettyfy(profile.name) +
 								'</h2>' +
 							'</div>' +
 						'</a>' +
@@ -2151,7 +2103,6 @@ var app = {
 			
 			for (let i = 0; i < data.length; i++) {
 				let smartset = data[i];
-				let prettifiedName = app.prettyfy(smartset.name);
 				target.append(
 					'<li ' +
 						'class="smartset" ' +
@@ -2160,7 +2111,7 @@ var app = {
 					'>' +
 						'<a class="smartset-btn">' +
 							'<h3 class="smartset-name">' +
-								prettifiedName +
+								app.prettyfy(smartset.name) +
 							'</h3>' +
 						'</a>' +
 					'</li>'
@@ -2178,7 +2129,7 @@ var app = {
 						'<a class="room-smart-btn">' +
 							'<img class="room-icon"' +
 									'src="img/rooms/' + room.icon + '.png">' +
-							'<h2 class="room-name">' + room.name + '</h2>' +
+							'<h2 class="room-name">' + app.prettyfy(room.name) + '</h2>' +
 							'<div class="active-profiles"></div>' +
 						'</a>' +
 						'<a class="room-manual-btn" data-icon="gear"></a>' +
@@ -2249,7 +2200,7 @@ var app = {
 							'</a>' +
 							'<div class="smart-item-inner">' +
 								'<h2 class="smart-item-name">' +
-									smartItem.name +
+									app.prettyfy(smartItem.name) +
 								'</h2>' +
 							'</div>' +
 							'<a class="smart-item-remove-btn ' +
@@ -2261,7 +2212,7 @@ var app = {
 		}
 		
 		else if (target.is($('#manual-panel-page .edit-smartset-popup form'))) {
-			target.find('.smartset-name').val(app.currentSmartset.name);
+			target.find('.smartset-name').val(app.prettyfy(app.currentSmartset.name));
 		}
 		
 		else if (target.is($("#manual-panel-page .items"))) {
