@@ -73,7 +73,7 @@ var app = {
 		
 /********** WELCOME ***********************************************************/
 		
-		$("#welcome-page .connect-btn").click(function() {
+		$('#welcome-page').on("click", ".connect-btn", function() {
 			app.changePage("#sign-in-page");
 		});
 		

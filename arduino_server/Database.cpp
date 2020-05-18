@@ -41,14 +41,14 @@ void Database::debugInit()
 	addRoom(testJson);
 	testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Kids'_bedroom\",\"icon\":\"035-bunk\"}}";
 	addRoom(testJson);
-	testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Bau1\",\"icon\":\"020-kitchen-set\"}}";
+	/*testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Bau1\",\"icon\":\"020-kitchen-set\"}}";
 	addRoom(testJson);
 	testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Bau2\",\"icon\":\"035-bunk\"}}";
 	addRoom(testJson);
 	testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Bau3\",\"icon\":\"020-kitchen-set\"}}";
 	addRoom(testJson);
 	testJson = "{\"task\":\"add\",\"new_room\":{\"name\":\"Bau4\",\"icon\":\"035-bunk\"}}";
-	addRoom(testJson);
+	addRoom(testJson);*/
 
 	// test item entries
 	testJson = "{\"task\":\"add\",\"new_item\":{\"name\":\"Light\",\"icon\":\"011-light-bulb\",\"port\":\"none\"},\"room_id\":\"room_0000\"}";
@@ -71,14 +71,14 @@ void Database::debugInit()
 	addProfile(testJson);
 	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Lisa\",\"avatar\":\"avatar-10\"}}";
 	addProfile(testJson);
-	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Nico\",\"avatar\":\"avatar-3\"}}";
+	/*testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Nico\",\"avatar\":\"avatar-3\"}}";
 	addProfile(testJson);
 	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Uba\",\"avatar\":\"avatar-6\"}}";
 	addProfile(testJson);
 	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Fede\",\"avatar\":\"avatar-1\"}}";
 	addProfile(testJson);
 	testJson = "{\"task\":\"add\",\"new_profile\":{\"name\":\"Civi\",\"avatar\":\"avatar-8\"}}";
-	addProfile(testJson);
+	addProfile(testJson);*/
 
 	// test smartset entries
 	testJson = "{\"task\":\"add\",\"new_smartset\":{\"name\":\"work\"}, \"profile_id\":\"profile_0000\", \"room_id\":\"room_0000\"}";
