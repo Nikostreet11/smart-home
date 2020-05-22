@@ -275,6 +275,15 @@ bool Database::isRoomNameTaken(String roomName)
 
 /********** GET *****************************************************************/
 
+String Database::getDeviceInfo(String deviceName, String ipAddress) {
+	responseJson["outcome"] = "success";
+	JsonObject jsonDeviceInfo = responseJson.createNestedObject("device_info");
+	jsonDeviceInfo["name"] = deviceName;
+	jsonDeviceInfo["ip_address"] = ipAddress;
+	log(responseJson);
+	return getLog();
+}
+
 String Database::getProfiles()
 {
 	responseJson["outcome"] = "success";
@@ -668,6 +677,83 @@ String Database::getAvailablePorts()
 	}
 	log(responseJson);
 	
+	return getLog();
+}
+
+/********** UPDATE **************************************************************/
+
+String Database::updateProfiles(String data)
+{
+	deserializeJson(requestJson, data);
+	JsonArray profilesJson = requestJson["profiles"];
+	LinkedPointerList<String> errors;
+	for (int i = 0; i < profilesJson.size(); i++)
+	{
+		JsonObject profileJson = profilesJson[i];
+		String profileId = profileJson["id"];
+		Profile* profile = searchProfile(profileId);
+		if (!profile)
+		{
+			// add profile
+			if (profiles.size() == Profile::MAX_PROFILES)
+			{
+				String error = profileId + ": max number of profiles reached";
+				errors.add(new String(error));
+			}
+			else
+			{
+				if (isProfileNameTaken(profileJson["name"]))
+				{
+					String error = profileId + ": name unavailable";
+					errors.add(new String(error));
+				}
+				else
+				{
+					Profile* newProfile = Profile::create(rooms, profileId);
+					if (!newProfile)
+					{
+						String error = profileId + ": unable to create a profile";
+						errors.add(new String(error));
+					}
+					else
+					{
+						jsonToProfile(profileJson, newProfile);
+						profiles.add(newProfile);
+					}
+				}
+			}
+		}
+		else
+		{
+			if (profileJson["last_modified"] > profile->getLastEdit()) {
+				jsonToProfile(profileJson, profile);
+			}
+		}
+	}
+	if (errors.size() == 0)
+	{
+		responseJson["outcome"] = "success";
+	}
+	else
+	{
+		responseJson["outcome"] = "failure";
+		String errorsString = "";
+		for (int i = 0; i < errors.size(); i++)
+		{
+			if (i > 0)
+			{
+				errorsString += ", ";
+			}
+			errorsString += *(errors.get(i));
+		}
+		responseJson["error"] = errorsString;
+		while (errors.size() > 0)
+		{
+			delete errors.pop();
+		}
+	}
+	
+	log(responseJson);
 	return getLog();
 }
 
@@ -1441,6 +1527,7 @@ void Database::profileToJson(Profile* profile, JsonObject& json)
 	json["id"] = profile->getId();
 	json["name"] = profile->getName();
 	json["avatar"] = profile->getAvatar();
+	json["last_edit"] = profile->getLastEdit();
 }
 
 void Database::roomToJson(Room* room, JsonObject& json)
@@ -1489,6 +1576,10 @@ void Database::jsonToProfile(JsonObject& json, Profile* profile)
 {
 	profile->setName(json["name"]);
 	profile->setAvatar(json["avatar"]);
+	if (json.containsKey("last_edit"))
+	{
+		profile->setLastEdit(json["last_edit"]);
+	}
 }
 
 void Database::jsonToRoom(JsonObject& json, Room* room)

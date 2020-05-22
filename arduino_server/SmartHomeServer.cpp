@@ -174,6 +174,15 @@ bool SmartHomeServer::handleGET(String path, String query)
 		responseText = getIndexHTML();
 		return true;
 	}
+	else if (path.startsWith("/info/"))
+	{
+		IPAddress IP = WiFi.localIP();
+		String ipAddress =
+			String(IP[0]) + "." + String(IP[1]) + "." +
+			String(IP[2]) + "." + String(IP[3]);
+		responseText = database.getDeviceInfo(deviceName, ipAddress);
+		return true;
+	}
 	else if (path.startsWith("/profiles/"))
 	{
 		// get the id
@@ -448,7 +457,12 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 		String profileId = path.substring(profileIdStart);
 		if (profileId == "")
 		{
-			if (getParameter("action", query) == "add")
+			if (getParameter("action", query) == "update")
+			{
+				responseText = database.updateProfiles(data);
+				return true;
+			}
+			else if (getParameter("action", query) == "add")
 			{
 				responseText = database.addProfile(data);
 				return true;

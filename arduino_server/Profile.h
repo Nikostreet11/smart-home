@@ -3,6 +3,7 @@
 
 #include <SPI.h>
 #include <LinkedPointerList.h>
+#include <TimeLib.h>
 #include "Room.h"
 #include "Item.h"
 #include "SmartRoom.h"
@@ -13,6 +14,7 @@ class Profile
 public:
 	// static constructors
 	static Profile* create(LinkedPointerList<Room>& rooms);
+	static Profile* create(LinkedPointerList<Room>& rooms, String id);
 
 	// destructor
 	virtual ~Profile();
@@ -28,6 +30,8 @@ public:
 	void setName(const String& name);
 	const String& getAvatar() const;
 	void setAvatar(const String& avatar);
+	unsigned long getLastEdit();
+	void setLastEdit(unsigned long lastEdit);
 	SmartRoom* getSmartRoom(int index);
 	SmartRoom* getSmartRoom(const String& roomId);
 	int getSmartRoomIndex(const String& roomId);
@@ -37,8 +41,12 @@ public:
 	static const int MAX_PROFILES = 8;
 	
 private:
+	// internal
+	static int toTrueId(String id);
+	
 	// constructor
 	explicit Profile(LinkedPointerList<Room>& rooms);
+	explicit Profile(LinkedPointerList<Room>& rooms, int id);
 
 	// static resources
     static IdManager idManager;
@@ -50,6 +58,7 @@ private:
 	int id;
 	String name;
 	String avatar;
+	unsigned long lastEdit;
 };
 
 #endif /* PROFILE_H_ */

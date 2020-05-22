@@ -23,7 +23,8 @@ $(document).ready(function() {
 });
 
 var app = {
-	availableDevices: [],
+	//availableDevices: [],
+	connectedDevices: [],
 	connectedDevice: undefined,
 	//activeUser: undefined,
 	currentProfile: undefined,
@@ -65,7 +66,7 @@ var app = {
 		"043-scales", "044-modem", "045-smart-lock", "046-recycle-bin",
 		"047-light-bulb-1", "048-water", "049-house-1", "050-vision",],
 	// DEBUG
-	debugHost: 8,
+	debugHost: 55,
 	//--------------------
 
 	
@@ -80,15 +81,104 @@ var app = {
 		
 /********** SIGN IN ***********************************************************/
 		
-		$("#sign-in-page .back-btn").click(function() {
+		$("#sign-in-page").on('click', ".back-btn", function() {
 			app.changePage("#welcome-page");
 		});
 		
-		$("#sign-in-page .refresh-btn").click(function() {
+		/*$("#sign-in-page").on('click', ".refresh-btn", function() {
 			app.refreshDevices();
+			//app.refresh('#sign-in-page .devices');
+		});*/
+		
+		$("#sign-in-page").on('click', ".check-btn", async function() {
+			let ipAddressContainer = $(this).siblings('.ip-address');
+			let ipAddress =
+					ipAddressContainer.find('.ip-address-a').val() + '.' +
+					ipAddressContainer.find('.ip-address-b').val() + '.' +
+					ipAddressContainer.find('.ip-address-c').val() + '.' +
+					ipAddressContainer.find('.ip-address-d').val();
+			try {
+				let response = JSON.parse(await app.arduino.getDeviceInfo(ipAddress));
+				if (response.outcome == 'success') {
+					$(this).siblings('.name').text(response.device_info.name);
+					$(this).parents('.device').addClass('device-ready');
+				}
+			}
+			catch (error) {
+				console.error('getDeviceInfo::error');
+				$(this).siblings('.name').text('');
+				$(this).parents('.device').addClass('device-unavailable');
+			}
 		});
 		
-		$("#sign-in-page .submit-btn").click(function() {
+		$("#sign-in-page").on('change', ".ip-address input", function() {
+			$(this).parents('.device').removeClass('device-ready');
+			$(this).parents('.device').removeClass('device-unavailable');
+			$(this).parents('.device').find('.name').text('');
+		});
+		
+		$("#sign-in-page").on('click', ".confirm-btn", async function() {
+			// TODO: clear app.connectedDevices!
+			let ipAddresses = [];
+			$('#sign-in-page .ip-address').each(function() {
+				let ipAddress =
+						$(this).find('.ip-address-a').val() + '.' +
+						$(this).find('.ip-address-b').val() + '.' +
+						$(this).find('.ip-address-c').val() + '.' +
+						$(this).find('.ip-address-d').val();
+				ipAddresses.push(ipAddress);
+			});
+			
+			let requests = [];
+			let results = [];
+			let devices = [];
+			for (let ipAddress of ipAddresses) {
+				requests.push(app.arduino.getDeviceInfo(ipAddress));
+			}
+			try {
+				results = await Promise.all(requests);
+			}
+			catch (error) {
+				console.error('getDeviceInfo::error');
+				alert('invalid input');
+				return;
+			}
+			
+			for (let result of results) {
+				let response;
+				try {
+					response = JSON.parse(result);
+				}
+				catch (error) {
+					console.error('JSON::parse::error');
+					alert('invalid input');
+					return;
+				}
+				if (response.outcome == 'success') {
+					devices.push({
+						ip_address: response.device_info.ip_address,
+						name: response.device_info.name,
+					});
+				}
+				else {
+					alert('invalid input');
+					return;
+				}
+			}
+			app.connectedDevices = devices;
+			app.changePage('#profiles-page');
+		});
+		
+		$("#sign-in-page").on('click', ".remove-btn", function() {
+			$(this).parents('.device').remove();
+			$('#sign-in-page .devices').listview('refresh');
+		});
+		
+		$("#sign-in-page").on('click', ".add-btn", function() {
+			app.addElement('#sign-in-page .devices');
+		});
+		
+		/*$("#sign-in-page .submit-btn").click(function() {
 			var device = $("#sign-in-page input[name=\"available-devices\"]:checked");
 			
 			app.connectedDevice = {
@@ -97,24 +187,7 @@ var app = {
 			};
 			
 			app.changePage("#profiles-page");
-			
-			/*if (app.connectedDevice != undefined) {
-				
-				var name = $("#signInPage input[name='name']").val();
-				var password = $("#signInPage input[name='password']").val();
-			
-				if(app.arduino.signInUser(name, password)) {
-					app.activeUser = name;
-					alert("Hi " + app.activeUser + "!");
-					app.changePage("#profilesPage");
-				}
-				else {
-					alert("Error: login failed");
-				}
-			}
-			else
-				alert("Error: device not found");*/
-		});
+		});*/
 		
 		
 /********** REGISTER **********************************************************/
@@ -1801,11 +1874,10 @@ var app = {
 		
 		if (target.is($("#profiles-page .profiles"))) {
 			try {
-				let response = JSON.parse(await app.arduino.getProfiles());
+				let response = await app.arduino.coopGetProfiles();
 
 				if (response.outcome == "success") {
 					app.load(selector, response.profiles);
-					//app.loadProfilesList(response.profiles);
 				}
 				else {
 					alert(response.error);
@@ -2315,6 +2387,43 @@ var app = {
 		}
 	},
 	
+	addElement: function(selector) {
+		let target = $(selector);
+		
+		if (target.is($('#sign-in-page .devices'))) {
+			target.append(
+					'<li class="device" data-icon="info">' +
+						'<form>' +
+							'<div class="ip-address" data-role="controlgroup" data-type="horizontal">' +
+								'<input class="ip-address-a"' +
+										'type="number" min="0" max="255"' +
+										'data-wrapper-class="controlgroup-textinput ui-btn">' +
+								'<input class="ip-address-b"' +
+										'type="number" min="0" max="255"' +
+										'data-wrapper-class="controlgroup-textinput ui-btn">' +
+								'<input class="ip-address-c"' +
+										'type="number" min="0" max="255"' +
+										'data-wrapper-class="controlgroup-textinput ui-btn">' +
+								'<input class="ip-address-d"' +
+										'type="number" min="0" max="255"' +
+										'data-wrapper-class="controlgroup-textinput ui-btn">' +
+							'</div>' +
+							'<a class="check-btn ui-btn ui-btn-inline">check</a>' +
+							'<a class="remove-btn ui-btn ui-btn-inline">remove</a>' +
+							'<h2 class="name"></h2>' +
+						'</form>' +
+					'</li>'
+			);
+			target.listview('refresh');
+			target.enhanceWithin();
+		}
+		
+		else {
+			console.log('addElement::error - target not found');
+		}
+		
+	},
+	
 	refreshActivateSmartsetPanel: function() {
 		app.arduino.getSmartsets(app.currentRoom, app.currentProfile)
 		.then(function(result) {
@@ -2822,6 +2931,7 @@ var app = {
 			//for (var hostAddress = 1; hostAddress < 254; hostAddress++) {
 			/* DEBUG */ for (var hostAddress = app.debugHost; hostAddress < app.debugHost + 1; hostAddress++) {
 				//alert(protocol + "://" + networkAddress + hostAddress);
+				
 				let xhr = app.createCORSRequest(
 						"GET", "http://" + networkAddress + hostAddress);
 				
@@ -2864,46 +2974,6 @@ var app = {
 			}
 		},
 		
-		/*connect: function(device) {
-			// TODO: connects to the selected device
-			return true;
-		},*/
-		
-		signInUser: function(/*name, password*/) {
-			/* TODO: check if the user exists in the device and if the password is 
-			 * correct. If the combination is correct it returns TRUE, otherwise 
-			 * FALSE
-			 */
-			return true;
-		},
-		
-		registerUser: function(/*name, password*/) {
-			/* TODO: check if an user with the specified name already exists in 
-			 * the device. If it doesn't exist it returns TRUE, otherwise FALSE
-			 */
-			return true;
-		},
-		
-		signInProfile: function(/*name, password*/) {
-			/* TODO: 
-			 */
-			return true;
-		},
-		
-		// TODO: add "device" parameter
-		/*
-		getProfiles: function() {
-			return new Promise((resolve, reject) => {
-				return $.getJSON({
-					url: "http://" + app.connectedDevice.address +
-							"/profiles/",
-					success: resolve,
-					error: reject,
-				});
-			});
-		},
-		*/
-		
 		request: function(method, url, data) {
 			if (data) {
 				return new Promise((resolve, reject) => {
@@ -2913,6 +2983,7 @@ var app = {
 						data: data + "\n\n",
 						success: resolve,
 						error: reject,
+						timeout: 3000,
 					});
 				});
 			}
@@ -2923,16 +2994,160 @@ var app = {
 						url: url,
 						success: resolve,
 						error: reject,
+						timeout: 3000,
 					});
 				});
 			}
 		},
 		
-		getProfiles: function() {
+		getDeviceInfo: function(address) {
+			return app.arduino.request(
+					"GET",
+					"http://" + address + "/info/");
+		},
+		
+		/*getDevices: async function() {
+			var networkAddress =
+					$("#sign-in-page .local-ip-1").val() + "." +
+					$("#sign-in-page .local-ip-2").val() + "." +
+					$("#sign-in-page .local-ip-3").val();
+			let devices = [];
+			let promises = [];
+			//for (var hostAddress = 1; hostAddress < 254; hostAddress++) {
+			// DEBUG
+			for (let hostAddress = app.debugHost; hostAddress < app.debugHost + 1; hostAddress++) {
+				let address = networkAddress + '.' + hostAddress;
+				console.log(address);
+				promises.push(app.arduino.getDeviceInfo(address));
+			}
+			let successes = 0;
+			let failures = 0;
+			let outcome;
+			//let results = await Promise.all(promises);
+			
+			console.log(promises.length);
+			let tmp1 = 0;
+			let tmp2 = 0;
+			for (let promise of promises) {
+				if (promise == undefined) {
+					console.log('this promise is undefined');
+				}
+				try {
+					tmp1++;
+					let response = JSON.parse(await promise);
+					tmp2++;
+					if (response.outcome != undefined) {
+						if (response.outcome == 'success') {
+							successes++;
+							devices.push(response.device_info);
+						}
+						else {
+							failures++;
+							console.error(response.error);
+						}
+					}
+				}
+				catch (error) {
+					continue;
+				}
+			}
+			console.log(tmp1);
+			console.log(tmp2);
+			if (successes == 0) {
+				outcome = 'failure';
+			}
+			else if (failures == 0) {
+				outcome = 'success';
+			}
+			else {
+				outcome = 'partial_success';
+			}
+			return {
+				outcome: outcome,
+				devices: devices,
+			};
+		},*/
+		
+		coopGetProfiles: async function() {
+			let profiles = [];
+			let requests = [];
+			let responses = [];
+			for (let device of app.connectedDevices) {
+				requests.push(app.arduino.getProfiles(device.ip_address));
+			}
+			for (let request of requests) {
+				try {
+					responses.push(JSON.parse(await request));
+				}
+				catch (error) {
+					console.log('getProfiles::no_reach');
+				}
+			}
+			for (let response of responses) {
+				if (response.outcome == 'success') {
+					for (let targetProfile of response.profiles) {
+						let found = false;
+						for (let profile of profiles) {
+							if (targetProfile.id == profile.id) {
+								found = true;
+								if (parseInt(targetProfile.last_modified, 10) >
+										parseInt(profile.last_modified, 10)) {
+									profile = targetProfile;
+								}
+							}
+						}
+						if (!found) {
+							profiles.push(targetProfile);
+						}
+					}
+				}
+				else {
+					console.log(response.error);
+				}
+			}
+			
+			for (let device of app.connectedDevices) {
+				requests.push(app.arduino.updateProfiles(
+						profiles,
+						device.ip_address));
+			}
+			for (let request of requests) {
+				try {
+					responses.push(JSON.parse(await request));
+				}
+				catch (error) {
+					console.log('updateProfiles::no_reach');
+				}
+			}
+			
+			return {
+				outcome: 'success',
+				profiles: profiles,
+			};
+		},
+		
+		getProfiles: function(deviceIp) {
+			return app.arduino.request(
+					"GET",
+					"http://" + deviceIp + "/profiles/");
+		},
+		
+		/*getProfiles: function() {
 			return app.arduino.request(
 					"GET",
 					"http://" + app.connectedDevice.address +
 							"/profiles/");
+		},*/
+		
+		updateProfiles: function(profiles, deviceIp) {
+			return app.arduino.request(
+					"POST",
+					"http://" + deviceIp + "/profiles/" +
+							"?action=update",
+					JSON.stringify({
+						"action": "update",
+						"profiles": profiles,
+					}));
 		},
 		
 		getProfile: function(profileId) {

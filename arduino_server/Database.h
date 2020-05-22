@@ -36,6 +36,7 @@ public:
 	bool isRoomNameTaken(String roomName);
 
 	// get
+	String getDeviceInfo(String deviceName, String ipAddress);
 	String getProfiles();
 	String getProfile(String profileId);
 	String getRooms(String profileId);
@@ -50,6 +51,9 @@ public:
 	String getSmartItems(String smartsetId, String roomId, String profileId);
 	String getSmartItem(String smartItemId, String smartsetId, String roomId, String profileId);
 	String getAvailablePorts();
+
+	// update
+	String updateProfiles(String data);
 
 	// add
 	String addProfile(String data);

@@ -72,28 +72,74 @@
 			<div class="header" data-role="header" data-position="fixed">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
 				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
 			<div data-role="content">
-				<form>
+				<ul class="devices" data-role="listview" data-inset="true">
+					<li class="device" device-id="unknown" data-icon="info">
+						<form>
+							<div class="ip-address" data-role="controlgroup" data-type="horizontal">
+								<input class="ip-address-a"
+										type="number" min="0" max="255"
+										data-wrapper-class="controlgroup-textinput ui-btn">
+								<input class="ip-address-b"
+										type="number" min="0" max="255"
+										data-wrapper-class="controlgroup-textinput ui-btn">
+								<input class="ip-address-c"
+										type="number" min="0" max="255"
+										data-wrapper-class="controlgroup-textinput ui-btn">
+								<input class="ip-address-d"
+										type="number" min="0" max="255"
+										data-wrapper-class="controlgroup-textinput ui-btn">
+							</div>
+							<a class="check-btn ui-btn ui-btn-inline">check</a>
+							<a class="remove-btn ui-btn ui-btn-inline">remove</a>
+							<h2 class="name"></h2>
+						</form>
+					</li>
+					<li class="device" device-id="unknown" data-icon="info">
+						<form>
+							<div class="ip-address" data-role="controlgroup" data-type="horizontal">
+								<input class="ip-address-a"
+										type="number" min="0" max="255"
+										data-wrapper-class="controlgroup-textinput ui-btn">
+								<input class="ip-address-b"
+										type="number" min="0" max="255"
+										data-wrapper-class="controlgroup-textinput ui-btn">
+								<input class="ip-address-c"
+										type="number" min="0" max="255"
+										data-wrapper-class="controlgroup-textinput ui-btn">
+								<input class="ip-address-d"
+										type="number" min="0" max="255"
+										data-wrapper-class="controlgroup-textinput ui-btn">
+							</div>
+							<a class="check-btn ui-btn ui-btn-inline">check</a>
+							<a class="remove-btn ui-btn ui-btn-inline">remove</a>
+							<h2 class="name"></h2>
+						</form>
+					</li>
+				</ul>
+				
+				<a class="add-btn fixed-bottom-right rounded-btn
+						ui-btn ui-icon-plus ui-btn-icon-notext"></a>
+				
+				
+				<!--<form>
 					<label>Insert your local IP address:</label>
 					<input class="local-ip-1" type="text" value="192">
 					<span>.</span>
 					<input class="local-ip-2" type="text" value="168">
 					<span>.</span>
-					<input class="local-ip-3" type="text" value="0">
+					<input class="local-ip-3" type="text" value="178">
 					<span>.</span>
-					<input class="local-ip-4" type="text" value="1">
+					<input class="local-ip-4" type="text" value="0">
 					
 					<div class="devices-container"></div>
 					
 					<input type="button" class="refresh-btn" value="refresh">
-					<!--
-					<input type="text" name="name" placeholder="Name"/>
-					<input type="text" name="password" placeholder="Password"/>
-					-->
 					<input type="button" class="submit-btn" value="ok">
-				</form>
+				</form>-->
 			</div>
 		</div>
 		

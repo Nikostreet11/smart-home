@@ -15,6 +15,19 @@ Profile* Profile::create(LinkedPointerList<Room>& rooms)
 	}
 }
 
+Profile* Profile::create(LinkedPointerList<Room>& rooms, String profileId)
+{
+	int id = toTrueId(profileId);
+	if (idManager.isIdAvailable(id))
+	{
+		return new Profile(rooms, id);
+	}
+	else
+	{
+		return nullptr;
+	}
+}
+
 // destructor
 Profile::~Profile()
 {
@@ -72,6 +85,7 @@ const String& Profile::getName() const
 void Profile::setName(const String& name)
 {
 	this->name = name;
+	lastEdit = now();
 }
 
 const String& Profile::getAvatar() const
@@ -82,6 +96,17 @@ const String& Profile::getAvatar() const
 void Profile::setAvatar(const String& avatar)
 {
 	this->avatar = avatar;
+	lastEdit = now();
+}
+
+unsigned long Profile::getLastEdit()
+{
+	return lastEdit;
+}
+
+void Profile::setLastEdit(unsigned long lastEdit)
+{
+	this->lastEdit = lastEdit;
 }
 
 SmartRoom* Profile::getSmartRoom(int index)
@@ -120,11 +145,37 @@ int Profile::getSmartRoomsSize()
 	return smartRooms.size();
 }
 
+// internal
+int Profile::toTrueId(String id)
+{
+	String trueId = id.substring(String("profile_").length());
+	
+	while (trueId.charAt(0) == '0')
+	{
+		trueId.remove(0, 1);
+	};
+	
+	return trueId.toInt();
+}
+
 // constructor
 Profile::Profile(LinkedPointerList<Room>& rooms) :
 		id(idManager.acquireId()),
 		name("default"),
-		avatar("default")
+		avatar("default"),
+		lastEdit(now())
+{
+	for (int i = 0; i < rooms.size(); i++)
+	{
+		smartRooms.add(SmartRoom::create(rooms.get(i)->getId()));
+	}
+}
+
+Profile::Profile(LinkedPointerList<Room>& rooms, int id) :
+		id(idManager.acquireId(id)),
+		name("default"),
+		avatar("default"),
+		lastEdit(now())
 {
 	for (int i = 0; i < rooms.size(); i++)
 	{
