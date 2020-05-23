@@ -81,6 +81,13 @@ var app = {
 		
 /********** SIGN IN ***********************************************************/
 		
+		$('#sign-in-page').on('pagehide', function() {
+		});
+		
+		$('#sign-in-page').on('pagebeforeshow', function() {
+			app.connectedDevices = [];
+		});
+		
 		$("#sign-in-page").on('click', ".back-btn", function() {
 			app.changePage("#welcome-page");
 		});
@@ -249,9 +256,9 @@ var app = {
 		
 		// must use "on" because .profile is dynamically generated
 		$("#profiles-page").on("click", ".profile-btn", function() {
-			app.arduino.getProfile($(this).children(".profile").attr("id"))
+			app.arduino.coopGetProfile($(this).children(".profile").attr("id"))
 			.then(function(result) {
-				var response = JSON.parse(result);
+				var response = result;
 
 				if (response.outcome == "success") {
 					app.currentProfile = response.profile;
@@ -302,18 +309,16 @@ var app = {
 			if (newProfile.name != "" &&
 					!newProfile.name.includes(" ") &&
 					newProfile.avatar != "") {
-				app.arduino.editProfile(app.currentProfile, newProfile)
+				app.arduino.coopEditProfile(app.currentProfile, newProfile)
 				.then(async function(response) {
-					var outcome = JSON.parse(response).outcome;
-
-					if (outcome == "success") {
+					if (response.outcome == "success") {
 						//alert("Profile saved successfully");
 
 						await app.changePage("#profiles-page");
 						app.onLeave('#edit-profile-page');
 					}
 					else {
-						alert(JSON.parse(response).error);
+						alert(response.error);
 					}
 				})
 				.catch(function() {
@@ -335,17 +340,15 @@ var app = {
 		});
 		
 		$("#edit-profile-page .remove-btn").click(async function() {
-			app.arduino.removeProfile(app.currentProfile)
+			app.arduino.coopRemoveProfile(app.currentProfile)
 			.then(async function(response) {
-				var outcome = JSON.parse(response).outcome;
-
-				if (outcome == "success") {
+				if (response.outcome == "success") {
 					app.currentProfile = undefined;
 					await app.changePage("#profiles-page");
 					app.onLeave('#edit-profile-page');
 				}
 				else {
-					alert(JSON.parse(response).error);
+					alert(response.error);
 				}
 			})
 			.catch(function() {
@@ -382,17 +385,14 @@ var app = {
 			if (profile.name != "" &&
 					!profile.name.includes(" ") &&
 					profile.avatar != "") {
-				app.arduino.addProfile(profile)
+				app.arduino.coopAddProfile(profile)
 				.then(async function(response) {
-					var outcome = JSON.parse(response).outcome;
-
-					if (outcome == "success") {
-
+					if (response.outcome == "success") {
 						await app.changePage("#profiles-page");
 						app.onLeave('#add-profile-page');
 					}
 					else {
-						alert(JSON.parse(response).error);
+						alert(response.error);
 					}
 				})
 				.catch(function() {
@@ -1934,8 +1934,7 @@ var app = {
 							}
 							if (profile == undefined) {
 								try {
-									let response = JSON.parse(
-											await app.arduino.getProfile(smartset.owner_id));
+									let response = await app.arduino.coopGetProfile(smartset.owner_id);
 									if (response.outcome != "success") {
 										alert(response.error);
 										return;
@@ -3068,6 +3067,17 @@ var app = {
 			};
 		},*/
 		
+		updateProfiles: function(profiles, deviceIp) {
+			return app.arduino.request(
+					"POST",
+					"http://" + deviceIp + "/profiles/" +
+							"?action=update",
+					JSON.stringify({
+						"action": "update",
+						"profiles": profiles,
+					}));
+		},
+		
 		coopGetProfiles: async function() {
 			let profiles = [];
 			let requests = [];
@@ -3090,8 +3100,8 @@ var app = {
 						for (let profile of profiles) {
 							if (targetProfile.id == profile.id) {
 								found = true;
-								if (parseInt(targetProfile.last_modified, 10) >
-										parseInt(profile.last_modified, 10)) {
+								if (parseInt(targetProfile.last_edit, 10) >
+										parseInt(profile.last_edit, 10)) {
 									profile = targetProfile;
 								}
 							}
@@ -3106,6 +3116,8 @@ var app = {
 				}
 			}
 			
+			requests = [];
+			responses = [];
 			for (let device of app.connectedDevices) {
 				requests.push(app.arduino.updateProfiles(
 						profiles,
@@ -3117,6 +3129,11 @@ var app = {
 				}
 				catch (error) {
 					console.log('updateProfiles::no_reach');
+				}
+			}
+			for (let response of responses) {
+				if (response.outcome == 'failure') {
+					console.log(response.error);
 				}
 			}
 			
@@ -3139,22 +3156,67 @@ var app = {
 							"/profiles/");
 		},*/
 		
-		updateProfiles: function(profiles, deviceIp) {
-			return app.arduino.request(
-					"POST",
-					"http://" + deviceIp + "/profiles/" +
-							"?action=update",
-					JSON.stringify({
-						"action": "update",
-						"profiles": profiles,
-					}));
+		coopGetProfile: async function(profileId) {
+			let profile = undefined;
+			let requests = [];
+			let responses = [];
+			for (let device of app.connectedDevices) {
+				requests.push(app.arduino.getProfile(profileId, device.ip_address));
+			}
+			for (let request of requests) {
+				try {
+					responses.push(JSON.parse(await request));
+				}
+				catch (error) {
+					console.log('getProfile::no_reach');
+				}
+			}
+			for (let response of responses) {
+				if (response.outcome == 'success') {
+					if (profile == undefined ||
+							parseInt(response.profile.last_edit, 10) >
+							parseInt(profile.last_edit, 10)) {
+						profile = response.profile;
+					}
+				}
+				else {
+					console.log(response.error);
+				}
+			}
+			
+			// TODO: uncomment the following code to update single profiles too
+			
+			/*requests = [];
+			responses = [];
+			for (let device of app.connectedDevices) {
+				requests.push(app.arduino.updateProfile(
+						profile,
+						device.ip_address));
+			}
+			for (let request of requests) {
+				try {
+					responses.push(JSON.parse(await request));
+				}
+				catch (error) {
+					console.log('updateProfile::no_reach');
+				}
+			}
+			for (let response of responses) {
+				if (response.outcome == 'failure') {
+					console.log(response.error);
+				}
+			}*/
+			
+			return {
+				outcome: 'success',
+				profile: profile,
+			};
 		},
 		
-		getProfile: function(profileId) {
+		getProfile: function(profileId, deviceIp) {
 			return app.arduino.request(
 					"GET",
-					"http://" + app.connectedDevice.address +
-							"/profiles/" + profileId);
+					"http://" + deviceIp + "/profiles/" + profileId);
 		},
 		
 		getRooms: function(profileId) {
@@ -3256,11 +3318,46 @@ var app = {
 							"/ports/");
 		},
 		
-		addProfile: function(newProfile) {
+		coopAddProfile: async function(newProfile) {
+			let requests = [];
+			let responses = [];
+			for (let device of app.connectedDevices) {
+				requests.push(app.arduino.addProfile(
+						newProfile,
+						device.ip_address));
+			}
+			for (let request of requests) {
+				try {
+					responses.push(JSON.parse(await request));
+				}
+				catch (error) {
+					console.log('addProfile::no_reach');
+				}
+			}
+			let outcome = 'failure';
+			let profileId = undefined;
+			for (let response of responses) {
+				if (response.outcome == 'success') {
+					outcome = response.outcome;
+					if (profileId == undefined) {
+						profileId = response.profile_id;
+					}
+				}
+				else {
+					console.log(response.error);
+				}
+			}
+			
+			return {
+				outcome: outcome,
+				profile_id: profileId,
+			};
+		},
+		
+		addProfile: function(newProfile, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address + "/profiles/" +
-							"?action=add",
+					"http://" + deviceIp + "/profiles/?action=add",
 					JSON.stringify({
 						"action": "add",
 						"new_profile": newProfile,
@@ -3307,11 +3404,42 @@ var app = {
 					}));
 		},
 		
-		editProfile: function(profile, newProfile) {
+		coopEditProfile: async function(profile, newProfile) {
+			let requests = [];
+			let responses = [];
+			for (let device of app.connectedDevices) {
+				requests.push(app.arduino.editProfile(
+						profile,
+						newProfile,
+						device.ip_address));
+			}
+			for (let request of requests) {
+				try {
+					responses.push(JSON.parse(await request));
+				}
+				catch (error) {
+					console.log('editProfile::no_reach');
+				}
+			}
+			let outcome = 'failure';
+			for (let response of responses) {
+				if (response.outcome == 'success') {
+					outcome = response.outcome;
+				}
+				else {
+					console.log(response.error);
+				}
+			}
+			
+			return {
+				outcome: outcome,
+			};
+		},
+		
+		editProfile: function(profile, newProfile, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/profiles/" + profile.id +
+					"http://" + deviceIp + "/profiles/" + profile.id +
 							"?action=edit",
 					JSON.stringify({
 						"action": "edit",
@@ -3363,11 +3491,41 @@ var app = {
 					}));
 		},
 		
-		removeProfile: function(profile) {
+		coopRemoveProfile: async function(profile) {
+			let requests = [];
+			let responses = [];
+			for (let device of app.connectedDevices) {
+				requests.push(app.arduino.removeProfile(
+						profile,
+						device.ip_address));
+			}
+			for (let request of requests) {
+				try {
+					responses.push(JSON.parse(await request));
+				}
+				catch (error) {
+					console.log('removeProfile::no_reach');
+				}
+			}
+			let outcome = 'failure';
+			for (let response of responses) {
+				if (response.outcome == 'success') {
+					outcome = response.outcome;
+				}
+				else {
+					console.log(response.error);
+				}
+			}
+			
+			return {
+				outcome: outcome,
+			};
+		},
+		
+		removeProfile: function(profile, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/profiles/" + profile.id +
+					"http://" + deviceIp + "/profiles/" + profile.id +
 							"?action=remove",
 					JSON.stringify({
 						"action": "remove",

@@ -782,6 +782,7 @@ String Database::addProfile(String data)
 			jsonToProfile(profileJson, newProfile);
 			profiles.add(newProfile);
 			responseJson["outcome"] = "success";
+			responseJson["profile_id"] = newProfile->getId();
 		}
 	}
 	log(responseJson);
