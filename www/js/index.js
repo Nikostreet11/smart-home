@@ -2385,22 +2385,28 @@ var app = {
 		else if (target.is($("#manual-panel-page .items"))) {
 			target.html("");
 			for (let i = 0; i < data.length; i++) {
+				let item = data[i];
 				target.append(
 					'<li class="item" ' +
-							'item-id="' + data[i].id + '" ' +
-							'active="' + data[i].active + '" ' +
+							'item-id="' + item.id + '" ' +
+							'active="' + item.active + '" ' +
 					'>' +
 						'<div class="item-inner">' +
 							'<a class="item-active-btn ui-btn">' +
 								'<img src="img/items/' + data[i].icon + '.png"' +
 										'width="60px" height="60px"/>' +
 							'</a>' +
-							'<h2 class="item-name">' + app.prettyfy(data[i].name) + '</h2>' +
+							'<h2 class="item-name">' + app.prettyfy(item.name) + '</h2>' +
 						'</div>' +
 						'<a class="item-smart-btn ' +
 								'ui-btn ui-btn-right ' +
 							'ui-icon-heart ui-btn-icon-notext"></a>' +
 					'</li>');
+				if (item.port == 'none') {
+					target.children().last().find('.item-name').append(
+							'<a class="warning-btn ui-btn ui-btn-inline ' +
+									'ui-icon-alert ui-btn-icon-notext"></a>');
+				}
 			}
 			target.listview("refresh");
 		}
