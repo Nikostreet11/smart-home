@@ -685,6 +685,7 @@ var app = {
 /********** ADD ROOM **********************************************************/
 		
 		$('#add-room-page').on('pagehide', function() {
+			app.close('#add-room-page .devices-collapsible');
 		});
 		
 		$('#add-room-page').on('pagebeforeshow', function() {
@@ -693,6 +694,7 @@ var app = {
 			$('#add-room-page .room-icon').attr('src',
 					app.roomIconsPath + app.defaultRoomIcon + '.png');
 			$('#add-room-page .room-name').val('');
+			app.load('#add-room-page .devices', app.connectedDevices);
 			app.load('#add-room-page .icons', app.roomIcons);
 		});
 		
@@ -702,16 +704,18 @@ var app = {
 		});
 		
 		$("#add-room-page .confirm-btn").click(async function() {
-			var room = {
+			let room = {
 				name : app.dePrettyfy($("#add-room-page .room-name").val()),
 				icon : $("#add-room-page .room-icon").attr('name'),
 			};
+			let deviceIp = $('#add-room-page .devices .title').attr('device-ip');
 			
 			if (room.name != "" &&
 					!room.name.includes(" ") &&
 					room.icon != undefined) {
-				alert('TODO: specify the device that will hold the room');
-				/*app.arduino.addRoom(room)
+				app.arduino.addRoom(
+						room,
+						deviceIp)
 				.then(async function(response) {
 					var outcome = JSON.parse(response).outcome;
 
@@ -725,11 +729,21 @@ var app = {
 				})
 				.catch(function() {
 					alert("addRoom::error");
-				});*/
+				});
 			}
 			else {
 				alert("invalid data");
 			}
+		});
+		
+		$("#add-room-page")
+		.on("click", ".device-btn", function() {
+			let title = $('#add-room-page .devices .title-inner');
+			title.html($(this).find('.device-name').html());
+			title.parents('.title').attr(
+					'device-ip',
+					$(this).parents('.device').attr('device-ip'));
+			title.parents('.devices-collapsible').collapsible('collapse');
 		});
 		
 		$('#add-room-page').on("click", ".icon-btn", function() {
@@ -1878,6 +1892,10 @@ var app = {
 					animationtime).promise();
 		}
 		
+		else if (target.is($('#add-room-page .devices-collapsible'))) {
+			return target.collapsible('collapse').promise();
+		}
+		
 		else if (target.is($('#manual-panel-page .smartsets-collapsible'))) {
 			return target.collapsible('collapse').promise();
 		}
@@ -2266,6 +2284,37 @@ var app = {
 							'width="50px" height="50px">'
 				);
 			}
+		}
+		
+		else if (target.is($("#add-room-page .devices"))) {
+			let title = target.find('.title-inner');
+			target = target.find('.devices-listview');
+			target.html("");
+			/*target.append(
+					'<li class="device" data-icon="false">' +
+						'<a class="device-btn">' +
+							'<h3 class="device-name">none</h3>' +
+						'</a>' +
+					'</li>');*/
+			for (let i = 0; i < data.length; i++) {
+				let device = data[i];
+				target.append(
+					'<li class="device" ' +
+							'device-ip="' + device.ip_address + '" ' +
+							'data-icon="false">' +
+						'<a class="device-btn">' +
+							'<h3 class="device-name">' +
+								app.prettyfy(device.name) +
+							'</h3>' +
+						'</a>' +
+					'</li>'
+				);
+			}
+			title.html(target.children().first().find('.device-name').html());
+			title.parents('.title').attr(
+					'device-ip',
+					target.children().first().attr('device-ip'));
+			target.listview("refresh");
 		}
 		
 		else if (target.is($("#add-room-page .icons")) ||
