@@ -53,7 +53,8 @@ void setup()
 	
 	server.begin();			// the connection has been established
 	printWifiStatus();		// print out the status
-	
+
+	SHServer.initialize();
 	SHServer.initializeNTP();
 }
 

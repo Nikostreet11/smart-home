@@ -467,12 +467,14 @@ var app = {
 		
 		$("#control-panel-page")
 		.on("click", ".room-smart-btn", async function() {
-			let roomId = $(this).parent().attr("room-id");
+			let roomId = $(this).parents('.room').attr("room-id");
 			let profileId = app.currentProfile.id;
+			let deviceIp = $(this).parents('.room').attr("device-ip"); 
 			try {
 				let response1 = JSON.parse(await app.arduino.getRoom(
 						roomId,
-						profileId));
+						profileId,
+						deviceIp));
 
 				if (response1.outcome == "success") {
 					app.currentRoom = response1.room;
@@ -483,7 +485,9 @@ var app = {
 					else {
 						try {
 							let response = JSON.parse(
-									await app.arduino.getActiveSmartsets(roomId));
+									await app.arduino.getActiveSmartsets(
+											roomId,
+											deviceIp));
 							if (response.outcome != "success") {
 								alert(response.error);
 								return;
@@ -504,7 +508,8 @@ var app = {
 									let response2 = JSON.parse(await app.arduino.deactivateSmartset(
 											activeSmartset.id,
 											roomId,
-											profileId));
+											profileId,
+											deviceIp));
 
 									if (response2.outcome == "success") {
 										app.refresh('#control-panel-page .rooms');
@@ -534,9 +539,12 @@ var app = {
 		
 		$("#control-panel-page")
 		.on("click", ".room-manual-btn", function() {
+			let roomId = $(this).parents('.room').attr("room-id");
+			let deviceIp = $(this).parents('.room').attr("device-ip");
 			app.arduino.getRoom(
-					$(this).parent().attr("room-id"),
-					app.currentProfile.id)
+					roomId,
+					app.currentProfile.id,
+					deviceIp)
 			.then(function(result) {
 				var response = JSON.parse(result);
 
@@ -566,7 +574,8 @@ var app = {
 				let response = JSON.parse(await app.arduino.activateSmartset(
 						smartsetId,
 						app.currentRoom,
-						app.currentProfile));
+						app.currentProfile,
+						app.currentRoom.device.ip_address));
 
 				if (response.outcome == "success") {
 					app.close('#control-panel-page .footer');
@@ -618,7 +627,10 @@ var app = {
 			if (newRoom.name != "" &&
 					!newRoom.name.includes(" ") &&
 					newRoom.icon != undefined) {
-				app.arduino.editRoom(app.currentRoom, newRoom)
+				app.arduino.editRoom(
+						app.currentRoom,
+						newRoom,
+						app.currentRoom.device.ip_address)
 				.then(async function(response) {
 					var outcome = JSON.parse(response).outcome;
 
@@ -651,7 +663,9 @@ var app = {
 		});
 		
 		$("#edit-room-page .remove-btn").click(async function() {
-			app.arduino.removeRoom(app.currentRoom)
+			app.arduino.removeRoom(
+					app.currentRoom,
+					app.currentRoom.device.ip_address)
 			.then(async function(response) {
 				var outcome = JSON.parse(response).outcome;
 
@@ -696,7 +710,8 @@ var app = {
 			if (room.name != "" &&
 					!room.name.includes(" ") &&
 					room.icon != undefined) {
-				app.arduino.addRoom(room)
+				alert('TODO: specify the device that will hold the room');
+				/*app.arduino.addRoom(room)
 				.then(async function(response) {
 					var outcome = JSON.parse(response).outcome;
 
@@ -710,7 +725,7 @@ var app = {
 				})
 				.catch(function() {
 					alert("addRoom::error");
-				});
+				});*/
 			}
 			else {
 				alert("invalid data");
@@ -757,11 +772,13 @@ var app = {
 		$(document).on("pagecreate", "#manual-panel-page", function() {
 			$("#manual-panel-page")
 			.on("click", ".main .smartset-btn", async function() {
+				let smartsetId = $(this).parent().attr('smartset-id');
 				try {
 					let response = JSON.parse(await app.arduino.getSmartset(
-							$(this).parent().attr('smartset-id'),
+							smartsetId,
 							app.currentProfile,
-							app.currentRoom));
+							app.currentRoom,
+							app.currentRoom.device.ip_address));
 					if (response.outcome == "success") {
 						app.currentSmartset = response.smartset;
 						app.open('#manual-panel-page .smartset-popup');
@@ -779,11 +796,13 @@ var app = {
 		$(document).on("pagecreate", "#manual-panel-page", function() {
 			$("#manual-panel-page")
 			.on("click", ".main .edit-smartset-btn", async function() {
+				let smartsetId = $(this).parent().attr('smartset-id');
 				try {
 					let response = JSON.parse(await app.arduino.getSmartset(
-							$(this).parent().attr('smartset-id'),
+							smartsetId,
 							app.currentProfile,
-							app.currentRoom));
+							app.currentRoom,
+							app.currentRoom.device.ip_address));
 					if (response.outcome == "success") {
 						app.currentSmartset = response.smartset;
 						app.open("#manual-panel-page .edit-smartset-popup");
@@ -800,14 +819,14 @@ var app = {
 		
 		$("#manual-panel-page")
 		.on("click", ".item .item-active-btn", async function() {
-			var itemId = $(this).parents('.item').attr("item-id");
-			
+			let itemId = $(this).parents('.item').attr("item-id");
 			if (app.editItemsMode) {
 				try {
 					let response = JSON.parse(await app.arduino.getItem(
 							itemId,
 							app.currentRoom,
-							app.currentProfile));
+							app.currentProfile,
+							app.currentRoom.device.ip_address));
 					if (response.outcome != "success") {
 						alert(response.error);
 						return;
@@ -831,7 +850,11 @@ var app = {
 				}
 				
 				try {
-					let response = JSON.parse(await app.arduino.setItemActive(itemId, itemActive, app.currentRoom));
+					let response = JSON.parse(await app.arduino.setItemActive(
+							itemId,
+							itemActive,
+							app.currentRoom,
+							app.currentRoom.device.ip_address));
 
 					if (response.outcome == "success") {
 						$(this).parents('.item').attr('active', response.active);
@@ -852,11 +875,13 @@ var app = {
 		
 		$("#manual-panel-page")
 		.on("click", ".item .item-smart-btn", async function() {
+			let itemId = $(this).parents(".item").attr('item-id');
 			try {
 				let response = JSON.parse(await app.arduino.getItem(
-						$(this).parents(".item").attr('item-id'),
+						itemId,
 						app.currentRoom.id,
-						app.currentProfile.id));
+						app.currentProfile.id,
+						app.currentRoom.device.ip_address));
 				if (response.outcome == 'success') {
 					app.currentItem = response.item;
 					if (app.isOpen('#manual-panel-page .smartsets-panel')) {
@@ -895,10 +920,11 @@ var app = {
 
 			try {
 				let response = JSON.parse(await app.arduino.addItemToSmartset(
-					app.currentSmartset.id,
-					smartItem,
-					app.currentRoom.id,
-					app.currentProfile.id));
+						app.currentSmartset.id,
+						smartItem,
+						app.currentRoom.id,
+						app.currentProfile.id,
+						app.currentRoom.device.ip_address));
 
 				if (response.outcome == "success") {
 					app.refresh('#manual-panel-page .smartset-popup .smart-items');
@@ -917,10 +943,11 @@ var app = {
 			let smartItemId = $(this).parents('.smart-item').attr("smart-item-id");
 			try {
 				let response = JSON.parse(await app.arduino.removeItemFromSmartset(
-					smartItemId,
-					app.currentSmartset.id,
-					app.currentRoom.id,
-					app.currentProfile.id));
+						smartItemId,
+						app.currentSmartset.id,
+						app.currentRoom.id,
+						app.currentProfile.id,
+						app.currentRoom.device.ip_address));
 
 				if (response.outcome == "success") {
 					app.refresh('#manual-panel-page .smartset-popup .smart-items');
@@ -947,9 +974,10 @@ var app = {
 			};
 			try {
 				let response = JSON.parse(await app.arduino.addSmartset(
-					newSmartset,
-					app.currentRoom.id,
-					app.currentProfile.id));
+						newSmartset,
+						app.currentRoom.id,
+						app.currentProfile.id,
+						app.currentRoom.device.ip_address));
 
 				if (response.outcome != "success") {
 					alert(response.error);
@@ -961,7 +989,8 @@ var app = {
 							newSmartsetId,
 							app.currentItem,
 							app.currentRoom.id,
-							app.currentProfile.id));
+							app.currentProfile.id,
+							app.currentRoom.device.ip_address));
 					if (response.outcome != "success") {
 						alert(response.error);
 						return;
@@ -992,10 +1021,11 @@ var app = {
 			};
 			try {
 				let response = JSON.parse(await app.arduino.editSmartset(
-					app.currentSmartset.id,
-					newSmartset,
-					app.currentRoom.id,
-					app.currentProfile.id));
+						app.currentSmartset.id,
+						newSmartset,
+						app.currentRoom.id,
+						app.currentProfile.id,
+						app.currentRoom.device.ip_address));
 
 				if (response.outcome != "success") {
 					alert(response.error);
@@ -1014,9 +1044,10 @@ var app = {
 		.on("click", ".edit-smartset-popup .remove-btn", async function() {
 			try {
 				let response = JSON.parse(await app.arduino.removeSmartset(
-					app.currentSmartset.id,
-					app.currentRoom.id,
-					app.currentProfile.id));
+						app.currentSmartset.id,
+						app.currentRoom.id,
+						app.currentProfile.id,
+						app.currentRoom.device.ip_address));
 
 				if (response.outcome != "success") {
 					alert(response.error);
@@ -1038,7 +1069,8 @@ var app = {
 						smartset_id,
 						app.currentItem,
 						app.currentRoom.id,
-						app.currentProfile.id));
+						app.currentProfile.id,
+						app.currentRoom.device.ip_address));
 				if (response.outcome == "success") {
 					app.close('#manual-panel-page .smartsets-panel');
 				}
@@ -1098,7 +1130,8 @@ var app = {
 				app.arduino.editItem(
 						app.currentItem,
 						newItem,
-						app.currentRoom)
+						app.currentRoom,
+						app.currentRoom.device.ip_address)
 				.then(function(result) {
 					var response = JSON.parse(result);
 
@@ -1140,7 +1173,10 @@ var app = {
 		});
 		
 		$("#edit-item-page .remove-btn").click(function() {
-			app.arduino.removeItem(app.currentItem, app.currentRoom)
+			app.arduino.removeItem(
+					app.currentItem,
+					app.currentRoom,
+					app.currentRoom.device.ip_address)
 			.then(function(result) {
 				var response = JSON.parse(result);
 
@@ -1187,7 +1223,10 @@ var app = {
 			};
 			
 			if (newItem.name != "" && newItem.icon != undefined) {
-				app.arduino.addItem(newItem, app.currentRoom)
+				app.arduino.addItem(
+						newItem,
+						app.currentRoom,
+						app.currentRoom.device.ip_address)
 				.then(function(result) {
 					var response = JSON.parse(result);
 
@@ -1889,7 +1928,10 @@ var app = {
 		}
 		
 		else if (target.is($("#control-panel-page .footer .smartsets"))) {
-			return app.arduino.getSmartsets(app.currentRoom, app.currentProfile)
+			return app.arduino.getSmartsets(
+					app.currentRoom,
+					app.currentProfile,
+					app.currentRoom.device.ip_address)
 			.then(function(result) {
 				var response = JSON.parse(result);
 
@@ -1908,54 +1950,57 @@ var app = {
 		else if (target.is($("#control-panel-page .rooms"))) {
 			let currentProfileId = app.currentProfile.id;
 			try {
-				let response = JSON.parse(
-						await app.arduino.getRooms(currentProfileId));
+				let response = await app.arduino.coopGetRooms(currentProfileId);
 				if (response.outcome != "success") {
 					alert(response.error);
 					return;
 				}
 				app.load(selector, response.rooms);
 				let cachedProfiles = [];
-				for (let room of response.rooms) {
-					try {
-						let response = JSON.parse(
-								await app.arduino.getActiveSmartsets(room.id));
-						if (response.outcome != "success") {
-							alert(response.error);
-							return;
-						}
-						let activeProfiles = [];
-						for (let smartset of response.active_smartsets) {
-							let profile = undefined;
-							for (let cachedProfile of cachedProfiles) {
-								if (cachedProfile.id == smartset.owner_id) {
-									profile = cachedProfile;
-								}
+				for (let localData of response.rooms) {
+					for (let room of localData.localRooms) {
+						try {
+							let response = JSON.parse(
+									await app.arduino.getActiveSmartsets(
+											room.id,
+											localData.device.ip_address));
+							if (response.outcome != "success") {
+								alert(response.error);
+								return;
 							}
-							if (profile == undefined) {
-								try {
-									let response = await app.arduino.coopGetProfile(smartset.owner_id);
-									if (response.outcome != "success") {
-										alert(response.error);
-										return;
+							let activeProfiles = [];
+							for (let smartset of response.active_smartsets) {
+								let profile = undefined;
+								for (let cachedProfile of cachedProfiles) {
+									if (cachedProfile.id == smartset.owner_id) {
+										profile = cachedProfile;
 									}
-									profile = response.profile;
-									cachedProfiles.push(profile);
 								}
-								catch(e) {
-									alert('getProfile::error');
+								if (profile == undefined) {
+									try {
+										let response = await app.arduino.coopGetProfile(smartset.owner_id);
+										if (response.outcome != "success") {
+											alert(response.error);
+											return;
+										}
+										profile = response.profile;
+										cachedProfiles.push(profile);
+									}
+									catch(e) {
+										alert('getProfile::error');
+									}
+								}
+								activeProfiles.push(profile);
+								if (profile.id == currentProfileId) {
+									$(selector + ' .room[room-id="' + room.id + '"] .room-smart-btn').addClass('enhanced');
 								}
 							}
-							activeProfiles.push(profile);
-							if (profile.id == currentProfileId) {
-								$(selector + ' .room[room-id="' + room.id + '"] .room-smart-btn').addClass('enhanced');
-							}
+							let innerSelector = selector + ' .room[room-id="' + room.id + '"] .active-profiles';
+							app.load(innerSelector, activeProfiles);
 						}
-						let innerSelector = selector + ' .room[room-id="' + room.id + '"] .active-profiles';
-						app.load(innerSelector, activeProfiles);
-					}
-					catch (e) {
-						alert('getActiveSmartsets::error');
+						catch (e) {
+							alert('getActiveSmartsets::error');
+						}
 					}
 				}
 			}
@@ -1981,10 +2026,10 @@ var app = {
 				alert("getSmartsets::error");
 			});*/
 			try {
-				let response = JSON.parse(
-					await app.arduino.getSmartsets(
-							app.currentRoom,
-							app.currentProfile));
+				let response = JSON.parse(await app.arduino.getSmartsets(
+						app.currentRoom,
+						app.currentProfile,
+						app.currentRoom.device.ip_address));
 				if (response.outcome != "success") {
 					alert(response.error);
 					return;
@@ -1997,25 +2042,22 @@ var app = {
 		}
 		
 		else if (target.is($('#manual-panel-page .smartset-popup .smart-items'))) {
-			let currentSmartsetId = app.currentSmartset.id;
-			let currentRoomId = app.currentRoom.id;
-			let currentProfileId = app.currentProfile.id;
 			try {
-				let response = JSON.parse(
-						await app.arduino.getItems(
-								currentRoomId,
-								currentProfileId));
+				let response = JSON.parse(await app.arduino.getItems(
+						app.currentRoom.id,
+						app.currentProfile.id,
+						app.currentRoom.device.ip_address));
 				if (response.outcome != "success") {
 					alert(response.error);
 					return;
 				}
 				let items = response.items;
 				try {
-					let response = JSON.parse(
-							await app.arduino.getSmartItems(
-							currentSmartsetId,
-							currentRoomId,
-							currentProfileId));
+					let response = JSON.parse(await app.arduino.getSmartItems(
+							app.currentSmartset.id,
+							app.currentRoom.id,
+							app.currentProfile.id,
+							app.currentRoom.device.ip_address));
 					if (response.outcome != "success") {
 						alert(response.error);
 						return;
@@ -2044,10 +2086,10 @@ var app = {
 		
 		else if (target.is($("#manual-panel-page .items"))) {
 			try {
-				let response = JSON.parse(
-						await app.arduino.getItems(
-								app.currentRoom.id,
-								app.currentProfile.id));
+				let response = JSON.parse(await app.arduino.getItems(
+						app.currentRoom.id,
+						app.currentProfile.id,
+						app.currentRoom.device.ip_address));
 				if (response.outcome == "success") {
 					app.load(selector, response.items);
 				}
@@ -2062,10 +2104,10 @@ var app = {
 		
 		else if (target.is($('#manual-panel-page .smartsets-panel .smartsets'))) {
 			try {
-				let response = JSON.parse(
-						await app.arduino.getSmartsets(
-								app.currentRoom,
-								app.currentProfile));
+				let response = JSON.parse(await app.arduino.getSmartsets(
+						app.currentRoom,
+						app.currentProfile,
+						app.currentRoom.device.ip_address));
 				if (response.outcome == "success") {
 					app.load(selector, response.smartsets);
 				}
@@ -2096,7 +2138,8 @@ var app = {
 		else if (target.is($("#add-item-page .ports")) ||
 				target.is($("#edit-item-page .ports"))) {
 			try {
-				let response = JSON.parse(await app.arduino.getPorts());
+				let response = JSON.parse(await app.arduino.getPorts(
+						app.currentRoom.device.ip_address));
 				if (response.outcome != "success") {
 					alert(response.error);
 					return;
@@ -2193,19 +2236,23 @@ var app = {
 		
 		else if (target.is($("#control-panel-page .rooms"))) {
 			target.html("");
-			for (let i = 0; i < data.length; i++) {
-				let room = data[i];
-				target.append(
-					'<li class="room" room-id="' + room.id + '" smart="false">' +
-						'<a class="room-smart-btn">' +
-							'<img class="room-icon"' +
-									'src="img/rooms/' + room.icon + '.png">' +
-							'<h2 class="room-name">' + app.prettyfy(room.name) + '</h2>' +
-							'<div class="active-profiles"></div>' +
-						'</a>' +
-						'<a class="room-manual-btn" data-icon="gear"></a>' +
-					'</li>'
-				);
+			for (let localData of data) {
+				for (let room of localData.localRooms) {
+					target.append(
+						'<li class="room" room-id="' + room.id + '" ' +
+								'device-ip="' + localData.device.ip_address + '" ' +
+								'smart="false" ' +
+						'>' +
+							'<a class="room-smart-btn">' +
+								'<img class="room-icon"' +
+										'src="img/rooms/' + room.icon + '.png">' +
+								'<h2 class="room-name">' + app.prettyfy(room.name) + '</h2>' +
+								'<div class="active-profiles"></div>' +
+							'</a>' +
+							'<a class="room-manual-btn" data-icon="gear"></a>' +
+						'</li>'
+					);
+				}
 			}
 			target.listview("refresh");
 		}
@@ -2424,7 +2471,10 @@ var app = {
 	},
 	
 	refreshActivateSmartsetPanel: function() {
-		app.arduino.getSmartsets(app.currentRoom, app.currentProfile)
+		app.arduino.getSmartsets(
+				app.currentRoom,
+				app.currentProfile,
+				app.currentRoom.device.ip_address)
 		.then(function(result) {
 			var response = JSON.parse(result);
 
@@ -2488,7 +2538,10 @@ var app = {
 	},
 	
 	refreshSmartsetsPanel: function() {
-		app.arduino.getSmartsets(app.currentRoom, app.currentProfile)
+		app.arduino.getSmartsets(
+				app.currentRoom,
+				app.currentProfile,
+				app.currentRoom.device.ip_address)
 		.then(function(result) {
 			var response = JSON.parse(result);
 
@@ -2918,17 +2971,14 @@ var app = {
 	
 	arduino: {
 		
-		searchDevices: function() {
-			/* search for WiFi devices and returns the list of the 
-			 * currently available devices
-			 */
+		/*searchDevices: function() {
 			var networkAddress =
 					$("#sign-in-page .local-ip-1").val() + "." +
 					$("#sign-in-page .local-ip-2").val() + "." +
 					$("#sign-in-page .local-ip-3").val() + ".";
 			
 			//for (var hostAddress = 1; hostAddress < 254; hostAddress++) {
-			/* DEBUG */ for (var hostAddress = app.debugHost; hostAddress < app.debugHost + 1; hostAddress++) {
+			for (var hostAddress = app.debugHost; hostAddress < app.debugHost + 1; hostAddress++) {
 				//alert(protocol + "://" + networkAddress + hostAddress);
 				
 				let xhr = app.createCORSRequest(
@@ -2971,7 +3021,7 @@ var app = {
 
 				xhr.send();
 			}
-		},
+		},*/
 		
 		request: function(method, url, data) {
 			if (data) {
@@ -2999,10 +3049,10 @@ var app = {
 			}
 		},
 		
-		getDeviceInfo: function(address) {
+		getDeviceInfo: function(deviceIp) {
 			return app.arduino.request(
 					"GET",
-					"http://" + address + "/info/");
+					"http://" + deviceIp + "/info/");
 		},
 		
 		/*getDevices: async function() {
@@ -3219,68 +3269,99 @@ var app = {
 					"http://" + deviceIp + "/profiles/" + profileId);
 		},
 		
-		getRooms: function(profileId) {
+		coopGetRooms: async function(profileId) {
+			let rooms = [];
+			let requests = [];
+			let responses = [];
+			for (let device of app.connectedDevices) {
+				requests.push(app.arduino.getRooms(
+						profileId,
+						device.ip_address));
+			}
+			for (let request of requests) {
+				try {
+					responses.push(JSON.parse(await request));
+				}
+				catch (error) {
+					console.log('getRooms::no_reach');
+				}
+			}
+			let outcome = 'failure';
+			for (let response of responses) {
+				if (response.outcome == 'success') {
+					outcome = response.outcome;
+					let localData = {
+						device: response.device,
+						localRooms: response.rooms,
+					};
+					rooms.push(localData);
+				}
+				else {
+					console.log(response.error);
+				}
+			}
+			
+			return {
+				outcome: outcome,
+				rooms: rooms,
+			};
+		},
+		
+		getRooms: function(profileId, deviceIp) {
 			return app.arduino.request(
 					"GET",
-					"http://" + app.connectedDevice.address +
-							"/rooms/",
+					"http://" + deviceIp + "/rooms/",
 					"profile_id=" + profileId);
 		},
 		
-		getRoom: function(roomId, profileId) {
+		getRoom: function(roomId, profileId, deviceIp) {
 			return app.arduino.request(
 					"GET",
-					"http://" + app.connectedDevice.address +
-							"/rooms/" + roomId,
+					"http://" + deviceIp + "/rooms/" + roomId,
 					"profile_id=" + profileId);
 		},
 		
-		getItems: function(roomId, profileId) {
+		getItems: function(roomId, profileId, deviceIp) {
 			return app.arduino.request(
 					"GET",
-					"http://" + app.connectedDevice.address +
-							"/items/",
+					"http://" + deviceIp + "/items/",
 					"room_id=" + roomId + "&" +
 							"profile_id=" + profileId);
 		},
 		
-		getItem: function(itemId, room, profile) {
+		getItem: function(itemId, room, profile, deviceIp) {
 			return app.arduino.request(
 					"GET",
-					"http://" + app.connectedDevice.address +
-							"/items/" + itemId,
+					"http://" + deviceIp + "/items/" + itemId,
 					"room_id=" + room.id + "&" +
 							"profile_id=" + profile.id);
 		},
 		
-		getSmartsets: function(room, profile) {
+		getSmartsets: function(room, profile, deviceIp) {
 			return app.arduino.request(
 					"GET",
-					"http://" + app.connectedDevice.address +
-							"/smartsets/",
+					"http://" + deviceIp + "/smartsets/",
 					"profile_id=" + profile.id + "&" +
 							"room_id=" + room.id + "&" +
 							"item_id=" + 'null');
 		},
 		
-		getActiveSmartsets: function(roomId) {
+		getActiveSmartsets: function(roomId, deviceIp) {
 			return app.arduino.request(
 					"GET",
-					"http://" + app.connectedDevice.address +
-							"/active_smartsets/",
+					"http://" + deviceIp + "/active_smartsets/",
 					"room_id=" + roomId);
 		},
 		
-		getSmartset: function(smartset_id, profile, room) {
+		getSmartset: function(smartset_id, profile, room, deviceIp) {
 			return app.arduino.request(
 					"GET",
-					"http://" + app.connectedDevice.address +
-							"/smartsets/" + smartset_id,
+					"http://" + deviceIp + "/smartsets/" + smartset_id,
 					"profile_id=" + profile.id + "&" +
 							"room_id=" + room.id + "&");
 		},
 		
-		getSmartsetByName: function(smartset_name, room, profile) {
+		/*getSmartsetByName: function(smartset_name, room, profile) {
 			return app.arduino.request(
 					"GET",
 					"http://" + app.connectedDevice.address +
@@ -3288,34 +3369,30 @@ var app = {
 					"smartset_name=" + smartset_name + "&" +
 							"room_id=" + room.id + "&" +
 							"profile_id=" + profile.id + "&");
-		},
+		},*/
 		
-		getSmartItems: function(smartsetId, roomId, profileId) {
+		getSmartItems: function(smartsetId, roomId, profileId, deviceIp) {
 			return app.arduino.request(
 					"GET",
-					"http://" + app.connectedDevice.address +
-							"/smart_items/",
+					"http://" + deviceIp + "/smart_items/",
 					"profile_id=" + profileId + "&" +
 							"room_id=" + roomId + "&" +
 							"smartset_id=" + smartsetId + "&");
 		},
 		
-		// TODO: test
-		getSmartItem: function(smartItemId, profile, room, smartset) {
+		getSmartItem: function(smartItemId, profile, room, smartset, deviceIp) {
 			return app.arduino.request(
 					"GET",
-					"http://" + app.connectedDevice.address +
-							"/smart_items/" + smartItemId,
+					"http://" + deviceIp + "/smart_items/" + smartItemId,
 					"profile_id=" + profile.id + "&" +
 							"room_id=" + room.id + "&" +
 							"smartset_id=" + smartset.id + "&");
 		},
 		
-		getPorts: function() {
+		getPorts: function(deviceIp) {
 			return app.arduino.request(
 					"GET",
-					"http://" + app.connectedDevice.address +
-							"/ports/");
+					"http://" + deviceIp + "/ports/");
 		},
 		
 		coopAddProfile: async function(newProfile) {
@@ -3364,24 +3441,20 @@ var app = {
 					}));
 		},
 		
-		addRoom: function(newRoom) {
+		addRoom: function(newRoom, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/rooms/" +
-							"?action=add",
+					"http://" + deviceIp + "/rooms/" + "?action=add",
 					JSON.stringify({
 						"action": "add",
 						"new_room": newRoom,
 					}));
 		},
 		
-		addItem: function(newItem, room) {
+		addItem: function(newItem, room, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/items/" +
-							"?action=add",
+					"http://" + deviceIp + "/items/" + "?action=add",
 					JSON.stringify({
 						"action": "add",
 						"new_item": newItem,
@@ -3389,13 +3462,10 @@ var app = {
 					}));
 		},
 		
-		// TODO: test
-		addSmartset: function(newSmartset, roomId, profileId) {
+		addSmartset: function(newSmartset, roomId, profileId, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/smartsets/" +
-							"?action=add",
+					"http://" + deviceIp + "/smartsets/" + "?action=add",
 					JSON.stringify({
 						action: "add",
 						new_smartset: newSmartset,
@@ -3448,12 +3518,10 @@ var app = {
 					}));
 		},
 		
-		editRoom: function(room, newRoom) {
+		editRoom: function(room, newRoom, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/rooms/" + room.id +
-							"?action=edit",
+					"http://" + deviceIp + "/rooms/" + room.id + "?action=edit",
 					JSON.stringify({
 						"action": "edit",
 						"room_id": room.id,
@@ -3461,12 +3529,10 @@ var app = {
 					}));
 		},
 		
-		editItem: function(item, newItem, room) {
+		editItem: function(item, newItem, room, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/items/" + item.id +
-							"?action=edit",
+					"http://" + deviceIp + "/items/" + item.id + "?action=edit",
 					JSON.stringify({
 						"action": "edit",
 						"item_id": item.id,
@@ -3475,13 +3541,10 @@ var app = {
 					}));
 		},
 		
-		// TODO: test
-		editSmartset: function(smartsetId, newSmartset, roomId, profileId) {
+		editSmartset: function(smartsetId, newSmartset, roomId, profileId, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/smartsets/" + smartsetId +
-							"?action=edit",
+					"http://" + deviceIp + "/smartsets/" + smartsetId + "?action=edit",
 					JSON.stringify({
 						"action": "edit",
 						"smartset_id": smartsetId,
@@ -3533,24 +3596,20 @@ var app = {
 					}));
 		},
 		
-		removeRoom: function(room) {
+		removeRoom: function(room, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/rooms/" + room.id +
-							"?action=remove",
+					"http://" + deviceIp + "/rooms/" + room.id + "?action=remove",
 					JSON.stringify({
 						"action": "remove",
 						"room_id": room.id,
 					}));
 		},
 		
-		removeItem: function(item, room) {
+		removeItem: function(item, room, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/items/" + item.id +
-							"?action=remove",
+					"http://" + deviceIp + "/items/" + item.id + "?action=remove",
 					JSON.stringify({
 						"action": "remove",
 						"item_id": item.id,
@@ -3558,13 +3617,10 @@ var app = {
 					}));
 		},
 		
-		// TODO: test
-		removeSmartset: function(smartsetId, room, profile) {
+		removeSmartset: function(smartsetId, room, profile, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/smartsets/" + smartsetId +
-							"?action=remove",
+					"http://" + deviceIp + "/smartsets/" + smartsetId + "?action=remove",
 					JSON.stringify({
 						"action": "remove",
 						"room_id": room.id,
@@ -3572,12 +3628,10 @@ var app = {
 					}));
 		},
 		
-		setItemActive: function(itemId, itemActive, room) {
+		setItemActive: function(itemId, itemActive, room, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/items/" + itemId +
-							"?action=set_status",
+					"http://" + deviceIp + "/items/" + itemId + "?action=set_status",
 					JSON.stringify({
 						"action": "set_status",
 						"item_id": itemId,
@@ -3586,13 +3640,10 @@ var app = {
 					}));
 		},
 		
-		// TODO: test
-		addItemToSmartset: function(smartset_id, item, roomId, profileId) {
+		addItemToSmartset: function(smartset_id, item, roomId, profileId, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/smartsets/" + smartset_id +
-							"?action=add_item",
+					"http://" + deviceIp + "/smartsets/" + smartset_id + "?action=add_item",
 					JSON.stringify({
 						"action": "add_item",
 						item : item,
@@ -3601,13 +3652,10 @@ var app = {
 					}));
 		},
 		
-		// TODO: test
-		removeItemFromSmartset: function(itemId, smartsetId, roomId, profileId) {
+		removeItemFromSmartset: function(itemId, smartsetId, roomId, profileId, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/smartsets/" + smartsetId +
-							"?action=remove_item",
+					"http://" + deviceIp + "/smartsets/" + smartsetId + "?action=remove_item",
 					JSON.stringify({
 						"action": "remove_item",
 						item_id : itemId,
@@ -3616,12 +3664,10 @@ var app = {
 					}));
 		},
 		
-		activateSmartset: function(smartsetId, room, profile) {
+		activateSmartset: function(smartsetId, room, profile, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/rooms/" + room.id +
-							"?action=activate_smartset",
+					"http://" + deviceIp + "/rooms/" + room.id + "?action=activate_smartset",
 					JSON.stringify({
 						"action": "activate_smartset",
 						smartset_id : smartsetId,
@@ -3630,12 +3676,10 @@ var app = {
 					}));
 		},
 		
-		deactivateSmartset: function(smartsetId, roomId, profileId) {
+		deactivateSmartset: function(smartsetId, roomId, profileId, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + app.connectedDevice.address +
-							"/rooms/" + roomId +
-							"?action=deactivate_smartset",
+					"http://" + deviceIp + "/rooms/" + roomId + "?action=deactivate_smartset",
 					JSON.stringify({
 						action: "deactivate_smartset",
 						smartset_id : smartsetId,
@@ -3643,35 +3687,5 @@ var app = {
 						profile_id : profileId,
 					}));
 		},
-		
-		/*setRoomSmart: function(roomId, roomSmart, profile) {
-			return app.arduino.request(
-					"POST",
-					"http://" + app.connectedDevice.address +
-							"/rooms/" + roomId +
-							"?action=set_smart",
-					JSON.stringify({
-						"action": "set_smart",
-						"room_id": roomId,
-						"room_smart": roomSmart,
-						"profile_id" : profile.id,
-					}));
-		},*/
-		
-		/*setItemSmart: function(itemId, itemSmart, itemActive, room, profile) {
-			return app.arduino.request(
-					"POST",
-					"http://" + app.connectedDevice.address +
-							"/items/" + itemId +
-							"?action=set_smart",
-					JSON.stringify({
-						"action": "set_smart",
-						"item_id": itemId,
-						"item_smart": itemSmart,
-						"item_active": itemActive,
-						"room_id": room.id,
-						"profile_id" : profile.id,
-					}));
-		},*/
 	},
 };

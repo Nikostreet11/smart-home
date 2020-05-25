@@ -275,11 +275,12 @@ bool Database::isRoomNameTaken(String roomName)
 
 /********** GET *****************************************************************/
 
-String Database::getDeviceInfo(String deviceName, String ipAddress) {
+String Database::getDeviceInfo()
+{
 	responseJson["outcome"] = "success";
 	JsonObject jsonDeviceInfo = responseJson.createNestedObject("device_info");
+	jsonDeviceInfo["ip_address"] = deviceIpAddress;
 	jsonDeviceInfo["name"] = deviceName;
-	jsonDeviceInfo["ip_address"] = ipAddress;
 	log(responseJson);
 	return getLog();
 }
@@ -323,6 +324,9 @@ String Database::getProfile(String profileId)
 String Database::getRooms(String profileId)
 {
 	responseJson["outcome"] = "success";
+	JsonObject jsonDevice = responseJson.createNestedObject("device");
+	jsonDevice["ip_address"] = deviceIpAddress;
+	jsonDevice["name"] = deviceName;
 	
 	JsonArray jsonRooms = responseJson.createNestedArray("rooms");
 	for (int i = 0; i < rooms.size(); i++)
@@ -347,9 +351,11 @@ String Database::getRoom(String roomId, String profileId)
 	{
 		// send the room
 		responseJson["outcome"] = "success";
-		
 		JsonObject jsonRoom = responseJson.createNestedObject("room");
 		roomToJson(room, jsonRoom);
+		JsonObject jsonDevice = jsonRoom.createNestedObject("device");
+		jsonDevice["ip_address"] = deviceIpAddress;
+		jsonDevice["name"] = deviceName;
 	}
 	log(responseJson);
 
@@ -1603,11 +1609,6 @@ void Database::jsonToSmartset(JsonObject& json, Smartset* smartset)
 
 /********** GETTERS *************************************************************/
 
-const String& Database::getLog() const
-{
-	return logBuffer;
-}
-
 int Database::getProfilesSize()
 {
 	return profiles.size();
@@ -1626,6 +1627,31 @@ Profile* Database::getProfile(int index)
 Room* Database::getRoom(int index)
 {
 	return rooms.get(index);
+}
+
+const String& Database::getLog() const
+{
+	return logBuffer;
+}
+
+const String& Database::getDeviceIpAddress() const
+{
+	return deviceIpAddress;
+}
+
+void Database::setDeviceIpAddress(const String& deviceIpAddress)
+{
+	this->deviceIpAddress = deviceIpAddress;
+}
+
+const String& Database::getDeviceName() const
+{
+	return deviceName;
+}
+
+void Database::setDeviceName(const String& deviceName)
+{
+	this->deviceName = deviceName;
 }
 
 /********** INTERNAL ************************************************************/

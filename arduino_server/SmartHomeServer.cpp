@@ -16,6 +16,42 @@ SmartHomeServer::~SmartHomeServer()
 {
 }
 
+/********** INIT ****************************************************************/
+
+void SmartHomeServer::initialize()
+{
+	IPAddress IP = WiFi.localIP();
+	String ipAddress =
+		String(IP[0]) + "." + String(IP[1]) + "." +
+		String(IP[2]) + "." + String(IP[3]);
+	database.setDeviceIpAddress(ipAddress);
+	database.setDeviceName(deviceName);
+	database.debugInit();
+}
+
+void SmartHomeServer::initializeNTP()
+{
+	Udp.begin(UDP_LOCAL_PORT);
+	sendNTPpacket(timeServer); // send an NTP packet to a time server
+	
+	// wait to see if a reply is available
+	while (!Udp.parsePacket())
+	{
+		Serial.println("Waiting for the NTP server...");
+		delay(2000);
+	}
+	
+	Serial.println("Response received.");
+	unsigned long secsSince1900 = readNTPpacket();
+	unsigned long epoch = toUnixTime(secsSince1900);
+	setTime(epoch);
+	adjustTime(3600 * GMT);
+	
+	Serial.println();
+	Serial.println(deviceName + " is now ready!");
+	Serial.println();
+}
+
 /********** HANDLE **************************************************************/
 
 bool SmartHomeServer::handleRequest(String method, String path, String query, String data)
@@ -64,36 +100,6 @@ void SmartHomeServer::postResponseHandling()
 	
 	//Serial.println("*** done!");
 	//Serial.println();
-}
-
-
-/********** NTP *****************************************************************/
-
-void SmartHomeServer::initializeNTP()
-{
-	Udp.begin(UDP_LOCAL_PORT);
-	sendNTPpacket(timeServer); // send an NTP packet to a time server
-	
-	// wait to see if a reply is available
-	while (!Udp.parsePacket())
-	{
-		Serial.println("Waiting for the NTP server...");
-		delay(2000);
-	}
-	
-	Serial.println("Response received.");
-	unsigned long secsSince1900 = readNTPpacket();
-	unsigned long epoch = toUnixTime(secsSince1900);
-	setTime(epoch);
-	adjustTime(3600 * GMT);
-	
-	Serial.println();
-	Serial.println(deviceName + " is now ready!");
-	Serial.println();
-
-	database.debugInit();
-	//database.debugProfiles();
-	//database.debugRooms();
 }
 
 /********** GETTERS *************************************************************/
@@ -176,11 +182,7 @@ bool SmartHomeServer::handleGET(String path, String query)
 	}
 	else if (path.startsWith("/info/"))
 	{
-		IPAddress IP = WiFi.localIP();
-		String ipAddress =
-			String(IP[0]) + "." + String(IP[1]) + "." +
-			String(IP[2]) + "." + String(IP[3]);
-		responseText = database.getDeviceInfo(deviceName, ipAddress);
+		responseText = database.getDeviceInfo();
 		return true;
 	}
 	else if (path.startsWith("/profiles/"))

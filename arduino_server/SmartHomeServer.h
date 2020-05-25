@@ -17,12 +17,13 @@ public:
 	// destructor
 	virtual ~SmartHomeServer();
 
+	// init
+	void initialize();
+	void initializeNTP();
+
 	// handle
 	bool handleRequest(String method, String path, String query, String data);
 	void postResponseHandling();
-
-	// NTP
-	void initializeNTP();
 
 	// getters
 	const String& getResponseText() const;

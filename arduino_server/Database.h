@@ -36,7 +36,7 @@ public:
 	bool isRoomNameTaken(String roomName);
 
 	// get
-	String getDeviceInfo(String deviceName, String ipAddress);
+	String getDeviceInfo();
 	String getProfiles();
 	String getProfile(String profileId);
 	String getRooms(String profileId);
@@ -98,11 +98,15 @@ public:
 	//void jsonToPort(JsonObject& json, ArduinoPort* port);
 	
 	// getters
-	const String& getLog() const;
 	int getProfilesSize();
 	int getRoomsSize();
 	Profile* getProfile(int index);
 	Room* getRoom(int index);
+	const String& getLog() const;
+	const String& getDeviceIpAddress() const;
+	void setDeviceIpAddress(const String& deviceIpAddress);
+	const String& getDeviceName() const;
+	void setDeviceName(const String& deviceName);
 
 private:
 	// internal
@@ -119,6 +123,8 @@ private:
 
 	// variables
 	String logBuffer;
+	String deviceIpAddress;
+	String deviceName;
 };
 
 #endif /* DATABASE_H_ */
