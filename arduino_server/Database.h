@@ -7,6 +7,8 @@
 #include "Profile.h"				// profile class
 #include "Room.h"					// room class
 #include "Item.h"					// item class
+#include "Binary.h"
+#include "Linear.h"
 #include "Smartset.h"
 #include "PortManager.h"
 
@@ -87,12 +89,14 @@ public:
 	void profileToJson(Profile* profile, JsonObject& json);
 	void roomToJson(Room* room, JsonObject& json);
 	void itemToJson(Item* item, JsonObject& json);
+	void controlToJson(Control* control, JsonObject& json);
 	void smartsetToJson(Smartset* smartset, JsonObject& json);
 	void smartItemToJson(SmartItem* smartItem, JsonObject& json);
 	void portToJson(ArduinoPort* port, JsonObject& json);
 	void jsonToProfile(JsonObject& json, Profile* profile);
 	void jsonToRoom(JsonObject& json, Room* room);
 	void jsonToItem(JsonObject& json, Item* item);
+	void jsonToControl(JsonObject& json, Control* control);
 	void jsonToSmartset(JsonObject& json, Smartset* smartset);
 	//void jsonToItem(JsonObject& json, Smartset* smartset);
 	//void jsonToPort(JsonObject& json, ArduinoPort* port);

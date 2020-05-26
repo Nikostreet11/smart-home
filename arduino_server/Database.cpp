@@ -1556,8 +1556,34 @@ void Database::itemToJson(Item* item, JsonObject& json)
 	json["id"] = item->getId();
 	json["name"] = item->getName();
 	json["icon"] = item->getIcon();
-	json["port"] = item->getPort();
+	//json["port"] = item->getPort();
 	json["active"] = toStr(item->isActive());
+}
+
+void Database::controlToJson(Control* control, JsonObject& json)
+{
+	json["name"] = control->getName();
+	json["port"] = control->getPort();
+	json["type"] = control->getStringType();
+	
+	switch (control->getType())
+	{
+	case Control::Type::Binary:
+		{
+			Binary* binary = (Binary*) control;
+			json["value"] = toStr(binary->getValue());
+		}
+		break;
+		
+	case Control::Type::Linear:
+		{
+			Linear* linear = (Linear*) control;
+			json["min"] = linear->getMin();
+			json["max"] = linear->getMax();
+			json["value"] = linear->getValue();
+		}
+		break;
+	}
 }
 
 void Database::smartsetToJson(Smartset* smartset, JsonObject& json)
@@ -1600,6 +1626,22 @@ void Database::jsonToItem(JsonObject& json, Item* item)
 	item->setName(json["name"]);
 	item->setIcon(json["icon"]);
 	item->setPort(json["port"]);
+}
+
+void Database::jsonToControl(JsonObject& json, Control* control)
+{
+	control->setPort(json["port"]);
+	control->setActive(toBool(json["active"]));
+	if (control->getType() == Control::Type::Linear)
+	{
+		/*Linear* linear = dynamic_cast<Linear*>(control);
+		if (linear)
+		{
+			linear->setMin(json["min"]);
+			linear->setMax(json["max"]);
+			linear->setValue(json["value"]);
+		}*/
+	}
 }
 
 void Database::jsonToSmartset(JsonObject& json, Smartset* smartset)
