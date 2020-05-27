@@ -2,8 +2,11 @@
 #define ITEM_H_
 
 #include <WString.h>
+#include <LinkedPointerList.h>
 #include "PortManager.h"
 #include "IdManager.h"
+#include "Binary.h"
+#include "Linear.h"
 
 class Item
 {
@@ -14,7 +17,16 @@ public:
 	// destructor
 	virtual ~Item();
 
+	// operations
+	bool addControl(Control* control);
+	bool removeControl(int index);
+
 	// getters / setters
+	Control* getControl(int index);
+	Control* getControl(const String& name);
+	int getControlsIndex(const String& name);
+	int getControlsSize();
+	
 	int getTrueId() const;
 	String getId() const;
 	const String& getName() const;
@@ -28,6 +40,7 @@ public:
 
 	// static constants
 	static const int MAX_ITEMS = 64;
+	static const int MAX_CONTROLS = 8;
 	
 private:
 	// constructor
@@ -38,6 +51,7 @@ private:
 
 	// resources
 	PortManager& portManager;
+	LinkedPointerList<Control> controls;
 	
 	// variables
 	int id;

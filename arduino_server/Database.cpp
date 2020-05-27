@@ -857,6 +857,11 @@ String Database::addItem(String data)
 	else
 	{
 		Item* newItem = Item::create(portManager);
+		JsonArray ControlsJson = itemJson["controls"];
+		for (JsonObject Control : ControlsJson) {
+			// do stuff
+		}
+		
 		portManager.lock(itemJson["port"]);
 		jsonToItem(itemJson, newItem);
 		room->addItem(newItem);

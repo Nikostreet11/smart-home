@@ -18,10 +18,73 @@ Item* Item::create(PortManager& portManager)
 // destructor
 Item::~Item()
 {
+	for (int i = 0; i < controls.size(); i++)
+	{
+		delete controls.get(i);
+	}
+	
 	idManager.releaseId(id);
 }
 
+// operations
+bool Item::addControl(Control* control)
+{
+	if (controls.size() < Item::MAX_CONTROLS && control != nullptr)
+	{
+		controls.add(control);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Item::removeControl(int index)
+{
+	if (0 <= index && index < controls.size())
+	{
+		delete controls.get(index);
+		controls.remove(index);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 // getters / setters
+Control* Item::getControl(int index)
+{
+	return controls.get(index);
+}
+
+Control* Item::getControl(const String& name)
+{
+	for (int i = 0; i < controls.size(); i++)
+	{
+		Control* currentControl = controls.get(i);
+		if (currentControl->getName() == name)
+		{
+			return currentControl;
+		}
+	}
+	return nullptr;
+}
+
+int Item::getControlsIndex(const String& name)
+{
+	for (int i = 0; i < controls.size(); i++)
+	{
+		if (controls.get(i)->getName() == name)
+		{
+			return i;
+		}
+	}
+	return -1;
+}
+	
 int Item::getTrueId() const
 {
 	return id;
