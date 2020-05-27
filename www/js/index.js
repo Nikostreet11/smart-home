@@ -25,7 +25,7 @@ $(document).ready(function() {
 var app = {
 	//availableDevices: [],
 	connectedDevices: [],
-	connectedDevice: undefined,
+	//connectedDevice: undefined,
 	//activeUser: undefined,
 	currentProfile: undefined,
 	currentRoom: undefined,
@@ -1114,7 +1114,7 @@ var app = {
 		
 		$('#edit-item-page').on('pagehide', function() {
 			app.currentItem = undefined;
-			app.close('#edit-item-page .ports-collapsible');
+			//app.close('#edit-item-page .ports-collapsible');
 		});
 		
 		$('#edit-item-page').on('pagebeforeshow', function() {
@@ -1123,7 +1123,7 @@ var app = {
 			$('#edit-item-page .item-icon').attr('src',
 					app.itemIconsPath + app.currentItem.icon + '.png');
 			$('#edit-item-page .item-name').val(app.prettyfy(app.currentItem.name));
-			app.refresh('#edit-item-page .ports');
+			//app.refresh('#edit-item-page .ports');
 			app.load('#edit-item-page .icons', app.itemIcons);
 		});
 		
@@ -1211,7 +1211,7 @@ var app = {
 /********** ADD ITEM **********************************************************/
 		
 		$('#add-item-page').on('pagehide', function() {
-			app.close('#add-item-page .ports-collapsible');
+			//app.close('#add-item-page .ports-collapsible');
 		});
 		
 		$('#add-item-page').on('pagebeforeshow', function() {
@@ -1220,7 +1220,7 @@ var app = {
 			$('#add-item-page .item-icon').attr('src',
 					app.itemIconsPath + app.defaultItemIcon + '.png');
 			$('#add-item-page .item-name').val('');
-			app.refresh('#add-item-page .ports');
+			//app.refresh('#add-item-page .ports');
 			app.load('#add-item-page .icons', app.itemIcons);
 		});
 		
@@ -1914,10 +1914,10 @@ var app = {
 			return target.popup('close').promise();
 		}
 		
-		else if (target.is($('#add-item-page .ports-collapsible')) ||
+		/*else if (target.is($('#add-item-page .ports-collapsible')) ||
 				target.is($('#edit-item-page .ports-collapsible'))) {
 			return target.collapsible('collapse').promise();
-		}
+		}*/
 		
 		else {
 			alert('close::error - target not found');
@@ -2153,7 +2153,7 @@ var app = {
 			}
 		}*/
 		
-		else if (target.is($("#add-item-page .ports")) ||
+		/*else if (target.is($("#add-item-page .ports")) ||
 				target.is($("#edit-item-page .ports"))) {
 			try {
 				let response = JSON.parse(await app.arduino.getPorts(
@@ -2167,7 +2167,7 @@ var app = {
 			catch(error) {
 				alert("getPorts::error");
 			}
-		}
+		}*/
 		
 		else {
 			alert('refresh::error - target not found');

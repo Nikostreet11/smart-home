@@ -157,7 +157,10 @@ void Item::setActive(bool active)
 {
 	this->active = active;
 	//portManager.setActive(port, active);
-	// TODO: set controls active
+	for (int i = 0; i < controls.size(); i++)
+	{
+		controls.get(i)->setActive(active);
+	}
 }
 
 // constructor

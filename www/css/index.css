@@ -542,13 +542,13 @@ body {
 	padding: 40px 0px;
 }
 
-#edit-item-page .ports {
+/*#edit-item-page .ports {
 	width: 70%;
 	margin: 20px auto;
-}
+}*/
 
 #edit-item-page .icons {
-	margin: 50px 10px;
+	margin: 20px 10px;
 }
 
 #edit-item-page .icon-btn {
@@ -583,13 +583,13 @@ body {
 	padding: 40px 0px;
 }
 
-#add-item-page .ports {
+/*#add-item-page .ports {
 	width: 70%;
 	margin: 20px auto;
-}
+}*/
 
 #add-item-page .icons {
-	margin: 50px 10px;
+	margin: 20px 10px;
 }
 
 #add-item-page .icon-btn {
