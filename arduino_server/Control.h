@@ -9,8 +9,9 @@ class Control
 public:
 	enum class Type {Binary, Linear};
 	
-	// constructor
-	Control();
+	// constructors
+	//Control(PortManager& portManager);
+	Control(PortManager& portManager, String name/*, String port*/);
 	
 	// destructor
 	virtual ~Control() = 0;
@@ -26,8 +27,10 @@ public:
 	void setActive(bool active);
 	
 protected:
+	// resources
+	PortManager& portManager;
+	
 	// variables
-	Type type;
 	String name;
 	String port;
 	bool active;

@@ -3,11 +3,11 @@
 IdManager Item::idManager(Item::MAX_ITEMS);
 
 // static constructors
-Item* Item::create(PortManager& portManager)
+Item* Item::create(/*PortManager& portManager*/)
 {
 	if (idManager.isIdAvailable())
 	{
-		return new Item(portManager);
+		return new Item(/*portManager*/);
 	}
 	else
 	{
@@ -27,6 +27,19 @@ Item::~Item()
 }
 
 // operations
+bool Item::isControlNameAvailable(const String& name)
+{
+	bool taken = false;
+	for (int i = 0; i < controls.size(); i++)
+	{
+		if (controls.get(i)->getName() == name)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+
 bool Item::addControl(Control* control)
 {
 	if (controls.size() < Item::MAX_CONTROLS && control != nullptr)
@@ -125,15 +138,15 @@ void Item::setIcon(const String& icon)
 	this->icon = icon;
 }
 
-const String& Item::getPort() const
+/*const String& Item::getPort() const
 {
 	return port;
-}
+}*/
 
-void Item::setPort(const String& port)
+/*void Item::setPort(const String& port)
 {
 	this->port = port;
-}
+}*/
 
 bool Item::isActive() const
 {
@@ -143,16 +156,17 @@ bool Item::isActive() const
 void Item::setActive(bool active)
 {
 	this->active = active;
-	portManager.setActive(port, active);
+	//portManager.setActive(port, active);
+	// TODO: set controls active
 }
 
 // constructor
-Item::Item(PortManager& portManager) :
-		portManager(portManager),
+Item::Item(/*PortManager& portManager*/) :
+		//portManager(portManager),
 		id(idManager.acquireId()),
 		name("item"),
 		icon("default"),
-		port("none"),
+		//port("none"),
 		active(false)
 {
 }

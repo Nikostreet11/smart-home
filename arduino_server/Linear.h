@@ -6,8 +6,9 @@
 class Linear : public Control
 {
 public:
-	// constructor
-	Linear();
+	// constructors
+	//Linear(PortManager& portManager);
+	Linear(PortManager& portManager, String name/*, String port*/);
 	
 	// destructor
 	virtual ~Linear();
@@ -17,11 +18,9 @@ public:
 	virtual const String& getStringType() const;
 	virtual void updatePort();
 	int getMin();
-	void setMin(int min);
 	int getMax();
-	void setMax(int max);
 	int getValue();
-	void setValue(int value);
+	void setValues(int min, int max, int value);
 	
 private:
 	// variables

@@ -1,9 +1,16 @@
 #include "Binary.h"
 
-// constructor
-Binary::Binary() :
-		Control()
+// constructors
+/*Binary::Binary(PortManager& portManager) :
+		Control(portManager)
 {
+	value = false;
+}*/
+
+Binary::Binary(PortManager& portManager, String name/*, String port*/) :
+		Control(portManager, name/*, port*/)
+{
+	value = false;
 }
 
 // destructor

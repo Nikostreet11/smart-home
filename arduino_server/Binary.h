@@ -6,8 +6,9 @@
 class Binary : public Control
 {
 public:
-	// constructor
-	Binary();
+	// constructors
+	//Binary(PortManager& portManager);
+	Binary(PortManager& portManager, String name/*, String port*/);
 	
 	// destructor
 	virtual ~Binary();

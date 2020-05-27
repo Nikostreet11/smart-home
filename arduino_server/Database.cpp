@@ -856,16 +856,59 @@ String Database::addItem(String data)
 	}
 	else
 	{
-		Item* newItem = Item::create(portManager);
-		JsonArray ControlsJson = itemJson["controls"];
-		for (JsonObject Control : ControlsJson) {
-			// do stuff
-		}
-		
-		portManager.lock(itemJson["port"]);
+		Item* newItem = Item::create(/*portManager*/);
 		jsonToItem(itemJson, newItem);
-		room->addItem(newItem);
-		responseJson["outcome"] = "success";
+		
+		JsonArray controlsJson = itemJson["controls"];
+		bool controlsPass = true;
+		for (int i = 0; i < controlsJson.size(); i++)
+		{
+			JsonObject controlJson = controlsJson[i];
+			String name = controlJson["name"];
+			String port = controlJson["port"];
+			Control* control = nullptr;
+			if (!newItem->isControlNameAvailable(name))
+			{
+				controlsPass = false;
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "control name unavailable";
+				break;
+			}
+			if (!portManager.isAvailable(port))
+			{
+				controlsPass = false;
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "port unavailable";
+				break;
+			}
+			if (controlJson["type"] == "binary")
+			{
+				Control* control = new Binary(portManager, name/*, port*/);
+			}
+			else if (controlJson["type"] == "linear")
+			{
+				Control* control = new Linear(portManager, name/*, port*/);
+			}
+			else
+			{
+				controlsPass = false;
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "control type not found";
+				break;
+			}
+			jsonToControl(controlJson, control);
+			newItem->addControl(control);
+		}
+
+		if (controlsPass)
+		{
+			room->addItem(newItem);
+			responseJson["outcome"] = "success";
+		}
+		else
+		{
+			delete newItem;
+		}
 	}
 	log(responseJson);
 	
@@ -990,16 +1033,16 @@ String Database::editItem(String id, String data)
 		responseJson["outcome"] = "failure";
 		responseJson["error"] = "item not found";
 	}
-	else if (newItemJson["port"] != item->getPort() &&
+	/*else if (newItemJson["port"] != item->getPort() &&
 			!portManager.isAvailable(newItemJson["port"]))
 	{
 		responseJson["outcome"] = "failure";
 		responseJson["error"] = "port unavailable";
-	}
+	}*/
 	else
 	{
-		portManager.unlock(item->getPort());
-		portManager.lock(newItemJson["port"]);
+		/*portManager.unlock(item->getPort());
+		portManager.lock(newItemJson["port"]);*/
 		jsonToItem(newItemJson, item);
 		responseJson["outcome"] = "success";
 	}
@@ -1128,7 +1171,7 @@ String Database::removeItem(String id, String data)
 		}
 		else
 		{
-			portManager.unlock(room->getItem(index)->getPort());
+			//portManager.unlock(room->getItem(index)->getPort());
 			room->removeItem(index);
 
 			// deletes every related smart item
@@ -1225,11 +1268,11 @@ String Database::setItemActive(String id, String data)
 			responseJson["outcome"] = "failure";
 			responseJson["error"] = "item not found";
 		}
-		else if (item->getPort() == "none")
+		/*else if (item->getPort() == "none")
 		{
 			responseJson["outcome"] = "failure";
 			responseJson["error"] = "port not set";
-		}
+		}*/
 		else
 		{
 			bool found = false;
@@ -1630,22 +1673,26 @@ void Database::jsonToItem(JsonObject& json, Item* item)
 {
 	item->setName(json["name"]);
 	item->setIcon(json["icon"]);
-	item->setPort(json["port"]);
+	//item->setPort(json["port"]);
 }
 
 void Database::jsonToControl(JsonObject& json, Control* control)
 {
+	//control->setName(json["name"]);
 	control->setPort(json["port"]);
-	control->setActive(toBool(json["active"]));
-	if (control->getType() == Control::Type::Linear)
+	if (json["type"] == "binary")
 	{
-		/*Linear* linear = dynamic_cast<Linear*>(control);
-		if (linear)
-		{
-			linear->setMin(json["min"]);
-			linear->setMax(json["max"]);
-			linear->setValue(json["value"]);
-		}*/
+		Binary* binary = (Binary*) control;
+		String value = json["value"];
+		binary->setValue(toBool(value));
+	}
+	else if (json["type"] == "linear")
+	{
+		Linear* linear = (Linear*) control;
+		String min = json["min"];
+		String max = json["max"];
+		String value = json["value"];
+		linear->setValues(min.toInt(), max.toInt(), value.toInt());
 	}
 }
 
