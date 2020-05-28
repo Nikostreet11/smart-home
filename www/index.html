@@ -540,28 +540,82 @@
 						<input class="item-name" type="text" placeholder="Insert item name here"/>
 					</div>
 					
-					<!--<ul class="ports"
-							data-role="listview"
-							data-inset="true"
-							data-shadow="false">
-						<li class="ports-collapsible"
-								data-role="collapsible"
-								data-inset="false"
-								data-iconpos="right"
-								data-collapsed-icon="carat-d"
-								data-expanded-icon="carat-u">
-							<h2 class="title">
-								<div class="title-inner">
-									filled dynamically
-								</div>
-							</h2>
+					<ul class="controls" data-role="listview" data-inset="true">
+						<li class="control">
+							<form>
+								<div class="control-options">
+									<div class="row-1 ui-grid-a">
+										<div class="ui-block-a">
+											<input class="device-name" type="text"
+													placeholder="control name">
+										</div>
+										<div class="ui-block-b">
+											<a class="ui-btn">remove</a>
+										</div>
+									</div>
+									<div class="row-2 ui-grid-a">
+										<div class="ui-block-a">
+											<fieldset class="control-type" data-role="controlgroup" data-type="horizontal" data-mini="true">
+												<!--<legend>Horizontal:</legend>-->
+												<input type="radio" name="radio-choice-h-2" id="radio-choice-h-2a" value="on" checked="checked">
+												<label for="radio-choice-h-2a">Binary</label>
+												<input type="radio" name="radio-choice-h-2" id="radio-choice-h-2b" value="off">
+												<label for="radio-choice-h-2b">Linear</label>
+											</fieldset>
+										</div>
 
-							<ul class="ports-listview"
-									data-role="listview">
-								filled dynamically
-							</ul>
+										<div class="ui-block-b">
+											<ul class="ports"
+											data-role="listview"
+											data-inset="true"
+											data-shadow="false">
+												<li class="ports-collapsible"
+														data-role="collapsible"
+														data-inset="false"
+														data-iconpos="right"
+														data-collapsed-icon="carat-d"
+														data-expanded-icon="carat-u">
+													<h2 class="title">
+														<div class="title-inner">
+															port test
+															<!--filled dynamically-->
+														</div>
+													</h2>
+
+													<ul class="ports-listview"
+															data-role="listview">
+														<li><a>bau</a></li>
+														<li><a>bau</a></li>
+														<li><a>bau</a></li>
+														<!--filled dynamically-->
+													</ul>
+												</li>
+											</ul>
+										</div>
+									</div>
+								</div>
+								
+								<div class="linear-options ui-grid-b">
+									<div class="ui-block-a">
+										<input class="linear-min" type="number"
+												placeholder="min">
+									</div>
+									<div class="ui-block-b">
+										<input type="range" class="linear-slider"
+												min="0" max="100" value="50">
+									</div>
+									<div class="ui-block-c">
+										<input class="linear-max" type="number"
+												placeholder="max">
+									</div>
+								</div>
+							</form>
 						</li>
-					</ul>-->
+						<li>
+							<a class="ui-btn">+</a>
+						</li>
+					</ul>
+					
 					
 					<div class="icons ui-grid-d">
 						<!-- filled dynamically -->

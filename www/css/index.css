@@ -548,7 +548,7 @@ body {
 }*/
 
 #edit-item-page .icons {
-	margin: 20px 10px;
+	margin: 120px 10px;
 }
 
 #edit-item-page .icon-btn {
@@ -581,6 +581,92 @@ body {
 #add-item-page .item-name-wrapper {
 	margin: 0px 20px 0px 140px;
 	padding: 40px 0px;
+}
+
+#add-item-page .controls {
+	margin: 20px;
+}
+
+#add-item-page .control-options .ui-block-a {
+	width: 40%;
+}
+
+#add-item-page .control-options .ui-block-b {
+	width: 35%;
+}
+
+#add-item-page .control-options .ui-block-c {
+	width: 25%;
+}
+
+#add-item-page .control-options .ui-input-text {
+	margin: 8px;
+}
+
+#add-item-page .control-options .device-name {
+	height: 36px;
+}
+
+#add-item-page .control-options .control-type {
+	margin: 8px 5px;
+}
+
+#add-item-page .control-options .control-type .ui-controlgroup-controls {
+	width: 100%;
+}
+
+#add-item-page .control-options .control-type .ui-radio {
+	width: 50%;
+}
+
+#add-item-page .control-options .control-type .ui-btn {
+	height: 18px;
+	padding: 9px 12px;
+	line-height: 20px;
+	text-align: center;
+}
+
+#add-item-page .control-options .ports {
+	margin: 8px 0px;
+}
+
+#add-item-page .control-options .ports .ui-btn {
+	/*margin: 8px 0px;*/
+	padding: 9px 12px;
+	border-width: 1px;
+	height: 18px;
+	font-size: 15px;
+}
+
+#add-item-page .linear-options .ui-block-a,
+#add-item-page .linear-options .ui-block-c {
+	width: 15%;
+}
+
+#add-item-page .linear-options .ui-block-b {
+	width: 70%;
+}
+
+#add-item-page .linear-options .ui-input-text {
+	margin: 8px;
+}
+
+#add-item-page .linear-options .linear-min,
+#add-item-page .linear-options .linear-max {
+	height: 36px;
+	text-align: center;
+}
+
+#add-item-page .linear-slider {
+    display: none;
+}
+
+#add-item-page .linear-options .ui-slider {
+	margin: 12px 0;
+}
+
+#add-item-page .ui-slider-track {
+	margin-left: 15px;
 }
 
 /*#add-item-page .ports {
