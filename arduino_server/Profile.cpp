@@ -15,12 +15,12 @@ Profile* Profile::create(LinkedPointerList<Room>& rooms)
 	}
 }
 
-Profile* Profile::create(LinkedPointerList<Room>& rooms, String profileId)
+Profile* Profile::create(LinkedPointerList<Room>& rooms, String id)
 {
-	int id = toTrueId(profileId);
-	if (idManager.isIdAvailable(id))
+	int trueId = toTrueId(id);
+	if (idManager.isIdAvailable(trueId))
 	{
-		return new Profile(rooms, id);
+		return new Profile(rooms, trueId);
 	}
 	else
 	{
@@ -158,7 +158,7 @@ int Profile::toTrueId(String id)
 	return trueId.toInt();
 }
 
-// constructor
+// constructors
 Profile::Profile(LinkedPointerList<Room>& rooms) :
 		id(idManager.acquireId()),
 		name("default"),

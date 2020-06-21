@@ -6,21 +6,27 @@
 class Binary : public Control
 {
 public:
-	// constructors
-	//Binary(PortManager& portManager);
-	Binary(PortManager& portManager, String name/*, String port*/);
+	// static constructors
+	static Binary* create(PortManager& portManager);
+	static Binary* create(PortManager& portManager, String id);
 	
 	// destructor
 	virtual ~Binary();
+
+	// operations
+	virtual Type getType();
+	virtual String getStringType() const;
+	virtual void updatePort();
 	
 	// getters / setters
-	virtual Type getType();
-	virtual const String& getStringType() const;
-	virtual void updatePort();
-	int getValue();
-	void setValue(int value);
+	bool getValue();
+	void setValue(bool value);
 	
 private:
+	// constructors
+	Binary(PortManager& portManager);
+	Binary(PortManager& portManager, int id);
+	
 	// variables
 	bool value;
 };

@@ -45,6 +45,9 @@ public:
 	String getRoom(String roomId, String profileId);
 	String getItems(String roomId, String profileId);
 	String getItem(String itemId, String roomId, String profileId);
+	String getControls(String itemId, String roomId, String profileId);
+	String getControl(String controlName, String itemId, String roomId, String profileId);
+	//String getItem(String itemId, String roomId, String profileId);
 	String getSmartsets(String profileId, String roomId, String itemId);
 	String getActiveSmartsets(String roomId);
 	String getSmartset(String smartsetId, String profileId, String roomId);
@@ -75,8 +78,9 @@ public:
 	String removeItem(String id, String data);
 	String removeSmartset(String smartsetId, String data);
 
-	// status
+	// interface
 	String setItemActive(String id, String data);
+	String setControlStatus(String id, String data);
 
 	// smart
 	String addItemToSmartset(String smartsetId, String data);

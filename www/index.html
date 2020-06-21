@@ -31,21 +31,26 @@
         <title>Smart Home</title>
 		<meta charset="UTF-8"/>
         <meta http-equiv="Content-Security-Policy" content="
-            default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval' *;
-            style-src 'self' 'unsafe-inline';
-            media-src *;
-            img-src 'self' data: content:;
-        ">
+				default-src 'self' data: gap: https://ssl.gstatic.com
+				'unsafe-eval' *; style-src 'self' 'unsafe-inline'; media-src *;
+				img-src 'self' data: content:;">
         <meta name="format-detection" content="telephone=no">
         <meta name="msapplication-tap-highlight" content="no">
-        <meta name="viewport"
-            content="initial-scale=1, width=device-width, viewport-fit=cover">
-		<link rel="stylesheet" type="text/css"
-            href="css/jquery.mobile-1.4.5.min.css"/>
-        <link rel="stylesheet" type="text/css" href="css/index.css">
+        <!--<meta name="viewport"
+            content="initial-scale=1, width=device-width, viewport-fit=cover">-->
+		<meta name="viewport" content="
+				user-scalable=no, initial-scale=1, maximum-scale=1,
+				minimum-scale=1, width=device-width, height=device-height" />
+		<link rel="stylesheet"
+				type="text/css"
+            	href="css/jquery.mobile-1.4.5.min.css"/>
+        <link rel="stylesheet"
+				type="text/css"
+				href="css/index.css">
 		<script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
 		<script type="text/javascript"
             src="js/jquery.mobile-1.4.5.min.js"></script>
+        <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
     </head>
 	<body>
@@ -77,27 +82,6 @@
 			
 			<div data-role="content">
 				<ul class="devices" data-role="listview" data-inset="true">
-					<li class="device" device-id="unknown" data-icon="info">
-						<form>
-							<div class="ip-address" data-role="controlgroup" data-type="horizontal">
-								<input class="ip-address-a"
-										type="number" min="0" max="255"
-										data-wrapper-class="controlgroup-textinput ui-btn">
-								<input class="ip-address-b"
-										type="number" min="0" max="255"
-										data-wrapper-class="controlgroup-textinput ui-btn">
-								<input class="ip-address-c"
-										type="number" min="0" max="255"
-										data-wrapper-class="controlgroup-textinput ui-btn">
-								<input class="ip-address-d"
-										type="number" min="0" max="255"
-										data-wrapper-class="controlgroup-textinput ui-btn">
-							</div>
-							<a class="check-btn ui-btn ui-btn-inline">check</a>
-							<a class="remove-btn ui-btn ui-btn-inline">remove</a>
-							<h2 class="name"></h2>
-						</form>
-					</li>
 					<li class="device" device-id="unknown" data-icon="info">
 						<form>
 							<div class="ip-address" data-role="controlgroup" data-type="horizontal">
@@ -489,28 +473,13 @@
 						<input class="item-name" type="text" placeholder="Insert item name here"/>
 					</div>
 					
-					<!--<ul class="ports"
-							data-role="listview"
-							data-inset="true"
-							data-shadow="false">
-						<li class="ports-collapsible"
-								data-role="collapsible"
-								data-inset="false"
-								data-iconpos="right"
-								data-collapsed-icon="carat-d"
-								data-expanded-icon="carat-u">
-							<h2 class="title">
-								<div class="title-inner">
-									filled dynamically
-								</div>
-							</h2>
-
-							<ul class="ports-listview"
-									data-role="listview">
-								filled dynamically
-							</ul>
-						</li>
-					</ul>-->
+					<div class="controls-wrapper">
+						<ul class="controls" data-role="listview" data-inset="true">
+							<!-- filled dynamically -->
+						</ul>
+						
+						<a class="add-control-btn ui-btn">+</a>
+					</div>
 					
 					<div class="icons ui-grid-d">
 						<!-- filled dynamically -->
@@ -540,81 +509,13 @@
 						<input class="item-name" type="text" placeholder="Insert item name here"/>
 					</div>
 					
-					<ul class="controls" data-role="listview" data-inset="true">
-						<li class="control">
-							<form>
-								<div class="control-options">
-									<div class="row-1 ui-grid-a">
-										<div class="ui-block-a">
-											<input class="device-name" type="text"
-													placeholder="control name">
-										</div>
-										<div class="ui-block-b">
-											<a class="ui-btn">remove</a>
-										</div>
-									</div>
-									<div class="row-2 ui-grid-a">
-										<div class="ui-block-a">
-											<fieldset class="control-type" data-role="controlgroup" data-type="horizontal" data-mini="true">
-												<!--<legend>Horizontal:</legend>-->
-												<input type="radio" name="radio-choice-h-2" id="radio-choice-h-2a" value="on" checked="checked">
-												<label for="radio-choice-h-2a">Binary</label>
-												<input type="radio" name="radio-choice-h-2" id="radio-choice-h-2b" value="off">
-												<label for="radio-choice-h-2b">Linear</label>
-											</fieldset>
-										</div>
-
-										<div class="ui-block-b">
-											<ul class="ports"
-											data-role="listview"
-											data-inset="true"
-											data-shadow="false">
-												<li class="ports-collapsible"
-														data-role="collapsible"
-														data-inset="false"
-														data-iconpos="right"
-														data-collapsed-icon="carat-d"
-														data-expanded-icon="carat-u">
-													<h2 class="title">
-														<div class="title-inner">
-															port test
-															<!--filled dynamically-->
-														</div>
-													</h2>
-
-													<ul class="ports-listview"
-															data-role="listview">
-														<li><a>bau</a></li>
-														<li><a>bau</a></li>
-														<li><a>bau</a></li>
-														<!--filled dynamically-->
-													</ul>
-												</li>
-											</ul>
-										</div>
-									</div>
-								</div>
-								
-								<div class="linear-options ui-grid-b">
-									<div class="ui-block-a">
-										<input class="linear-min" type="number"
-												placeholder="min">
-									</div>
-									<div class="ui-block-b">
-										<input type="range" class="linear-slider"
-												min="0" max="100" value="50">
-									</div>
-									<div class="ui-block-c">
-										<input class="linear-max" type="number"
-												placeholder="max">
-									</div>
-								</div>
-							</form>
-						</li>
-						<li>
-							<a class="ui-btn">+</a>
-						</li>
-					</ul>
+					<div class="controls-wrapper">
+						<ul class="controls" data-role="listview" data-inset="true">
+							<!-- filled dynamically -->
+						</ul>
+						
+						<a class="add-control-btn ui-btn">+</a>
+					</div>
 					
 					
 					<div class="icons ui-grid-d">

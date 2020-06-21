@@ -1,32 +1,40 @@
 #include "Control.h"
 
-// constructors
-/*Control::Control(PortManager& portManager) :
-	portManager(portManager),
-	name("default"),
-	port("none"),
-	active(false)
-{
-}*/
+IdManager Control::idManager(Control::MAX_CONTROLS);
 
-Control::Control(PortManager& portManager, String name/*, String port*/) :
-	portManager(portManager),
-	name(name),
-	port("none"),
-	active(false)
-{
-	//setPort(port);
-}
-
+// destructor
 Control::~Control()
 {
+	idManager.releaseId(id);
 	portManager.unlock(port);
 }
 
 // getters / setters
+int Control::getTrueId() const
+{
+	return id;
+}
+
+String Control::getId() const
+{
+	String returnId = "control_";
+	String stringId = String(id);
+	for (int count = 0; count < (4 - stringId.length()); count++)
+	{
+		returnId += '0';
+	}
+	returnId += stringId;
+	return returnId;
+}
+
 const String& Control::getName() const
 {
 	return name;
+}
+
+void Control::setName(const String& name)
+{
+	this->name = name;
 }
 
 const String& Control::getPort() const
@@ -54,4 +62,36 @@ void Control::setActive(bool active)
 {
 	this->active = active;
 	updatePort();
+}
+
+// internal
+int Control::toTrueId(String id)
+{
+	String trueId = id.substring(String("control_").length());
+	
+	while (trueId.charAt(0) == '0')
+	{
+		trueId.remove(0, 1);
+	};
+	
+	return trueId.toInt();
+}
+
+// constructors
+Control::Control(PortManager& portManager) :
+	portManager(portManager),
+	id(idManager.acquireId()),
+	name("default"),
+	port("none"),
+	active(false)
+{
+}
+
+Control::Control(PortManager& portManager, int id) :
+	portManager(portManager),
+	id(idManager.acquireId(id)),
+	name("default"),
+	port("none"),
+	active(false)
+{
 }

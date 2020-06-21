@@ -1,16 +1,29 @@
 #include "Binary.h"
 
-// constructors
-/*Binary::Binary(PortManager& portManager) :
-		Control(portManager)
+// static constructors
+Binary* Binary::create(PortManager& portManager)
 {
-	value = false;
-}*/
+	if (idManager.isIdAvailable())
+	{
+		return new Binary(portManager);
+	}
+	else
+	{
+		return nullptr;
+	}
+}
 
-Binary::Binary(PortManager& portManager, String name/*, String port*/) :
-		Control(portManager, name/*, port*/)
+Binary* Binary::create(PortManager& portManager, String id)
 {
-	value = false;
+	int trueId = toTrueId(id);
+	if (idManager.isIdAvailable(trueId))
+	{
+		return new Binary(portManager, trueId);
+	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 // destructor
@@ -18,13 +31,13 @@ Binary::~Binary()
 {
 }
 
-// getters / setters
+// operations
 Control::Type Binary::getType()
 {
 	return Type::Binary;
 }
 
-const String& Binary::getStringType() const
+String Binary::getStringType() const
 {
 	return "binary";
 }
@@ -33,21 +46,35 @@ void Binary::updatePort()
 {
 	if (active)
 	{
-		// do something
+		portManager.writeDigital(port, value);
 	}
 	else
 	{
-		// do something else
+		portManager.writeDigital(port, false);
 	}
 }
 
-int Binary::getValue()
+// getters / setters
+bool Binary::getValue()
 {
 	return value;
 }
 
-void Binary::setValue(int value)
+void Binary::setValue(bool value)
 {
 	this->value = value;
 	updatePort();
+}
+
+// constructors
+Binary::Binary(PortManager& portManager) :
+		Control(portManager)
+{
+	value = false;
+}
+
+Binary::Binary(PortManager& portManager, int id) :
+		Control(portManager, id)
+{
+	value = false;
 }

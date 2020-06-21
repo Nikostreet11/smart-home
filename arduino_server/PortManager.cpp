@@ -105,13 +105,26 @@ bool PortManager::unlock(const String& portName)
 	return false;
 }
 
-bool PortManager::setActive(const String& portName, bool active)
+bool PortManager::writeDigital(const String& portName, bool value)
 {
 	if (isLocked(portName))
 	{
 		int index = getIndex(portName, ports);
-		ports.get(index)->setActive(active);
-		digitalWrite(ports.get(index)->getNumber(), toInt(active));
+		//ports.get(index)->setActive(active);
+		digitalWrite(ports.get(index)->getNumber(), toInt(value));
+		return true;
+	}
+
+	return false;
+}
+
+bool PortManager::writeAnalog(const String& portName, float value)
+{
+	if (isLocked(portName))
+	{
+		int index = getIndex(portName, ports);
+		//ports.get(index)->setActive(active);
+		analogWrite(ports.get(index)->getNumber(), value * 255);
 		return true;
 	}
 

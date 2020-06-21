@@ -237,7 +237,7 @@ bool SmartHomeServer::handleGET(String path, String query)
 	}
 	else if (path.startsWith("/items/"))
 	{
-		// get the item name
+		// get the item id
 		String remainingPath = path.substring(String("/items/").length());
 		int itemIdEnd = remainingPath.indexOf("/");
 		String itemId;
@@ -263,6 +263,39 @@ bool SmartHomeServer::handleGET(String path, String query)
 			{
 				// get the room
 				responseText = database.getItem(itemId, roomId, profileId);
+				return true;
+			}
+		}
+	}
+	else if (path.startsWith("/controls/"))
+	{
+		// get the control name
+		String remainingPath = path.substring(String("/controls/").length());
+		int controlNameEnd = remainingPath.indexOf("/");
+		String controlName;
+		String itemId = getParameter("item_id", query);
+		String roomId = getParameter("room_id", query);
+		String profileId = getParameter("profile_id", query);
+		if (controlNameEnd != -1)
+		{
+			controlName = remainingPath.substring(0, controlNameEnd);
+			remainingPath = remainingPath.substring(controlNameEnd);
+			
+			// TODO
+		}
+		else
+		{
+			controlName = remainingPath;
+			if (controlName == "")
+			{
+				// get all controls
+				responseText = database.getControls(itemId, roomId, profileId);
+				return true;
+			}
+			else
+			{
+				// get the control
+				responseText = database.getControl(controlName, itemId, roomId, profileId);
 				return true;
 			}
 		}
@@ -561,7 +594,7 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 					responseText = database.removeItem(itemId, data);
 					return true;
 				}
-				else if (action == "set_status")
+				else if (action == "set_active")
 				{
 					responseText = database.setItemActive(itemId, data);
 					return true;
@@ -571,6 +604,35 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 					responseText = database.setItemSmart(itemId, data);
 					return true;
 				}*/
+			}
+		}
+	}
+	else if (path.startsWith("/controls/"))
+	{
+		// get the item name
+		String remainingPath = path.substring(String("/controls/").length());
+		int controlIdEnd = remainingPath.indexOf("/");
+		String controlId;
+		String action = getParameter("action", query);
+		
+		if (controlIdEnd != -1)
+		{
+			// TODO
+		}
+		else
+		{
+			controlId = remainingPath;
+			if (controlId == "")
+			{
+				// TODO
+			}
+			else
+			{
+				if (action == "set_status")
+				{
+					responseText = database.setControlStatus(controlId, data);
+					return true;
+				}
 			}
 		}
 	}

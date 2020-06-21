@@ -1,20 +1,29 @@
 #include "Linear.h"
 
-// constructors
-/*Linear::Linear(PortManager& portManager) :
-		Control(portManager)
+// static constructors
+Linear* Linear::create(PortManager& portManager)
 {
-	min = 0;
-	max = 100;
-	value = 0;
-}*/
+	if (idManager.isIdAvailable())
+	{
+		return new Linear(portManager);
+	}
+	else
+	{
+		return nullptr;
+	}
+}
 
-Linear::Linear(PortManager& portManager, String name/*, String port*/) :
-		Control(portManager, name/*, port*/)
+Linear* Linear::create(PortManager& portManager, String id)
 {
-	min = 0;
-	max = 100;
-	value = 0;
+	int trueId = toTrueId(id);
+	if (idManager.isIdAvailable(trueId))
+	{
+		return new Linear(portManager, trueId);
+	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 // destructor
@@ -28,20 +37,21 @@ Control::Type Linear::getType()
 	return Type::Linear;
 }
 
-const String& Linear::getStringType() const
+String Linear::getStringType() const
 {
 	return "linear";
 }
 
 void Linear::updatePort()
 {
+	float normalizedValue = (value - min) / (float) (max - min);
 	if (active)
 	{
-		// do something
+		portManager.writeAnalog(port, normalizedValue);
 	}
 	else
 	{
-		// do something else
+		portManager.writeAnalog(port, false);
 	}
 }
 
@@ -89,24 +99,50 @@ int Linear::getMax()
 	}
 }*/
 
+void Linear::setParameters(int min, int max)
+{
+	if (min < max)
+	{
+		this->min = min;
+		this->max = max;
+		this->value = min;
+		updatePort();
+	}
+	/*else
+	{
+		this->min = 0;
+		this->max = 100;
+		this->value = 0;
+	}*/
+}
+
 int Linear::getValue()
 {
 	return value;
 }
 
-void Linear::setValues(int min, int max, int value)
+void Linear::setValue(int value)
 {
-	if (min <= value && value <= max && min != max)
+	if (min <= value && value <= max)
 	{
-		this->min = min;
-		this->max = max;
 		this->value = value;
+		updatePort();
 	}
-	else
-	{
-		this->min = 0;
-		this->max = 100;
-		this->value = 0;
-	}
-	updatePort();
+}
+
+// constructors
+Linear::Linear(PortManager& portManager) :
+		Control(portManager)
+{
+	min = 0;
+	max = 100;
+	value = 0;
+}
+
+Linear::Linear(PortManager& portManager, int id) :
+		Control(portManager, id)
+{
+	min = 0;
+	max = 100;
+	value = 0;
 }

@@ -20,7 +20,8 @@ public:
 	bool isLocked(const String& portName);
 	bool lock(const String& portName);
 	bool unlock(const String& portName);
-	bool setActive(const String& portName, bool active);
+	bool writeDigital(const String& portName, bool value);
+	bool writeAnalog(const String& portName, float value);
 
 	// getters / setters
 	LinkedPointerList<ArduinoPort>& getAvailablePorts();

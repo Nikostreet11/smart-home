@@ -435,6 +435,94 @@ String Database::getItem(String itemId, String roomId, String profileId)
 	return getLog();
 }
 
+String Database::getControls(String itemId, String roomId, String profileId)
+{
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		Room* room = searchRoom(roomId);
+		if (!room)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "room not found";
+		}
+		else
+		{
+			Item* item = room->getItem(itemId);
+			if (!item)
+			{
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "item not found";
+			}
+			else
+			{
+				responseJson["outcome"] = "success";
+				JsonArray jsonControls = responseJson.createNestedArray("controls");
+				for (int i = 0; i < item->getControlsSize(); i++)
+				{
+					Control* control = item->getControl(i);
+					JsonObject jsonControl = jsonControls.createNestedObject();
+					controlToJson(control, jsonControl);
+				}
+			}
+		}
+	}
+	log(responseJson);
+	
+	return getLog();
+}
+
+String Database::getControl(String controlName, String itemId, String roomId, String profileId)
+{
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		Room* room = searchRoom(roomId);
+		if (!room)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "room not found";
+		}
+		else
+		{
+			Item* item = room->getItem(itemId);
+			if (!item)
+			{
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "item not found";
+			}
+			else
+			{
+				Control* control = item->getControl(controlName);
+				if (!control)
+				{
+					responseJson["outcome"] = "failure";
+					responseJson["error"] = "control not found";
+				}
+				else
+				{
+					responseJson["outcome"] = "success";
+					JsonObject jsonControl = responseJson.createNestedObject("control");
+					controlToJson(control, jsonControl);
+				}
+			}
+		}
+	}
+	log(responseJson);
+
+	return getLog();
+}
+
 String Database::getSmartsets(String profileId, String roomId, String itemId)
 {
 	Profile* profile = searchProfile(profileId);
@@ -849,11 +937,11 @@ String Database::addItem(String data)
 		responseJson["outcome"] = "failure";
 		responseJson["error"] = "max number of items in the room reached";
 	}
-	else if (!portManager.isAvailable(itemJson["port"]))
+	/*else if (!portManager.isAvailable(itemJson["port"]))
 	{
 		responseJson["outcome"] = "failure";
 		responseJson["error"] = "port unavailable";
-	}
+	}*/
 	else
 	{
 		Item* newItem = Item::create(/*portManager*/);
@@ -883,11 +971,11 @@ String Database::addItem(String data)
 			}
 			if (controlJson["type"] == "binary")
 			{
-				Control* control = new Binary(portManager, name/*, port*/);
+				control = Binary::create(portManager);
 			}
 			else if (controlJson["type"] == "linear")
 			{
-				Control* control = new Linear(portManager, name/*, port*/);
+				control = Linear::create(portManager);
 			}
 			else
 			{
@@ -1025,26 +1113,155 @@ String Database::editRoom(String id, String data)
 String Database::editItem(String id, String data)
 {
 	deserializeJson(requestJson, data);
-	JsonObject newItemJson = requestJson["new_item"];
-	
-	Item* item = searchItem(id);
-	if (!item)
+	JsonObject itemJson = requestJson["item"];
+	String roomId = requestJson["room_id"];
+
+	Room* room = searchRoom(roomId);
+	if (!room)
 	{
 		responseJson["outcome"] = "failure";
-		responseJson["error"] = "item not found";
+		responseJson["error"] = "room not found";
 	}
-	/*else if (newItemJson["port"] != item->getPort() &&
-			!portManager.isAvailable(newItemJson["port"]))
-	{
-		responseJson["outcome"] = "failure";
-		responseJson["error"] = "port unavailable";
-	}*/
 	else
 	{
-		/*portManager.unlock(item->getPort());
-		portManager.lock(newItemJson["port"]);*/
-		jsonToItem(newItemJson, item);
-		responseJson["outcome"] = "success";
+		Item* item = room->getItem(id);
+		if (!item)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "item not found";
+		}
+		else
+		{
+			jsonToItem(itemJson, item);
+			JsonArray controlsJson = itemJson["controls"];
+			bool controlsPass = true;
+			for (int i = item->getControlsSize() - 1; i >= 0; i--)
+			{
+				Control* control = item->getControl(i);
+				bool found = false;
+				for (int j = 0; j < controlsJson.size(); j++)
+				{
+					JsonObject controlJson = controlsJson[j];
+					if (controlJson["id"] == control->getId())
+					{
+						found = true;
+					}
+				}
+				if (!found)
+				{
+					delete item->getControl(i);
+					item->removeControl(i);
+				}
+			}
+			for (int i = 0; i < controlsJson.size(); i++)
+			{
+				JsonObject controlJson = controlsJson[i];
+				Control* control = nullptr;
+				String controlId = controlJson["id"];
+				String controlType = controlJson["type"];
+				String controlName = controlJson["name"];
+				String controlPort = controlJson["port"];
+				if (controlId != "null")
+				{
+					control = item->getControl(controlId);
+					if (!control)
+					{
+						controlsPass = false;
+						responseJson["outcome"] = "failure";
+						responseJson["error"] = "control not found";
+						break;
+					}
+					else
+					{
+						int controlIndex = item->getControlIndex(controlId);
+						item->removeControl(controlIndex);
+						if (controlName != control->getName() &&
+								!item->isControlNameAvailable(controlName))
+						{
+							controlsPass = false;
+							responseJson["outcome"] = "failure";
+							responseJson["error"] = "control name unavailable";
+							break;
+						}
+						if (controlPort != control->getPort() &&
+								!portManager.isAvailable(controlPort))
+						{
+							controlsPass = false;
+							responseJson["outcome"] = "failure";
+							responseJson["error"] = "port unavailable";
+							break;
+						}
+						if (control->getStringType() != controlType)
+						{
+							delete control;
+							if (controlType == "binary")
+							{
+								control = Binary::create(portManager, controlId);
+							}
+							else if (controlType == "linear")
+							{
+								control = Linear::create(portManager, controlId);
+							}
+							else
+							{
+								controlsPass = false;
+								responseJson["outcome"] = "failure";
+								responseJson["error"] = "control type not found";
+								break;
+							}
+						}
+					}
+				}
+				else
+				{
+					if (!item->isControlNameAvailable(controlName))
+					{
+						controlsPass = false;
+						responseJson["outcome"] = "failure";
+						responseJson["error"] = "control name unavailable";
+						break;
+					}
+					if (!portManager.isAvailable(controlPort))
+					{
+						controlsPass = false;
+						responseJson["outcome"] = "failure";
+						responseJson["error"] = "port unavailable";
+						break;
+					}
+					if (controlType == "binary")
+					{
+						control = Binary::create(portManager);
+					}
+					else if (controlType == "linear")
+					{
+						control = Linear::create(portManager);
+					}
+					else
+					{
+						controlsPass = false;
+						responseJson["outcome"] = "failure";
+						responseJson["error"] = "control type not found";
+						break;
+					}
+				}
+				if (!control)
+				{
+					controlsPass = false;
+					responseJson["outcome"] = "failure";
+					responseJson["error"] = "unable to create the control";
+					break;
+				}
+				else
+				{
+					jsonToControl(controlJson, control);
+					item->addControl(control);
+				}
+			}
+			if (controlsPass)
+			{
+				responseJson["outcome"] = "success";
+			}
+		}
 	}
 	log(responseJson);
 	
@@ -1246,7 +1463,7 @@ String Database::removeSmartset(String smartsetId, String data)
 	return getLog();
 }
 
-/********** STATUS **************************************************************/
+/********** INTERFACE ***********************************************************/
 
 String Database::setItemActive(String id, String data)
 {
@@ -1268,11 +1485,6 @@ String Database::setItemActive(String id, String data)
 			responseJson["outcome"] = "failure";
 			responseJson["error"] = "item not found";
 		}
-		/*else if (item->getPort() == "none")
-		{
-			responseJson["outcome"] = "failure";
-			responseJson["error"] = "port not set";
-		}*/
 		else
 		{
 			bool found = false;
@@ -1298,6 +1510,100 @@ String Database::setItemActive(String id, String data)
 				responseJson["outcome"] = "success";
 			}
 			responseJson["active"] = toStr(item->isActive());
+		}
+	}
+	log(responseJson);
+
+	return getLog();
+}
+
+String Database::setControlStatus(String id, String data) {
+	deserializeJson(requestJson, data);
+	JsonObject statusJson = requestJson["control_status"];
+	String statusType = statusJson["type"];
+	String itemId = requestJson["item_id"];
+	String roomId = requestJson["room_id"];
+	
+	Room* room = searchRoom(roomId);
+	if (!room)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "room not found";
+	}
+	else
+	{
+		Item* item = room->getItem(itemId);
+		if (!item)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "item not found";
+		}
+		else
+		{
+			Control* control = item->getControl(id);
+			if (!control)
+			{
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "control not found";
+			}
+			else
+			{
+				/*bool found = false;
+				for (int i = 0; i < room->getSmartsetsSize(); i++)
+				{
+					Smartset* controlset = room->getSmartset(i);
+					int index = controlset->getSmartItemIndex(item->getId());
+					if (index != -1)
+					{
+						found = true;
+						controlset->removeSmartItem(index);
+					}
+				}*/
+
+				if (statusType != control->getStringType())
+				{
+					responseJson["outcome"] = "failure";
+					responseJson["error"] = "control type invalid";
+				}
+				else
+				{
+					switch (control->getType())
+					{
+					case Control::Type::Binary:
+					{
+						responseJson["outcome"] = "success";
+						bool value = toBool(statusJson["value"]);
+						Binary* binary = (Binary*) control;
+						binary->setValue(value);
+						responseJson["value"] = toStr(binary->getValue());
+						break;
+					}
+					case Control::Type::Linear:
+					{
+						responseJson["outcome"] = "success";
+						int value = statusJson["value"];
+						Linear* linear = (Linear*) control;
+						linear->setValue(value);
+						responseJson["value"] = linear->getValue();
+						break;
+					}
+					default:
+						responseJson["outcome"] = "failure";
+						responseJson["error"] = "control type not handled";
+						break;
+					}
+				}
+				
+				/*if (found)
+				{
+					responseJson["outcome"] = "partial_success";
+					responseJson["message"] = "item removed from some smartsets";
+				}
+				else
+				{
+					responseJson["outcome"] = "success";
+				}*/
+			}
 		}
 	}
 	log(responseJson);
@@ -1604,12 +1910,12 @@ void Database::itemToJson(Item* item, JsonObject& json)
 	json["id"] = item->getId();
 	json["name"] = item->getName();
 	json["icon"] = item->getIcon();
-	//json["port"] = item->getPort();
 	json["active"] = toStr(item->isActive());
 }
 
 void Database::controlToJson(Control* control, JsonObject& json)
 {
+	json["id"] = control->getId();
 	json["name"] = control->getName();
 	json["port"] = control->getPort();
 	json["type"] = control->getStringType();
@@ -1678,7 +1984,7 @@ void Database::jsonToItem(JsonObject& json, Item* item)
 
 void Database::jsonToControl(JsonObject& json, Control* control)
 {
-	//control->setName(json["name"]);
+	control->setName(json["name"]);
 	control->setPort(json["port"]);
 	if (json["type"] == "binary")
 	{
@@ -1691,8 +1997,8 @@ void Database::jsonToControl(JsonObject& json, Control* control)
 		Linear* linear = (Linear*) control;
 		String min = json["min"];
 		String max = json["max"];
-		String value = json["value"];
-		linear->setValues(min.toInt(), max.toInt(), value.toInt());
+		//String value = json["value"];
+		linear->setParameters(min.toInt(), max.toInt()/*, value.toInt()*/);
 	}
 }
 

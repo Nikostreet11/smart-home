@@ -44,7 +44,7 @@ private:
 	// internal
 	static int toTrueId(String id);
 	
-	// constructor
+	// constructors
 	explicit Profile(LinkedPointerList<Room>& rooms);
 	explicit Profile(LinkedPointerList<Room>& rooms, int id);
 

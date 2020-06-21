@@ -2,8 +2,8 @@
 
 // constructor
 ArduinoPort::ArduinoPort(int number) :
-		number(number),
-		active(false)
+		number(number)
+		//active(false)
 {
 	name = "port_" + String(number);
 }
@@ -24,7 +24,7 @@ const String& ArduinoPort::getName() const
 	return name;
 }
 
-bool ArduinoPort::isActive() const
+/*bool ArduinoPort::isActive() const
 {
 	return active;
 }
@@ -33,4 +33,4 @@ bool ArduinoPort::isActive() const
 void ArduinoPort::setActive(bool active)
 {
 	this->active = active;
-}
+}*/

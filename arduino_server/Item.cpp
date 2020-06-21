@@ -2,8 +2,8 @@
 
 IdManager Item::idManager(Item::MAX_ITEMS);
 
-// static constructors
-Item* Item::create(/*PortManager& portManager*/)
+// static constructor
+Item* Item::create()
 {
 	if (idManager.isIdAvailable())
 	{
@@ -57,7 +57,7 @@ bool Item::removeControl(int index)
 {
 	if (0 <= index && index < controls.size())
 	{
-		delete controls.get(index);
+		//delete controls.get(index);
 		controls.remove(index);
 		return true;
 	}
@@ -73,29 +73,34 @@ Control* Item::getControl(int index)
 	return controls.get(index);
 }
 
-Control* Item::getControl(const String& name)
+Control* Item::getControl(const String& id)
 {
 	for (int i = 0; i < controls.size(); i++)
 	{
-		Control* currentControl = controls.get(i);
-		if (currentControl->getName() == name)
+		Control* control = controls.get(i);
+		if (control->getId() == id)
 		{
-			return currentControl;
+			return control;
 		}
 	}
 	return nullptr;
 }
 
-int Item::getControlsIndex(const String& name)
+int Item::getControlIndex(const String& id)
 {
 	for (int i = 0; i < controls.size(); i++)
 	{
-		if (controls.get(i)->getName() == name)
+		if (controls.get(i)->getId() == id)
 		{
 			return i;
 		}
 	}
 	return -1;
+}
+
+int Item::getControlsSize()
+{
+	return controls.size();
 }
 	
 int Item::getTrueId() const

@@ -59,7 +59,7 @@ private:
 	static const int lControl = LED_BUILTIN;	// digital pin that a LED is connected to
 
 	// info
-	const String deviceName = "smart_arduino_1.1";
+	const String deviceName = "smart_arduino_1.2";
 
 	// flags
 	bool led_on;

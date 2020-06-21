@@ -31,6 +31,8 @@ var app = {
 	currentRoom: undefined,
 	currentItem: undefined,
 	currentSmartset: undefined,
+	selectedPorts: [],
+	extraPorts: [],
 	editProfilesMode: false,
 	editRoomsMode: false,
 	editItemsMode: false,
@@ -416,7 +418,7 @@ var app = {
 		
 /********** SIGN IN PROFILE ***************************************************/
 		
-		// TODO: ADD IN A FUTURE RELEASE
+		
 		
 		/*
 		$("#signInProfilePage .backBtn").click(function() {
@@ -888,6 +890,66 @@ var app = {
 		});
 		
 		$("#manual-panel-page")
+		.on('slidestop', '.item .control-binary .control-widget', async function() {
+			let status = {
+				type: 'binary',
+				value: $(this).val(),
+			};
+			let controlId = $(this).closest('.control').attr('control-id');
+			let itemId = $(this).closest('.item').attr('item-id');
+			try {
+				let response = JSON.parse(await app.arduino.setControlStatus(
+						status,
+						controlId,
+						itemId,
+						app.currentRoom.id,
+						app.currentProfile.id,
+						app.currentRoom.device.ip_address));
+				if (response.outcome == 'success') {
+					$(this).val(response.value);
+				}
+				else {
+					alert(response.error);
+				}
+			}
+			catch (error) {
+				console.error('setControlStatus::error');
+			}
+		});
+		
+		$("#manual-panel-page")
+		.on('slidestop focusout', '.item .control-linear .control-widget', async function() {
+			let status = {
+				type: 'linear',
+				value: $(this).val(),
+			};
+			let controlId = $(this).closest('.control').attr('control-id');
+			let itemId = $(this).closest('.item').attr('item-id');
+			try {
+				let response = JSON.parse(await app.arduino.setControlStatus(
+						status,
+						controlId,
+						itemId,
+						app.currentRoom.id,
+						app.currentProfile.id,
+						app.currentRoom.device.ip_address));
+				if (response.outcome == 'success') {
+					$(this).val(response.value);
+				}
+				else {
+					alert(response.error);
+				}
+			}
+			catch (error) {
+				console.error('setControlStatus::error');
+			}
+		});
+		
+		/*$('#manual-panel-page').on('focusout', '.item .control-linear .control-widget', function() {
+			alert('bau');
+		});*/
+		
+		$("#manual-panel-page")
 		.on("click", ".item .item-smart-btn", async function() {
 			let itemId = $(this).parents(".item").attr('item-id');
 			try {
@@ -1114,7 +1176,8 @@ var app = {
 		
 		$('#edit-item-page').on('pagehide', function() {
 			app.currentItem = undefined;
-			//app.close('#edit-item-page .ports-collapsible');
+			app.selectedPorts = [];
+			app.extraPorts = [];
 		});
 		
 		$('#edit-item-page').on('pagebeforeshow', function() {
@@ -1123,8 +1186,19 @@ var app = {
 			$('#edit-item-page .item-icon').attr('src',
 					app.itemIconsPath + app.currentItem.icon + '.png');
 			$('#edit-item-page .item-name').val(app.prettyfy(app.currentItem.name));
-			//app.refresh('#edit-item-page .ports');
+			app.refresh('#edit-item-page .controls');
 			app.load('#edit-item-page .icons', app.itemIcons);
+		});
+		
+		$('#edit-item-page')
+		.on('click', function(event) {
+			let target = $(event.target);
+			let targetParent = target.closest('.ports-collapsible');
+			$('.ports-collapsible').each(function() {
+				if (!$(this).is(targetParent)) {
+					$(this).collapsible('collapse');
+				}
+			});
 		});
 		
 		$("#edit-item-page .back-btn").click(function() {
@@ -1133,36 +1207,55 @@ var app = {
 			app.changePage("#manual-panel-page");
 		});
 		
-		$("#edit-item-page .confirm-btn").click(function() {
-			var newItem = {
+		$("#edit-item-page .confirm-btn").click(async function() {
+			let controls = [];
+			$('#edit-item-page .control').each(function() {
+				let control = {
+					id: $(this).attr('control-id'),
+					name: app.dePrettyfy($(this).find('.control-name').val()),
+					port: app.dePrettyfy($(this).find('.control-port .title-inner').text()),
+					type: $(this).find('.control-type .ui-radio-on').attr('value'),
+				};
+				if (control.id == undefined) {
+					control.id = 'null';
+				}
+				if (control.type == 'linear') {
+					control.min = $(this).find('.linear-min').val();
+					control.max = $(this).find('.linear-max').val();
+				}
+				if (control.name != '' && control.min != '' && control.max != '') {
+					controls.push(control);
+				}
+				else {
+					alert('invalid control input');
+					return;
+				}
+			});
+			
+			var item = {
 				name : app.dePrettyfy($("#edit-item-page .item-name").val()),
 				icon : $("#edit-item-page .item-icon").attr('name'),
-				"port" : app.dePrettyfy($('#edit-item-page .ports .title-inner').html()),
+				controls : controls,
 			};
 			
-			if (newItem.name != "" && newItem.icon != undefined) {
-				app.arduino.editItem(
-						app.currentItem,
-						newItem,
-						app.currentRoom,
-						app.currentRoom.device.ip_address)
-				.then(function(result) {
-					var response = JSON.parse(result);
-
+			if (item.name != "" && item.icon != undefined) {
+				try {
+					let response = JSON.parse(await app.arduino.editItem(
+							item,
+							app.currentItem.id,
+							app.currentRoom.id,
+							app.currentProfile.id,
+							app.currentRoom.device.ip_address));
 					if (response.outcome == "success") {
-						//alert("Item saved successfully");
-
-						app.currentItem = undefined;
-						app.cleanupEditItemPage();
 						app.changePage("#manual-panel-page");
 					}
 					else {
 						alert(response.error);
 					}
-				})
-				.catch(function() {
-					alert("editItem::error");
-				});
+				}
+				catch (error) {
+					console.error("editItem::error");
+				}
 			}
 			else {
 				alert("invalid data");
@@ -1170,11 +1263,71 @@ var app = {
 		});
 		
 		$("#edit-item-page")
+		.on("click", ".remove-control-btn", function() {
+			let $portsTitle = $(this).closest('.control').find(
+					'.ports-collapsible .title-inner');
+			let index = $.inArray(
+					app.dePrettyfy($portsTitle.text()),
+					app.selectedPorts);
+			if (index != -1) {
+				app.selectedPorts.splice(index, 1);
+			}
+			let elementIndex = $(this).parents('.control').index();
+			app.removeElement("#edit-item-page .controls", elementIndex);
+		});
+		
+		$("#edit-item-page")
+		.on("click", ".binary-type-btn", function() {
+			$(this).parents('.control').find('.linear-options').addClass('hidden');
+			/*$(this).parents('.control').find('.linear-options').css(
+					'display', 'none');*/
+		});
+		
+		$("#edit-item-page")
+		.on("click", ".linear-type-btn", function() {
+			$(this).parents('.control').find('.linear-options').removeClass('hidden');
+			/*$(this).parents('.control').find('.linear-options').css(
+					'display', 'block');*/
+		});
+		
+		$('#edit-item-page')
+		.on('collapsibleexpand', '.ports-collapsible', function(event) {
+			let target = $(event.target);
+			let collapsible = target.closest('.ports-collapsible');
+			$('.ports-collapsible').each(function() {
+				if (!$(this).is(collapsible)) {
+					$(this).collapsible('collapse');
+				}
+			});
+			app.refreshTarget(collapsible);
+		});
+		
+		$("#edit-item-page")
+		.on("click", ".port-btn", function() {
+			let $title = $(this).closest('.ports-collapsible').find('.title-inner');
+			let $entry = $(this).find('.port-name');
+			let index = $.inArray(
+					app.dePrettyfy($title.text()),
+					app.selectedPorts);
+			if (index != -1) {
+				app.selectedPorts.splice(index, 1);
+			}
+			app.selectedPorts.push(app.dePrettyfy($entry.text()));
+			$title.text($entry.text());
+			$title.closest('.ports-collapsible').collapsible('collapse');
+		});
+		
+		$("#edit-item-page")
+		.on("click", ".add-control-btn", function() {
+			app.addElement("#edit-item-page .controls");
+		});
+		
+		/*$("#edit-item-page")
 		.on("click", ".port-btn", function() {
 			let title = $('#edit-item-page .ports .title-inner');
 			title.html($(this).find('.port-name').html());
 			title.parents('.ports-collapsible').collapsible('collapse');
-		});
+		});*/
 		
 		$('#edit-item-page')
 		.on("click", ".icon-btn", function() {
@@ -1211,7 +1364,8 @@ var app = {
 /********** ADD ITEM **********************************************************/
 		
 		$('#add-item-page').on('pagehide', function() {
-			//app.close('#add-item-page .ports-collapsible');
+			app.selectedPorts = [];
+			app.extraPorts = [];
 		});
 		
 		$('#add-item-page').on('pagebeforeshow', function() {
@@ -1224,16 +1378,47 @@ var app = {
 			app.load('#add-item-page .icons', app.itemIcons);
 		});
 		
+		$('#add-item-page')
+		.on('click', function(event) {
+			let target = $(event.target);
+			let targetParent = target.closest('.ports-collapsible');
+			$('.ports-collapsible').each(function() {
+				if (!$(this).is(targetParent)) {
+					$(this).collapsible('collapse');
+				}
+			});
+		});
+		
 		$("#add-item-page .back-btn").click(function() {
 			app.cleanupAddItemPage();
 			app.changePage("#manual-panel-page");
 		});
 		
 		$("#add-item-page .confirm-btn").click(function() {
+			let controls = [];
+			$('#add-item-page .control').each(function() {
+				let control = {
+					name: app.dePrettyfy($(this).find('.control-name').val()),
+					port: app.dePrettyfy($(this).find('.control-port .title-inner').text()),
+					type: $(this).find('.control-type .ui-radio-on').attr('value'),
+				};
+				if (control.type == 'linear') {
+					control.min = $(this).find('.linear-min').val();
+					control.max = $(this).find('.linear-max').val();
+				}
+				if (control.name != '' && control.min != '' && control.max != '') {
+					controls.push(control);
+				}
+				else {
+					alert('invalid control input');
+					return;
+				}
+			});
+			
 			var newItem = {
 				name : app.dePrettyfy($("#add-item-page .item-name").val()),
 				icon : $("#add-item-page .item-icon").attr('name'),
-				"port" : app.dePrettyfy($('#add-item-page .ports .title-inner').html()),
+				controls : controls,
 			};
 			
 			if (newItem.name != "" && newItem.icon != undefined) {
@@ -1262,10 +1447,63 @@ var app = {
 		});
 		
 		$("#add-item-page")
+		.on("click", ".remove-control-btn", function() {
+			let $portsTitle = $(this).closest('.control').find(
+					'.ports-collapsible .title-inner');
+			let index = $.inArray(
+					app.dePrettyfy($portsTitle.text()),
+					app.selectedPorts);
+			if (index != -1) {
+				app.selectedPorts.splice(index, 1);
+			}
+			let elementIndex = $(this).parents('.control').index();
+			app.removeElement("#add-item-page .controls", elementIndex);
+		});
+		
+		$("#add-item-page")
+		.on("click", ".binary-type-btn", function() {
+			$(this).parents('.control').find('.linear-options').addClass('hidden');
+			/*$(this).parents('.control').find('.linear-options').css(
+					'display', 'none');*/
+		});
+		
+		$("#add-item-page")
+		.on("click", ".linear-type-btn", function() {
+			$(this).parents('.control').find('.linear-options').removeClass('hidden');
+			/*$(this).parents('.control').find('.linear-options').css(
+					'display', 'block');*/
+		});
+		
+		$('#add-item-page')
+		.on('collapsibleexpand', '.ports-collapsible', function(event) {
+			let target = $(event.target);
+			let collapsible = target.closest('.ports-collapsible');
+			$('.ports-collapsible').each(function() {
+				if (!$(this).is(collapsible)) {
+					$(this).collapsible('collapse');
+				}
+			});
+			app.refreshTarget(collapsible);
+		});
+		
+		$("#add-item-page")
 		.on("click", ".port-btn", function() {
-			let title = $('#add-item-page .ports .title-inner');
-			title.html($(this).find('.port-name').html());
-			title.parents('.ports-collapsible').collapsible('collapse');
+			let $title = $(this).closest('.ports-collapsible').find('.title-inner');
+			let $entry = $(this).find('.port-name');
+			let index = $.inArray(
+					app.dePrettyfy($title.text()),
+					app.selectedPorts);
+			if (index != -1) {
+				app.selectedPorts.splice(index, 1);
+			}
+			app.selectedPorts.push(app.dePrettyfy($entry.text()));
+			$title.text($entry.text());
+			$title.closest('.ports-collapsible').collapsible('collapse');
+		});
+		
+		$("#add-item-page")
+		.on("click", ".add-control-btn", function() {
+			app.addElement("#add-item-page .controls");
 		});
 		
 		$('#add-item-page')
@@ -1375,7 +1613,7 @@ var app = {
 											$('#manual-panel-page .smartsets-panel').css('display', 'block');
 											app.refreshSmartsetsPanel();
 							
-											// TODO: cleanup
+											
 											app.changePage("#manual-panel-page");
 										}
 										else {
@@ -1395,7 +1633,7 @@ var app = {
 							});
 						}
 						else {
-							// TODO: cleanup
+							
 							app.changePage("#smartsets-page");
 						}
 					}
@@ -1435,7 +1673,7 @@ var app = {
 					var outcome = JSON.parse(response).outcome;
 
 					if (outcome == "success") {
-						// TODO: cleanup
+						
 						app.currentSmartset = undefined;
 						app.changePage("#smartsets-page");
 					}
@@ -1461,7 +1699,7 @@ var app = {
 				var response = JSON.parse(result);
 
 				if (response.outcome == "success") {
-					// TODO: cleanup
+					
 					app.currentSmartset = undefined;
 					app.changePage("#manual-panel-page");
 				}
@@ -1652,7 +1890,7 @@ var app = {
 		$(container).enhanceWithin();
 		
 		if (container.html() == "") {
-			container.html("<p>TODO</p>");
+			container.html("<p></p>");
 		}
 	},*/
 	
@@ -2110,6 +2348,27 @@ var app = {
 						app.currentRoom.device.ip_address));
 				if (response.outcome == "success") {
 					app.load(selector, response.items);
+					for (let item of response.items) {
+						let $item = target.find('.item[item-id=' + item.id + ']');
+						try {
+							let response = JSON.parse(await app.arduino.getControls(
+									item.id,
+									app.currentRoom.id,
+									app.currentProfile.id,
+									app.currentRoom.device.ip_address));
+							if (response.outcome == "success") {
+								app.loadTarget(
+										$item.find('.item-controls'),
+										response.controls);
+							}
+							else {
+								alert(response.error);
+							}
+						}
+						catch (error) {
+							console.error("getControls::error");
+						}
+					}
 				}
 				else {
 					alert(response.error);
@@ -2138,20 +2397,25 @@ var app = {
 			}
 		}
 		
-		/*else if (target.is($("#add-item-page .port-select")) ||
-				target.is($("#edit-item-page .port-select"))) {
+		else if (target.is($("#edit-item-page .controls"))) {
 			try {
-				let response = JSON.parse(await app.arduino.getPorts());
-				if (response.outcome != "success") {
+				let response = JSON.parse(await app.arduino.getControls(
+						app.currentItem.id,
+						app.currentRoom.id,
+						app.currentProfile.id,
+						app.currentRoom.device.ip_address));
+				if (response.outcome == "success") {
+					app.load(target, response.controls);
+				}
+				else {
 					alert(response.error);
 					return;
 				}
-				app.load(target, response.ports);
 			}
-			catch(error) {
-				alert("getPorts::error");
+			catch (error) {
+				console.error("getControls::error");
 			}
-		}*/
+		}
 		
 		/*else if (target.is($("#add-item-page .ports")) ||
 				target.is($("#edit-item-page .ports"))) {
@@ -2171,6 +2435,49 @@ var app = {
 		
 		else {
 			alert('refresh::error - target not found');
+		}
+	},
+	
+/********** REFRESH TARGET ****************************************************/
+	
+	refreshTarget: async function(target) {
+		if (target.hasClass('ports-collapsible')) {
+			try {
+				let response = JSON.parse(await app.arduino.getPorts(
+						app.currentRoom.device.ip_address));
+				if (response.outcome == 'success') {
+					app.loadTarget(target, response.ports);
+				}
+				else {
+					console.error(response.error);
+				}
+			}
+			catch (error) {
+				console.error('getPorts::error');
+			}
+		}
+		
+		/*else if (target.hasClass('item-controls')) {
+			try {
+				let response = JSON.parse(await app.arduino.getControls(
+						target.closest('.item').attr('item-id'),
+						app.currentRoom.id,
+						app.currentProfile.id,
+						app.currentRoom.device.ip_address));
+				if (response.outcome == "success") {
+					//app.loadTarget(target, response.controls);
+				}
+				else {
+					alert(response.error);
+				}
+			}
+			catch (error) {
+				console.error("getControls::error");
+			}
+		}*/
+		
+		else {
+			console.error('refreshTarget::error - target not found');
 		}
 	},
 	
@@ -2210,7 +2517,7 @@ var app = {
 			//$(container).enhanceWithin();
 
 			/*if (container.html() == "") {
-				container.html("<p>TODO</p>");
+				container.html("<p></p>");
 			}*/
 		}
 		
@@ -2398,6 +2705,10 @@ var app = {
 							'</a>' +
 							'<h2 class="item-name">' + app.prettyfy(item.name) + '</h2>' +
 						'</div>' +
+						'<ul class="item-controls" ' +
+								'data-role="listview" ' +
+								'data-inset="true" ' +
+						'></ul>' +
 						'<a class="item-smart-btn ' +
 								'ui-btn ui-btn-right ' +
 							'ui-icon-heart ui-btn-icon-notext"></a>' +
@@ -2409,6 +2720,7 @@ var app = {
 				}
 			}
 			target.listview("refresh");
+			target.enhanceWithin();
 		}
 		
 		else if (target.is($('#manual-panel-page .smartsets-panel .smartsets'))) {
@@ -2429,7 +2741,7 @@ var app = {
 			target.listview("refresh");
 		}
 		
-		else if (target.is($("#add-item-page .ports")) ||
+		/*else if (target.is($("#add-item-page .ports")) ||
 				target.is($("#edit-item-page .ports"))) {
 			let title = target.find('.title-inner');
 			target = target.find('.ports-listview');
@@ -2465,6 +2777,129 @@ var app = {
 			}
 			title.html(target.children().first().find('.port-name').html());
 			target.listview("refresh");
+		}*/
+		else if (target.is($("#edit-item-page .controls"))) {
+			target.html('');
+			for (let index = 0; index < data.length; index++) {
+				let control = data[index];
+				target.append(
+					'<li class="control" ' +
+							'control-id="' + control.id + '" ' +
+					'>' +
+						'<form>' +
+							'<div class="control-options">' +
+								'<div class="row-1 ui-grid-a">' +
+									'<div class="ui-block-a">' +
+										'<input class="control-name" type="text" ' +
+												'placeholder="control name" ' +
+												'value="' + app.prettyfy(control.name) + '" ' +
+										'>' +
+									'</div>' +
+									'<div class="ui-block-b">' +
+										'<a class="remove-control-btn ui-btn">' +
+											'remove' +
+										'</a>' +
+									'</div>' +
+								'</div>' +
+								'<div class="row-2 ui-grid-a">' +
+									'<div class="ui-block-a">' +
+										'<fieldset class="control-type" ' +
+												'data-role="controlgroup" ' +
+												'data-type="horizontal" ' +
+												//'data-mini="true" ' +
+										'>' +
+											'<input type="radio" ' +
+													'class="binary-type-radio" ' +
+													'name="control-type" ' +
+													'id="element-' + index +
+															'-binary-type" ' +
+													//'checked="checked" ' +
+											'>' +
+											'<label class="binary-type-btn" ' +
+													'for="element-' + index +
+															'-binary-type" ' +
+													'value="binary"' +
+											'>' +
+												'Binary' +
+											'</label>' +
+											'<input type="radio" ' +
+													'class="linear-type-radio" ' +
+													'name="control-type" ' +
+													'id="element-' + index +
+															'-linear-type" ' +
+											'>' +
+											'<label class="linear-type-btn" ' +
+													'for="element-' + index +
+															'-linear-type" ' +
+													'value="linear"' +
+											'>' +
+												'Linear' +
+											'</label>' +
+										'</fieldset>' +
+									'</div>' +
+
+									'<div class="ui-block-b">' +
+										'<ul class="control-port"' +
+												'data-role="listview"' +
+												'data-inset="true"' +
+												'data-shadow="false" ' +
+									'>' +
+											'<li class="ports-collapsible"' +
+													'data-role="collapsible"' +
+													'data-inset="false"' +
+													'data-iconpos="right"' +
+													'data-collapsed-icon="carat-d"' +
+													'data-expanded-icon="carat-u">' +
+												'<h2 class="title">' +
+													'<div class="title-inner">' +
+														app.prettyfy(control.port) +
+													'</div>' +
+												'</h2>' +
+
+												'<ul class="ports-listview"' +
+														'data-role="listview">' +
+												'</ul>' +
+											'</li>' +
+										'</ul>' +
+									'</div>' +
+								'</div>' +
+							'</div>' +
+
+							'<div class="linear-options ui-grid-b">' +
+								'<div class="ui-block-a">' +
+									'<input class="linear-min" type="number"' +
+											'placeholder="min">' +
+								'</div>' +
+								'<div class="ui-block-b">' +
+									'<input type="range" class="linear-slider"' +
+											'min="0" max="100" value="50">' +
+								'</div>' +
+								'<div class="ui-block-c">' +
+									'<input class="linear-max" type="number"' +
+											'placeholder="max">' +
+								'</div>' +
+							'</div>' +
+						'</form>' +
+					'</li>');
+				let $control = target.children().last();
+				$control.enhanceWithin();
+				switch (control.type) {
+				case 'binary':
+					$control.find('.binary-type-radio').prop("checked", true).checkboxradio("refresh");
+					$control.find('.linear-options').addClass('hidden');
+					break;
+				case 'linear':
+					$control.find('.linear-type-radio').prop("checked", true).checkboxradio("refresh");
+					$control.find('.linear-min').val(control.min);
+					$control.find('.linear-max').val(control.max);
+					break;
+				default:
+					console.error('load::error - control type unknown');
+					break;
+				}
+			}
+			target.listview('refresh');
+			target.enhanceWithin();
 		}
 		
 		else if (target.is($("#add-item-page .icons")) ||
@@ -2488,33 +2923,248 @@ var app = {
 		}
 	},
 	
+/********** LOAD TARGET *******************************************************/
+	
+	loadTarget: async function(target, data) {
+		if (target.hasClass('ports-collapsible')) {
+			let title = target.find('.title-inner');
+			let listview = target.find('.ports-listview');
+			listview.html("");
+			listview.append(
+					'<li class="port" data-icon="false">' +
+						'<a class="port-btn">' +
+							'<h3 class="port-name">' + title.text() + '</h3>' +
+						'</a>' +
+					'</li>');
+			if (title.text() != 'none') {
+				listview.append(
+					'<li class="port" data-icon="false">' +
+						'<a class="port-btn">' +
+							'<h3 class="port-name">none</h3>' +
+						'</a>' +
+					'</li>');
+			}
+			for (let port of app.extraPorts) {
+				if ($.inArray(port, app.selectedPorts) == -1) {
+					listview.append(
+						'<li class="port" data-icon="false">' +
+							'<a class="port-btn">' +
+								'<h3 class="port-name">' +
+									app.prettyfy(port) +
+								'</h3>' +
+							'</a>' +
+						'</li>'
+					);
+				}
+			}
+			for (let port of data) {
+				if ($.inArray(port.name, app.selectedPorts) == -1) {
+					listview.append(
+						'<li class="port" data-icon="false">' +
+							'<a class="port-btn">' +
+								'<h3 class="port-name">' +
+									app.prettyfy(port.name) +
+								'</h3>' +
+							'</a>' +
+						'</li>'
+					);
+				}
+			}
+			listview.listview("refresh");
+		}
+		
+		else if (target.hasClass('item-controls')) {
+			target.html('');
+			for (let control of data) {
+				app.selectedPorts.push(control.port);
+				app.extraPorts.push(control.port);
+				switch (control.type) {
+				case 'binary':
+					target.append(
+						'<li class="control control-binary" ' +
+								'control-id="' + control.id + '" ' +
+								'control-port="' + control.port + '" ' +
+								'control-type="' + control.type + '" ' +
+						'>' +
+							'<div class="ui-field-contain">' +
+								'<label>' + control.name + '</label>' +
+								'<select class="control-widget" ' +
+										'data-role="slider" ' +
+										'data-mini="true" ' +
+								'>' +
+									'<option value="false"></option>' +
+									'<option value="true"></option>' +
+								'</select>' +
+							'</div>' +
+						'</li>');
+					target.children().last().find('.control-widget').val(
+							control.value)/*.slider('refresh')*/;
+					break;
+				
+				case 'linear':
+					target.append(
+						'<li class="control control-linear" ' +
+								'control-id="' + control.id + '" ' +
+								'control-port="' + control.port + '" ' +
+								//'control-type="' + control.type + '" ' +
+						'>' +
+							'<div class="ui-field-contain">' +
+								'<label>' + control.name + '</label>' +
+								'<input class="control-widget" ' +
+										'type="range" ' +
+										'data-highlight="true"' +
+										//'data-mini="true" ' +
+										'min="' + control.min + '" ' +
+										'max="' + control.max + '" ' +
+										'value="' + control.value + '" ' +
+								'>' +
+							'</div>' +
+						'</li>');
+					break;
+				
+				default:
+					console.error('loadTarget::error - type not found');
+				}
+			}
+			target.enhanceWithin();
+			target.listview('refresh');
+		}
+		
+		else {
+			console.log('loadTarget::error - target not found');
+		}
+	},
+	
 	addElement: function(selector) {
 		let target = $(selector);
 		
 		if (target.is($('#sign-in-page .devices'))) {
 			target.append(
-					'<li class="device" data-icon="info">' +
-						'<form>' +
-							'<div class="ip-address" data-role="controlgroup" data-type="horizontal">' +
-								'<input class="ip-address-a"' +
-										'type="number" min="0" max="255"' +
-										'data-wrapper-class="controlgroup-textinput ui-btn">' +
-								'<input class="ip-address-b"' +
-										'type="number" min="0" max="255"' +
-										'data-wrapper-class="controlgroup-textinput ui-btn">' +
-								'<input class="ip-address-c"' +
-										'type="number" min="0" max="255"' +
-										'data-wrapper-class="controlgroup-textinput ui-btn">' +
-								'<input class="ip-address-d"' +
-										'type="number" min="0" max="255"' +
-										'data-wrapper-class="controlgroup-textinput ui-btn">' +
-							'</div>' +
-							'<a class="check-btn ui-btn ui-btn-inline">check</a>' +
-							'<a class="remove-btn ui-btn ui-btn-inline">remove</a>' +
-							'<h2 class="name"></h2>' +
-						'</form>' +
-					'</li>'
+				'<li class="device" data-icon="info">' +
+					'<form>' +
+						'<div class="ip-address" data-role="controlgroup" data-type="horizontal">' +
+							'<input class="ip-address-a"' +
+									'type="number" min="0" max="255"' +
+									'data-wrapper-class="controlgroup-textinput ui-btn">' +
+							'<input class="ip-address-b"' +
+									'type="number" min="0" max="255"' +
+									'data-wrapper-class="controlgroup-textinput ui-btn">' +
+							'<input class="ip-address-c"' +
+									'type="number" min="0" max="255"' +
+									'data-wrapper-class="controlgroup-textinput ui-btn">' +
+							'<input class="ip-address-d"' +
+									'type="number" min="0" max="255"' +
+									'data-wrapper-class="controlgroup-textinput ui-btn">' +
+						'</div>' +
+						'<a class="check-btn ui-btn ui-btn-inline">check</a>' +
+						'<a class="remove-btn ui-btn ui-btn-inline">remove</a>' +
+						'<h2 class="name"></h2>' +
+					'</form>' +
+				'</li>'
 			);
+			target.listview('refresh');
+			target.enhanceWithin();
+		}
+		
+		else if (target.is($("#add-item-page .controls")) ||
+				target.is($("#edit-item-page .controls"))) {
+			let index = target.children().size();
+			target.append(
+				'<li class="control">' +
+					'<form>' +
+						'<div class="control-options">' +
+							'<div class="row-1 ui-grid-a">' +
+								'<div class="ui-block-a">' +
+									'<input class="control-name" type="text" ' +
+											'placeholder="control name" ' +
+									'>' +
+								'</div>' +
+								'<div class="ui-block-b">' +
+									'<a class="remove-control-btn ui-btn">' +
+										'remove' +
+									'</a>' +
+								'</div>' +
+							'</div>' +
+							'<div class="row-2 ui-grid-a">' +
+								'<div class="ui-block-a">' +
+									'<fieldset class="control-type" ' +
+											'data-role="controlgroup" ' +
+											'data-type="horizontal" ' +
+											//'data-mini="true" ' +
+									'>' +
+										'<input type="radio" ' +
+												'class="binary-type-radio" ' +
+												'name="control-type" ' +
+												'id="element-' + index +
+														'-binary-type" ' +
+												'checked="checked" ' +
+										'>' +
+										'<label class="binary-type-btn" ' +
+												'for="element-' + index +
+														'-binary-type" ' +
+												'value="binary"' +
+										'>' +
+											'Binary' +
+										'</label>' +
+										'<input type="radio" ' +
+												'class="linear-type-radio" ' +
+												'name="control-type" ' +
+												'id="element-' + index +
+														'-linear-type" ' +
+										'>' +
+										'<label class="linear-type-btn" ' +
+												'for="element-' + index +
+														'-linear-type" ' +
+												'value="linear"' +
+										'>' +
+											'Linear' +
+										'</label>' +
+									'</fieldset>' +
+								'</div>' +
+
+								'<div class="ui-block-b">' +
+									'<ul class="control-port"' +
+											'data-role="listview"' +
+											'data-inset="true"' +
+											'data-shadow="false" ' +
+								'>' +
+										'<li class="ports-collapsible"' +
+												'data-role="collapsible"' +
+												'data-inset="false"' +
+												'data-iconpos="right"' +
+												'data-collapsed-icon="carat-d"' +
+												'data-expanded-icon="carat-u">' +
+											'<h2 class="title">' +
+												'<div class="title-inner">' +
+													'none' +
+												'</div>' +
+											'</h2>' +
+
+											'<ul class="ports-listview"' +
+													'data-role="listview">' +
+											'</ul>' +
+										'</li>' +
+									'</ul>' +
+								'</div>' +
+							'</div>' +
+						'</div>' +
+
+						'<div class="linear-options hidden ui-grid-b">' +
+							'<div class="ui-block-a">' +
+								'<input class="linear-min" type="number"' +
+										'placeholder="min">' +
+							'</div>' +
+							'<div class="ui-block-b">' +
+								'<input type="range" class="linear-slider"' +
+										'min="0" max="100" value="50">' +
+							'</div>' +
+							'<div class="ui-block-c">' +
+								'<input class="linear-max" type="number"' +
+										'placeholder="max">' +
+							'</div>' +
+						'</div>' +
+					'</form>' +
+				'</li>');
 			target.listview('refresh');
 			target.enhanceWithin();
 		}
@@ -2523,6 +3173,31 @@ var app = {
 			console.log('addElement::error - target not found');
 		}
 		
+	},
+	
+	removeElement: function(selector, index) {
+		let target = $(selector);
+		
+		if (target.is($('#add-item-page .controls')) ||
+				target.is($('#edit-item-page .controls'))) {
+			target.children().eq(index).remove();
+			target.children().each(function() {
+				//alert($(this).find('.binary-type-radio').attr('id'));
+				//alert($(this).find('.linear-type-radio').attr('id'));
+				$(this).find('.binary-type-radio').attr(
+						'id', 'element-' + $(this).index() + '-binary-type');
+				$(this).find('.binary-type-btn').attr(
+						'for', 'element-' + $(this).index() + '-binary-type');
+				$(this).find('.linear-type-radio').attr(
+						'id', 'element-' + $(this).index() + '-linear-type');
+				$(this).find('.linear-type-btn').attr(
+						'for', 'element-' + $(this).index() + '-linear-type');
+			});
+		}
+		
+		else {
+			console.log('removeElement::error - target not found');
+		}
 	},
 	
 	refreshActivateSmartsetPanel: function() {
@@ -3087,7 +3762,7 @@ var app = {
 						data: data + "\n\n",
 						success: resolve,
 						error: reject,
-						timeout: 3000,
+						timeout: 5000,
 					});
 				});
 			}
@@ -3098,7 +3773,7 @@ var app = {
 						url: url,
 						success: resolve,
 						error: reject,
-						timeout: 3000,
+						timeout: 5000,
 					});
 				});
 			}
@@ -3392,6 +4067,24 @@ var app = {
 							"profile_id=" + profile.id);
 		},
 		
+		getControls: function(itemId, roomId, profileId, deviceIp) {
+			return app.arduino.request(
+					"GET",
+					"http://" + deviceIp + "/controls/",
+					"item_id=" + itemId + "&" +
+							"room_id=" + roomId + "&" +
+							"profile_id=" + profileId);
+		},
+		
+		getControl: function(controlName, itemId, roomId, profileId, deviceIp) {
+			return app.arduino.request(
+					"GET",
+					"http://" + deviceIp + "/controls/" + controlName,
+					"item_id=" + itemId + "&" +
+							"room_id=" + roomId + "&" +
+							"profile_id=" + profileId);
+		},
+		
 		getSmartsets: function(room, profile, deviceIp) {
 			return app.arduino.request(
 					"GET",
@@ -3584,15 +4277,16 @@ var app = {
 					}));
 		},
 		
-		editItem: function(item, newItem, room, deviceIp) {
+		editItem: function(item, itemId, roomId, profileId, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + deviceIp + "/items/" + item.id + "?action=edit",
+					"http://" + deviceIp + "/items/" + itemId + "?action=edit",
 					JSON.stringify({
 						"action": "edit",
-						"item_id": item.id,
-						"new_item": newItem,
-						"room_id": room.id,
+						"item": item,
+						"item_id": itemId,
+						"room_id": roomId,
+						"profile_id": profileId,
 					}));
 		},
 		
@@ -3686,12 +4380,26 @@ var app = {
 		setItemActive: function(itemId, itemActive, room, deviceIp) {
 			return app.arduino.request(
 					"POST",
-					"http://" + deviceIp + "/items/" + itemId + "?action=set_status",
+					"http://" + deviceIp + "/items/" + itemId + "?action=set_active",
 					JSON.stringify({
-						"action": "set_status",
+						"action": "set_active",
 						"item_id": itemId,
 						"item_active": itemActive,
 						"room_id": room.id,
+					}));
+		},
+		
+		setControlStatus: function(status, controlId, itemId, roomId, profileId, deviceIp) {
+			return app.arduino.request(
+					"POST",
+					"http://" + deviceIp + "/controls/" + controlId + "?action=set_status",
+					JSON.stringify({
+						action: "set_status",
+						control_status: status,
+						control_id: controlId,
+						item_id: itemId,
+						room_id: roomId,
+						profile_id: profileId,
 					}));
 		},
 		
