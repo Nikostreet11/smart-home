@@ -76,7 +76,7 @@ var app = {
 		
 /********** WELCOME ***********************************************************/
 		
-		$('#welcome-page').on("click", ".connect-btn", function() {
+		$('#welcome-page').on("click", ".get-started-btn", function() {
 			app.changePage("#sign-in-page");
 		});
 		
@@ -94,12 +94,131 @@ var app = {
 			app.changePage("#welcome-page");
 		});
 		
+		$("#sign-in-page").on('click', ".confirm-btn", async function() {
+			// TODO: clear app.connectedDevices!
+			let ipAddresses = [];
+			$('#sign-in-page .ip-address').each(function() {
+				let ipAddress =
+						$(this).find('.ip-address-a').val() + '.' +
+						$(this).find('.ip-address-b').val() + '.' +
+						$(this).find('.ip-address-c').val() + '.' +
+						$(this).find('.ip-address-d').val();
+				ipAddresses.push(ipAddress);
+			});
+			
+			if (ipAddresses.length != 0) {
+				let requests = [];
+				let results = [];
+				let devices = [];
+				for (let ipAddress of ipAddresses) {
+					requests.push(app.arduino.getDeviceInfo(ipAddress));
+				}
+				try {
+					results = await Promise.all(requests);
+				}
+				catch (error) {
+					console.error('getDeviceInfo::error');
+					alert('invalid input');
+					return;
+				}
+
+				for (let result of results) {
+					let response;
+					try {
+						response = JSON.parse(result);
+					}
+					catch (error) {
+						console.error('JSON::parse::error');
+						alert('invalid input');
+						return;
+					}
+					if (response.outcome == 'success') {
+						devices.push({
+							ip_address: response.device_info.ip_address,
+							name: response.device_info.name,
+						});
+					}
+					else {
+						alert('invalid input');
+						return;
+					}
+				}
+				app.connectedDevices = devices;
+				app.changePage('#profiles-page');
+			}
+			else {
+				alert('please add a device ip');
+			}
+		});
+		
 		/*$("#sign-in-page").on('click', ".refresh-btn", function() {
 			app.refreshDevices();
 			//app.refresh('#sign-in-page .devices');
 		});*/
 		
-		$("#sign-in-page").on('click', ".check-btn", async function() {
+		$("#sign-in-page").on('focus', ".device input", function() {
+			$(this).select();
+		});
+		
+		$("#sign-in-page").on('input', ".device input", async function() {
+			if ($(this).val() > 25) {
+				let $next = $(this).closest('.ui-input-text').next().find('input');
+				if ($next != undefined) {
+					//alert($next.attr('class'));
+					$next.focus();
+				}
+			}
+			let $device = $(this).closest('.device');
+			let $checkLabel = $device.find('.check-label');
+			let $alertLabel = $device.find('.alert-label');
+			//$device.find('.name').text('');
+			$device.removeClass('device-ready');
+			$device.removeClass('device-unavailable');
+			$checkLabel.addClass('hidden');
+			$alertLabel.addClass('hidden');
+			let $ipAddressContainer = $(this).closest('.ip-address');
+			let $ipAddressA = $ipAddressContainer.find('.ip-address-a');
+			let $ipAddressB = $ipAddressContainer.find('.ip-address-b');
+			let $ipAddressC = $ipAddressContainer.find('.ip-address-c');
+			let $ipAddressD = $ipAddressContainer.find('.ip-address-d');
+			if ($ipAddressA.val() != '' && $ipAddressB.val() != '' &&
+					$ipAddressC.val() != '' && $ipAddressD.val() != '') {
+				let ipAddress =
+						$ipAddressA.val() + '.' + $ipAddressB.val() + '.' +
+						$ipAddressC.val() + '.' + $ipAddressD.val();
+				try {
+					let response = JSON.parse(await app.arduino.getDeviceInfo(ipAddress));
+					if (response.outcome == 'success') {
+						//$device.find('.name').text(response.device_info.name);
+						$device.removeClass('device-unavailable');
+						$device.addClass('device-ready');
+						$checkLabel.removeClass('hidden');
+						$alertLabel.addClass('hidden');
+					}
+				}
+				catch (error) {
+					if (ipAddress == $ipAddressA.val() + '.' + $ipAddressB.val() + '.' +
+							$ipAddressC.val() + '.' + $ipAddressD.val()) {
+						console.error('getDeviceInfo::error');
+						$device.removeClass('device-ready');
+						$device.addClass('device-unavailable');
+						$checkLabel.addClass('hidden');
+						$alertLabel.removeClass('hidden');
+					}
+				}
+			}
+		});
+		
+		$("#sign-in-page").on('click', ".remove-btn", function() {
+			$(this).parents('.device').remove();
+			$('#sign-in-page .devices').listview('refresh');
+		});
+		
+		$("#sign-in-page").on('click', ".add-btn", function() {
+			app.addElement('#sign-in-page .devices');
+		});
+		
+		/*$("#sign-in-page").on('click', ".check-btn", async function() {
 			let ipAddressContainer = $(this).siblings('.ip-address');
 			let ipAddress =
 					ipAddressContainer.find('.ip-address-a').val() + '.' +
@@ -118,74 +237,13 @@ var app = {
 				$(this).siblings('.name').text('');
 				$(this).parents('.device').addClass('device-unavailable');
 			}
-		});
+		});*/
 		
-		$("#sign-in-page").on('change', ".ip-address input", function() {
+		/*$("#sign-in-page").on('change', ".ip-address input", function() {
 			$(this).parents('.device').removeClass('device-ready');
 			$(this).parents('.device').removeClass('device-unavailable');
 			$(this).parents('.device').find('.name').text('');
-		});
-		
-		$("#sign-in-page").on('click', ".confirm-btn", async function() {
-			// TODO: clear app.connectedDevices!
-			let ipAddresses = [];
-			$('#sign-in-page .ip-address').each(function() {
-				let ipAddress =
-						$(this).find('.ip-address-a').val() + '.' +
-						$(this).find('.ip-address-b').val() + '.' +
-						$(this).find('.ip-address-c').val() + '.' +
-						$(this).find('.ip-address-d').val();
-				ipAddresses.push(ipAddress);
-			});
-			
-			let requests = [];
-			let results = [];
-			let devices = [];
-			for (let ipAddress of ipAddresses) {
-				requests.push(app.arduino.getDeviceInfo(ipAddress));
-			}
-			try {
-				results = await Promise.all(requests);
-			}
-			catch (error) {
-				console.error('getDeviceInfo::error');
-				alert('invalid input');
-				return;
-			}
-			
-			for (let result of results) {
-				let response;
-				try {
-					response = JSON.parse(result);
-				}
-				catch (error) {
-					console.error('JSON::parse::error');
-					alert('invalid input');
-					return;
-				}
-				if (response.outcome == 'success') {
-					devices.push({
-						ip_address: response.device_info.ip_address,
-						name: response.device_info.name,
-					});
-				}
-				else {
-					alert('invalid input');
-					return;
-				}
-			}
-			app.connectedDevices = devices;
-			app.changePage('#profiles-page');
-		});
-		
-		$("#sign-in-page").on('click', ".remove-btn", function() {
-			$(this).parents('.device').remove();
-			$('#sign-in-page .devices').listview('refresh');
-		});
-		
-		$("#sign-in-page").on('click', ".add-btn", function() {
-			app.addElement('#sign-in-page .devices');
-		});
+		});*/
 		
 		/*$("#sign-in-page .submit-btn").click(function() {
 			var device = $("#sign-in-page input[name=\"available-devices\"]:checked");
@@ -2248,7 +2306,7 @@ var app = {
 								}
 								activeProfiles.push(profile);
 								if (profile.id == currentProfileId) {
-									$(selector + ' .room[room-id="' + room.id + '"] .room-smart-btn').addClass('enhanced');
+									$(selector + ' .room[room-id="' + room.id + '"] .room-smart-btn').addClass('ui-btn-active'/*'enhanced'*/);
 								}
 							}
 							let innerSelector = selector + ' .room[room-id="' + room.id + '"] .active-profiles';
@@ -2526,7 +2584,7 @@ var app = {
 			target.html("");
 			for (let i = 0; i < data.length; i++) {
 				target.append(
-						'<div class="centered-list-block ui-block-' + app.toBlockType(i % 5) + '">' +
+						'<div class="centered-list-block ui-block-' + app.toBlockType(i % 4) + '">' +
 							'<a class="avatar-btn ui-btn">' +
 								'<img class="avatar" name="' + data[i] + '" ' +
 										'src=\"img/profiles/' + data[i] + '.png\" ' +
@@ -2629,7 +2687,7 @@ var app = {
 			target.html("");
 			for (let i = 0; i < data.length; i++) {
 				target.append(
-						'<div class="centered-list-block ui-block-' + app.toBlockType(i % 5) + '">' +
+						'<div class="centered-list-block ui-block-' + app.toBlockType(i % 4) + '">' +
 							'<a class="icon-btn ui-btn">' +
 								'<img class="icon" name="' + data[i] + '" ' +
 										'src=\"img/rooms/' + data[i] + '.png\" ' +
@@ -3056,9 +3114,12 @@ var app = {
 									'type="number" min="0" max="255"' +
 									'data-wrapper-class="controlgroup-textinput ui-btn">' +
 						'</div>' +
-						'<a class="check-btn ui-btn ui-btn-inline">check</a>' +
-						'<a class="remove-btn ui-btn ui-btn-inline">remove</a>' +
-						'<h2 class="name"></h2>' +
+						//'<a class="check-btn ui-btn ui-btn-inline">check</a>' +
+						//'<a class="remove-btn ui-btn ui-btn-inline">remove</a>' +
+						//'<h2 class="name"></h2>' +
+						'<a class="check-label hidden ui-btn ui-btn-inline ui-icon-check ui-btn-icon-notext"></a>' +
+						'<a class="alert-label hidden ui-btn ui-btn-inline ui-icon-alert ui-btn-icon-notext"></a>' +
+						'<a class="remove-btn ui-btn ui-btn-inline ui-icon-delete ui-btn-icon-notext"></a>' +
 					'</form>' +
 				'</li>'
 			);
@@ -3147,6 +3208,22 @@ var app = {
 									'</ul>' +
 								'</div>' +
 							'</div>' +
+							/*'<div class="test-wrapper">' +
+								'<div class="test">' +
+									'<div class="inside">' +
+										'bau' +
+									'</div>' +
+									'<div class="outside">' +
+										'bau bau' +
+									'</div>' +
+									'<div class="outside">' +
+										'bau bau' +
+									'</div>' +
+									'<div class="outside">' +
+										'bau bau' +
+									'</div>' +
+								'</div>' +
+							'</div>' +*/
 						'</div>' +
 
 						'<div class="linear-options hidden ui-grid-b">' +
@@ -3426,11 +3503,11 @@ var app = {
 	
 	setEditRoomsMode: function(value) {
 		if (value) {
-			$("#control-panel-page .room-smart-btn").addClass('obscured');
+			//$("#control-panel-page .room-smart-btn").addClass('obscured');
 			$("#control-panel-page .room-smart-btn").addClass('ui-icon-edit ui-btn-icon-left');
 		}
 		else {
-			$("#control-panel-page .room-smart-btn").removeClass('obscured');
+			//$("#control-panel-page .room-smart-btn").removeClass('obscured');
 			$("#control-panel-page .room-smart-btn").removeClass('ui-icon-edit ui-btn-icon-left');
 		}
 		app.editRoomsMode = value;

@@ -24,11 +24,21 @@ body {
 }
 
 .header {
-	text-shadow: 0 0 0 #000;
+	text-shadow: none !important;
 }
 
 .header-title {
 	padding: 0px !important;
+	margin: 0 !important;
+	width: 100%;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	font-weight: normal;
+}
+
+a {
+	text-shadow: none !important;
 }
 
 .header-title h1 {
@@ -41,18 +51,12 @@ body {
 }
 
 .header-btn {
-	margin: 7px 0px !important;
-	padding: 0px 10px;
-	height: 36px;
-	top: 0px;
-	border-radius: 0px;
-	line-height: 36px;
-}
-
-.no-text-btn {
-	margin: 0px !important;
-	padding: 0px !important;
-	width: 60px;
+	/*padding: 0px 10px;*/
+	top: 6px !important;
+	border: none;
+	height: 40px;
+	/*border-radius: 0px;*/
+	/*line-height: 36px;*/
 }
 
 .header-btn::after {
@@ -64,8 +68,14 @@ body {
 	top: 0px;
 	margin: auto;
 	width: 40px;
-	height: 24px;
+	height: 27px;
 	border-radius: 0px;
+}
+
+.no-text-btn {
+	margin: 0px !important;
+	padding: 0px !important;
+	width: 60px;
 }
 
 .centered-list-block {
@@ -90,25 +100,32 @@ body {
 
 .fixed-bottom-right {
 	position: fixed;
-	right: 15px;
-	bottom: 15px;
+	right: 20px;
+	bottom: 20px;
 	margin: 0px;
 	padding: 0px;
 }
 
 .rounded-btn {
-	width: 60px;
-	height: 60px;
-	border-radius: 30px;
+	width: 80px;
+	height: 80px;
+	/*border: none;*/
+	border-radius: 40px;
 }
 
 .rounded-btn::after {
+	zoom: 125%;
 	left: 0px;
 	top: 0px;
 	margin: auto;
-	height: 60px;
-	width: 60px;
-	border-radius: 30px;
+	height: 64px;
+	width: 64px;
+	background-color: rgba(0,0,0,0) !important;
+}
+
+.ui-btn-active {
+	background-color: #47f !important;
+	border-color: #58f !important;
 }
 
 .ui-collapsible-heading .ui-btn {
@@ -118,47 +135,155 @@ body {
 .ui-collapsible {
 	border: 0px !important;
 	padding: 0px !important;
+	overflow: visible !important;
 }
 
 .ui-collapsible-content {
-	border-width: 0 1px 1px 1px !important;
+	border-width: 1px 1px 1px 1px !important;
+	position: relative;
+	z-index: 1;
 }
 
 .ui-listview>li h2, .ui-listview>li h3 {
 	margin: 0;
 }
 
-/*.ui-listview .ui-first-child .ui-btn {
+.test-wrapper {
+	overflow: visible;
+}
+
+.test {
+	color: white;
+	overflow: visible;
+	height: 50px;
+}
+
+.inside {
+	height: 50px;
+	background-color: orange;
+}
+
+.outside {
+	height: 50px;
+	background-color: blue;
+	position: relative;
+	z-index: 1;
+}
+
+
+/********** WELCOME PAGE ******************************************************/
+
+#welcome-page .ui-content {
+}
+
+#welcome-page .welcome-img {
+	display: block;
+	margin: 20px auto;
+}
+
+#welcome-page .title-wrapper {
+	margin: 10px 10%;
+}
+
+#welcome-page .welcome-title {
+	display: inline-block;
+	margin: 0;
+	margin-left: 30px;
+	font-size: 30px;
+}
+
+#welcome-page .welcome-subtitle {
+	display: inline-block;
 	margin: 0px;
-}*/
+	font-size: 25px;
+}
+
+#welcome-page .welcome-paragraph {
+	margin: 10px 5%;
+	font-size: 16px;
+	text-align: center;
+}
+
+#welcome-page .get-started-btn {
+	margin: 70px 15%;
+}
 
 /********** SIGN IN PAGE ******************************************************/
 
-/*#sign-in-page .ui-input-text {
-	width: 60px;
-	display: inline-block;
+#sign-in-page .devices {
+	width: 360px;
+	margin: auto;
 }
 
-#sign-in-page .ui-input-text input {
-	text-align: center;
-}*/
+#sign-in-page .device {
+	padding: 10px;
+}
 
 #sign-in-page .device .ip-address {
 	display: inline-block;
+	margin: 0;
 }
 
 #sign-in-page .device .controlgroup-textinput {
 	padding: 0;
 	height: 45px;
-	width: 70px;
+	width: 55px;
 }
 
 #sign-in-page .device .ip-address input {
-	font-size: 21px;
+	font-size: 20px;
+	text-align: center;
 }
 
-#sign-in-page .device .name {
-	height: 20px;
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+	-webkit-appearance: none;
+}
+
+#sign-in-page .check-label,
+#sign-in-page .alert-label {
+	border: none;
+	background: none;
+	margin: 10px;
+}
+
+#sign-in-page .check-label::after {
+	background-color: #47f;
+}
+
+#sign-in-page .alert-label::after {
+	background-color: #e00;
+	
+}
+
+#sign-in-page .device .remove-btn {
+	position: absolute;
+	top: 0;
+	right: 0;
+	padding: 0;
+	border: none;
+	margin: 0;
+	/*background: none;*/
+	height: 70px;
+	width: 70px;
+}
+
+#sign-in-page .device .remove-btn::after {
+	zoom: 110%;
+	width: 30px;
+	height: 30px;
+	left: 17px;
+	top: 17px;
+	margin: 0px;
+	border-radius: 150px;
+}
+
+#sign-in-page .device-ready {
+	box-shadow: 0 0 8px 0 #47f;
+}
+
+#sign-in-page .device-unavailable {
+	box-shadow: 0 0 8px 0 #e00;
 }
 
 /********** PROFILES PAGE *****************************************************/
@@ -173,7 +298,6 @@ body {
 	padding: 0px;
 	border-color: transparent;
 	background-color: transparent;
-	/*z-index: 10;*/
 }
 
 #profiles-page .profile-btn .profile-name {
@@ -184,9 +308,6 @@ body {
 
 #profiles-page .profile-btn::after {
 	zoom: 200%;
-	/*-moz-transform: scale(1.5);
-	-webkit-zoom: 1.5;
-	-ms-zoom: 1.5;*/
 	margin: 0px;
 	padding: 0px;
 	left: 15px;
@@ -196,22 +317,32 @@ body {
 	border-radius: 15px;
 }
 
-/********** EDIT PROFILE ******************************************************/
+/********** ADD PROFILE - EDIT PROFILE ****************************************/
 
+#add-profile-page .profile-avatar,
 #edit-profile-page .profile-avatar {
 	display: block;
 	margin: 20px auto;
 }
 
+#add-profile-page .profile-name-wrapper,
 #edit-profile-page .profile-name-wrapper {
-	width: 70%;
+	width: 60%;
 	margin: 20px auto;
 }
 
-#edit-profile-page .avatars {
-	margin: 50px 10px;
+#add-profile-page .profile-name,
+#edit-profile-page .profile-name {
+	font-size: 20px;
+	text-align: center;
 }
 
+#add-profile-page .avatars,
+#edit-profile-page .avatars {
+	margin: 30px 20px;
+}
+
+#add-profile-page .avatar-btn,
 #edit-profile-page .avatar-btn {
 	padding: 0px;
 	margin: 5px 0px;
@@ -231,65 +362,49 @@ body {
 	font-size: 15px;
 }
 
-/********** ADD PROFILE *******************************************************/
-
-#add-profile-page .profile-avatar {
-	display: block;
-	margin: 20px auto;
-}
-
-#add-profile-page .profile-name-wrapper {
-	width: 70%;
-	margin: 20px auto;
-}
-
-#add-profile-page .avatars {
-	margin: 50px 10px;
-}
-
-#add-profile-page .avatar-btn {
-	padding: 0px;
-	margin: 5px 0px;
-	width: 70px;
-	height: 70px;
-}
-
 /********** CONTROL PANEL PAGE ************************************************/
 
 #control-panel-page .room-icon {
     max-width: 100px;
     max-height: 100px; 
-	width: 100px;
-	height: 100px;
+	width: 80px;
+	height: 80px;
 	margin: 10px;
 }
 
 #control-panel-page .room-smart-btn {
-	height: 100px;
-	padding-left: 120px;
+	height: 80px;
+	padding-left: 100px;
+	margin-right: 100px;
 }
 
 #control-panel-page .room-smart-btn::after {
 	zoom: 200%;
 	width: 30px;
 	height: 30px;
-	left: 15px;
-	top: 15px;
+	left: 10px;
+	top: 10px;
 	margin: 0px;
 	border-radius: 25px;
 }
 
+#control-panel-page .room-name {
+	font-size: 20px;
+	font-weight: normal;
+}
+
+#control-panel-page .room-smart-btn .active-profile-avatar {
+	margin: 2px;
+	box-shadow: 0 0 8px 0 #fff, 0 6px 20px 0 rgba(0, 0, 0, 0);
+}
+
 #control-panel-page .room-manual-btn {
-	width: 60px;
+	width: 100px;
 	z-index: 0;
 }
 
 #control-panel-page .room-manual-btn::after {
-	zoom: 125%;
-}
-
-#control-panel-page .room-smart-btn .active-profile-avatar {
-	margin-right: 5px;
+	zoom: 175%;
 }
 
 #control-panel-page .footer{
@@ -335,22 +450,37 @@ body {
 	margin: 0;
 }
 
-/********** EDIT ROOM *********************************************************/
+/********** ADD ROOM - EDIT ROOM **********************************************/
 
+#add-room-page .room-icon,
 #edit-room-page .room-icon {
 	display: block;
 	margin: 20px auto;
 }
 
+#add-room-page .room-name-wrapper,
 #edit-room-page .room-name-wrapper {
-	width: 70%;
+	width: 60%;
 	margin: 20px auto;
 }
 
-#edit-room-page .icons {
-	margin: 50px 10px;
+#add-room-page .room-name,
+#edit-room-page .room-name {
+	font-size: 20px;
 }
 
+#add-room-page .devices {
+	width: 70%;
+	height: 45px;
+	margin: 20px auto;
+}
+
+#add-room-page .icons,
+#edit-room-page .icons {
+	margin: 30px 20px;
+}
+
+#add-room-page .icon-btn,
 #edit-room-page .icon-btn {
 	padding: 0px;
 	width: 70px;
@@ -370,38 +500,11 @@ body {
 	font-size: 15px;
 }
 
-/********** ADD ROOM **********************************************************/
-
-#add-room-page .room-icon {
-	display: block;
-	margin: 20px auto;
-}
-
-#add-room-page .room-name-wrapper {
-	width: 70%;
-	margin: 20px auto;
-}
-
-#add-room-page .devices {
-	width: 70%;
-	margin: 20px auto;
-}
-
-#add-room-page .icons {
-	margin: 50px 10px;
-}
-
-#add-room-page .icon-btn {
-	padding: 0px;
-	width: 70px;
-	height: 70px;
-	margin: 5px;
-}
-
 /********** MANUAL PANEL PAGE *************************************************/
 
 #manual-panel-page .main .smartsets {
 	width: 90%;
+	height: 45px;
 	margin: 20px auto;
 }
 
@@ -619,6 +722,14 @@ body {
 #add-item-page .control-options .row-1 .ui-block-b {
 	width: 30%;
 }
+
+/*#add-item-page .control {
+	overflow: visible !important;
+}*/
+
+/*#add-item-page .ui-grid-a {
+	overflow: visible;
+}*/
 
 #add-item-page .control-options .row-2 .ui-block-a {
 	width: 60%;

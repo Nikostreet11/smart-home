@@ -58,55 +58,37 @@
 <!---------- WELCOME ---------------------------------------------------------->
 		
 		<div data-role="page" id="welcome-page">
-			<div class="header" data-role="header" data-position="fixed">
-				<div class="header-title ui-title"><h1>Smart Home</h1></div>
-				<a class="connect-btn header-btn ui-btn ui-btn-right">connect</a>
+			<div class="header" data-role="header" data-position="fixed" data-theme="b">
+				<div class="header-title ui-title"><h1>beSmart</h1></div>
 			</div>
 		
 			<div data-role="content" class="ui-content">
-				<img id="welcome-img" src="img/welcome.jpg" width="300px" height="260px"/>
-				<h2>be smart, like your home</h2>
-				<p>this app allows you to control almost every device in your
-					home by a few taps on your smartphone or tablet.</p>
+				<img class="welcome-img" src="img/welcome2.png" width="300px" height="250px"/>
+				<div class="title-wrapper">
+					<h2 class="welcome-title">beSmart,</h2>
+					<h3 class="welcome-subtitle">like your home does!</h3>
+				</div>
+				<p class="welcome-paragraph">Control your Smart Devices, save your favorite Moods and use them with just a tap on your smartphone </p>
+				<a class="get-started-btn ui-btn ui-btn-active">Get started</a>
 			</div>
 		</div>
 		
 <!---------- SIGN IN ---------------------------------------------------------->
 		
 		<div data-role="page" id="sign-in-page">
-			<div class="header" data-role="header" data-position="fixed">
+			<div class="header" data-role="header" data-position="fixed" data-theme="b">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
-				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<div class="header-title ui-title"><h1>beSmart</h1></div>
 				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
 			<div data-role="content">
 				<ul class="devices" data-role="listview" data-inset="true">
-					<li class="device" device-id="unknown" data-icon="info">
-						<form>
-							<div class="ip-address" data-role="controlgroup" data-type="horizontal">
-								<input class="ip-address-a"
-										type="number" min="0" max="255"
-										data-wrapper-class="controlgroup-textinput ui-btn">
-								<input class="ip-address-b"
-										type="number" min="0" max="255"
-										data-wrapper-class="controlgroup-textinput ui-btn">
-								<input class="ip-address-c"
-										type="number" min="0" max="255"
-										data-wrapper-class="controlgroup-textinput ui-btn">
-								<input class="ip-address-d"
-										type="number" min="0" max="255"
-										data-wrapper-class="controlgroup-textinput ui-btn">
-							</div>
-							<a class="check-btn ui-btn ui-btn-inline">check</a>
-							<a class="remove-btn ui-btn ui-btn-inline">remove</a>
-							<h2 class="name"></h2>
-						</form>
-					</li>
+					<!-- filled dynamically -->
 				</ul>
 				
 				<a class="add-btn fixed-bottom-right rounded-btn
-						ui-btn ui-icon-plus ui-btn-icon-notext"></a>
+						ui-btn ui-btn-active ui-icon-plus ui-btn-icon-notext"></a>
 				
 				
 				<!--<form>
@@ -158,9 +140,9 @@
 <!---------- PROFILES --------------------------------------------------------->
 		
 		<div data-role="page" id="profiles-page">
-			<div class="header" data-role="header" data-position="fixed">
+			<div class="header" data-role="header" data-position="fixed" data-theme="b">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
-				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<div class="header-title ui-title"><h1>beSmart</h1></div>
 				<a class="edit-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-edit ui-btn-icon-notext"></a>
 			</div>
 			
@@ -170,16 +152,16 @@
 				</div>
 				
 				<a class="add-btn fixed-bottom-right rounded-btn
-						ui-btn ui-icon-plus ui-btn-icon-notext"></a>
+						ui-btn ui-btn-active ui-icon-plus ui-btn-icon-notext"></a>
 			</div>
 		</div>
 		
 <!---------- EDIT PROFILE ----------------------------------------------------->
 		
 		<div data-role="page" id="edit-profile-page">
-			<div class="header" data-role="header" data-position="fixed">
+			<div class="header" data-role="header" data-position="fixed" data-theme="b">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
-				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<div class="header-title ui-title"><h1>beSmart</h1></div>
 				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
@@ -191,13 +173,13 @@
 						<input class="profile-name" type="text" placeholder="Insert profile name here"/>
 					</div>
 					
-					<div class="avatars ui-grid-d">
+					<div class="avatars ui-grid-c">
 						<!-- filled dynamically -->
 					</div>
 				</form>
 			</div>
 			
-			<div class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
+			<div class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
 				<a class="remove-btn ui-btn ui-btn-center ui-icon-delete ui-btn-icon-left">remove profile</a>
 			</div>
 		</div>
@@ -205,9 +187,9 @@
 <!---------- ADD PROFILE ------------------------------------------------------>
 		
 		<div data-role="page" id="add-profile-page">
-			<div class="header" data-role="header" data-position="fixed">
+			<div class="header" data-role="header" data-position="fixed" data-theme="b">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
-				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<div class="header-title ui-title"><h1>beSmart</h1></div>
 				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
@@ -219,7 +201,7 @@
 						<input class="profile-name" type="text" placeholder="Insert profile name here"/>
 					</div>
 					
-					<div class="avatars ui-grid-d">
+					<div class="avatars ui-grid-c">
 						<!-- filled dynamically -->
 					</div>
 				</form>
@@ -254,9 +236,9 @@
 		
 <!---------- CONTROL PANEL ---------------------------------------------------->
 		<div data-role="page" id="control-panel-page">			
-			<div class="header" data-role="header" data-position="fixed">
-				<a class="menu-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-bars ui-btn-icon-notext"></a>
-				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+			<div class="header" data-role="header" data-position="fixed" data-theme="b">
+				<a class="menu-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
+				<div class="header-title ui-title"><h1>beSmart</h1></div>
 				<a class="edit-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-edit ui-btn-icon-notext"></a>
 			</div>
 			
@@ -266,12 +248,12 @@
 				</ul>
 				
 				<a class="add-btn fixed-bottom-right rounded-btn
-						ui-btn ui-icon-plus ui-btn-icon-notext">
+						ui-btn ui-btn-active ui-icon-plus ui-btn-icon-notext">
 				</a>
 			</div>
 			
 			<div class="footer">
-				<div data-role="header">
+				<div data-role="header" data-theme="b">
 					<h2 class="title">activate...</h2>
 					<a class="close-footer-btn ui-btn ui-btn-right ui-icon-arrow-d ui-btn-icon-notext"></a>
 				</div>
@@ -284,9 +266,9 @@
 <!---------- EDIT ROOM -------------------------------------------------------->
 		
 		<div data-role="page" id="edit-room-page">
-			<div class="header" data-role="header" data-position="fixed">
+			<div class="header" data-role="header" data-position="fixed" data-theme="b">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
-				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<div class="header-title ui-title"><h1>beSmart</h1></div>
 				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
@@ -298,13 +280,13 @@
 						<input class="room-name" type="text" placeholder="Insert room name here"/>
 					</div>
 					
-					<div class="icons ui-grid-d">
+					<div class="icons ui-grid-c">
 						<!-- filled dynamically -->
 					</div>
 				</form>
 			</div>
 			
-			<div class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
+			<div class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
 				<a class="remove-btn ui-btn ui-btn-center ui-icon-delete ui-btn-icon-left">remove room</a>
 			</div>
 		</div>
@@ -312,9 +294,9 @@
 <!---------- ADD ROOM --------------------------------------------------------->
 		
 		<div data-role="page" id="add-room-page">
-			<div class="header" data-role="header" data-position="fixed">
+			<div class="header" data-role="header" data-position="fixed" data-theme="b">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
-				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<div class="header-title ui-title"><h1>beSmart</h1></div>
 				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
@@ -349,7 +331,7 @@
 						</li>
 					</ul>
 					
-					<div class="icons ui-grid-d">
+					<div class="icons ui-grid-c">
 						<!-- filled dynamically -->
 					</div>
 				</form>
@@ -359,9 +341,9 @@
 <!---------- MANUAL PANEL ----------------------------------------------------->
 		
 		<div data-role="page" id="manual-panel-page">
-			<div class="header" data-role="header" data-position="fixed">
+			<div class="header" data-role="header" data-position="fixed" data-theme="b">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
-				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<div class="header-title ui-title"><h1>beSmart</h1></div>
 				<a class="edit-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-edit ui-btn-icon-notext"></a>
 			</div>
 			
@@ -393,7 +375,7 @@
 				</div>
 				
 				<div class="add-smartset-popup" data-role="popup">
-					<div data-role="header">
+					<div data-role="header" data-theme="b">
 						<h2>add smartset</h2>
 					</div>
 					<div role="main" class="ui-content">
@@ -434,16 +416,16 @@
 				</ul>
 				
 				<a class="add-btn fixed-bottom-right rounded-btn
-						ui-btn ui-icon-plus ui-btn-icon-notext">
+						ui-btn ui-btn-active ui-icon-plus ui-btn-icon-notext">
 				</a>
 			</div>
 			
 			<div class="smartsets-panel">
-				<div data-role="header">
+				<div data-role="header" data-theme="b">
 					<h2 class="title">add to...</h2>
 					
 					<a class="add-to-new-smartset-btn
-							ui-btn ui-btn-right">
+							ui-btn ui-btn-active ui-btn-right">
 						+new smartset
 					</a>
 					
@@ -459,9 +441,9 @@
 <!---------- EDIT ITEM -------------------------------------------------------->
 		
 		<div data-role="page" id="edit-item-page">
-			<div class="header" data-role="header" data-position="fixed">
+			<div class="header" data-role="header" data-position="fixed" data-theme="b">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
-				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<div class="header-title ui-title"><h1>beSmart</h1></div>
 				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
@@ -487,7 +469,7 @@
 				</form>
 			</div>
 			
-			<div class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false">
+			<div class="footer" data-role="footer" data-position="fixed" data-tap-toggle="false" data-theme="b">
 				<a class="remove-btn ui-btn ui-btn-center ui-icon-delete ui-btn-icon-left">remove item</a>
 			</div>
 		</div>
@@ -495,9 +477,9 @@
 <!---------- ADD ITEM --------------------------------------------------------->
 		
 		<div data-role="page" id="add-item-page">			
-			<div class="header" data-role="header" data-position="fixed">
+			<div class="header" data-role="header" data-position="fixed" data-theme="b">
 				<a class="back-btn header-btn no-text-btn ui-btn ui-btn-left ui-icon-arrow-l ui-btn-icon-notext"></a>
-				<div class="header-title ui-title"><h1>Smart Home</h1></div>
+				<div class="header-title ui-title"><h1>beSmart</h1></div>
 				<a class="confirm-btn header-btn no-text-btn ui-btn ui-btn-right ui-icon-check ui-btn-icon-notext"></a>
 			</div>
 			
