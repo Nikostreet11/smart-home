@@ -429,6 +429,13 @@ String Database::getItem(String itemId, String roomId, String profileId)
 		
 		JsonObject jsonItem = responseJson.createNestedObject("item");
 		itemToJson(item, jsonItem);
+		JsonArray jsonControls = jsonItem.createNestedArray("controls");
+		for (int i = 0; i < item->getControlsSize(); i++)
+		{
+			Control* control = item->getControl(i);
+			JsonObject jsonControl = jsonControls.createNestedObject();
+			controlToJson(control, jsonControl);
+		}
 	}
 	log(responseJson);
 
@@ -748,6 +755,58 @@ String Database::getSmartItem(
 					
 					JsonObject jsonSmartItem = responseJson.createNestedObject("smart_item");
 					smartItemToJson(smartItem, jsonSmartItem);
+				}
+			}
+		}
+	}
+	log(responseJson);
+	
+	return getLog();
+}
+
+String Database::getSmartControls(String smartItemId, String smartsetId, String roomId, String profileId)
+{
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		SmartRoom* smartRoom = profile->getSmartRoom(roomId);
+		if (!smartRoom)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "smart room not found";
+		}
+		else
+		{
+			Smartset* smartset = smartRoom->getSmartset(smartsetId);
+			if (!smartset)
+			{
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "smartset not found";
+			}
+			else
+			{
+				SmartItem* smartItem = smartset->getSmartItem(smartItemId);
+				if (!smartItem)
+				{
+					responseJson["outcome"] = "failure";
+					responseJson["error"] = "smart item not found";
+				}
+				else
+				{
+					// send the smart item
+					responseJson["outcome"] = "success";
+					JsonArray jsonSmartControls = responseJson.createNestedArray("smart_controls");
+					for (int i = 0; i < smartItem->getSmartControlsSize(); i++)
+					{
+						SmartControl* smartControl = smartItem->getSmartControl(i);
+						JsonObject jsonSmartControl = jsonSmartControls.createNestedObject();
+						smartControlToJson(smartControl, jsonSmartControl);
+					}
 				}
 			}
 		}
@@ -1463,7 +1522,7 @@ String Database::removeSmartset(String smartsetId, String data)
 	return getLog();
 }
 
-/********** INTERFACE ***********************************************************/
+/********** SET *****************************************************************/
 
 String Database::setItemActive(String id, String data)
 {
@@ -1488,7 +1547,7 @@ String Database::setItemActive(String id, String data)
 		else
 		{
 			bool found = false;
-			for (int i = 0; i < room->getSmartsetsSize(); i++)
+			for (int i = room->getSmartsetsSize() - 1; i >= 0; i--)
 			{
 				Smartset* controlset = room->getSmartset(i);
 				int index = controlset->getSmartItemIndex(item->getId());
@@ -1496,6 +1555,10 @@ String Database::setItemActive(String id, String data)
 				{
 					found = true;
 					controlset->removeSmartItem(index);
+					if (controlset->getSmartItemsSize() == 0)
+					{
+						room->removeSmartset(i);
+					}
 				}
 			}
 			item->setActive(active);
@@ -1510,6 +1573,58 @@ String Database::setItemActive(String id, String data)
 				responseJson["outcome"] = "success";
 			}
 			responseJson["active"] = toStr(item->isActive());
+		}
+	}
+	log(responseJson);
+
+	return getLog();
+}
+
+String Database::setSmartItemActive(String id, String data)
+{
+	deserializeJson(requestJson, data);
+	String profileId = requestJson["profile_id"];
+	String smartRoomId = requestJson["smart_room_id"];
+	String smartsetId = requestJson["smartset_id"];
+	bool active = toBool(requestJson["smart_item_active"]);
+	
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		SmartRoom* smartRoom = profile->getSmartRoom(smartRoomId);
+		if (!smartRoom)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "smart room not found";
+		}
+		else
+		{
+			Smartset* smartset = smartRoom->getSmartset(smartsetId);
+			if (!smartset)
+			{
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "smartset not found";
+			}
+			else
+			{
+				SmartItem* smartItem = smartset->getSmartItem(id);
+				if (!smartItem)
+				{
+					responseJson["outcome"] = "failure";
+					responseJson["error"] = "smart item not found";
+				}
+				else
+				{
+					smartItem->setActive(active);
+					responseJson["outcome"] = "success";
+					responseJson["active"] = toStr(smartItem->isActive());
+				}
+			}
 		}
 	}
 	log(responseJson);
@@ -1548,17 +1663,21 @@ String Database::setControlStatus(String id, String data) {
 			}
 			else
 			{
-				/*bool found = false;
-				for (int i = 0; i < room->getSmartsetsSize(); i++)
+				bool found = false;
+				for (int i = room->getSmartsetsSize() - 1; i >= 0; i--)
 				{
-					Smartset* controlset = room->getSmartset(i);
-					int index = controlset->getSmartItemIndex(item->getId());
+					Smartset* smartset = room->getSmartset(i);
+					int index = smartset->getSmartItemIndex(item->getId());
 					if (index != -1)
 					{
 						found = true;
-						controlset->removeSmartItem(index);
+						smartset->removeSmartItem(index);
+						if (smartset->getSmartItemsSize() == 0)
+						{
+							room->removeSmartset(i);
+						}
 					}
-				}*/
+				}
 
 				if (statusType != control->getStringType())
 				{
@@ -1594,7 +1713,7 @@ String Database::setControlStatus(String id, String data) {
 					}
 				}
 				
-				/*if (found)
+				if (found)
 				{
 					responseJson["outcome"] = "partial_success";
 					responseJson["message"] = "item removed from some smartsets";
@@ -1602,7 +1721,101 @@ String Database::setControlStatus(String id, String data) {
 				else
 				{
 					responseJson["outcome"] = "success";
-				}*/
+				}
+			}
+		}
+	}
+	log(responseJson);
+
+	return getLog();
+}
+
+String Database::setSmartControlStatus(String id, String data) {
+	deserializeJson(requestJson, data);
+	JsonObject smartControlJson = requestJson["smart_control"];
+	String smartControlType = smartControlJson["type"];
+	String smartItemId = requestJson["smart_item_id"];
+	String smartsetId = requestJson["smartset_id"];
+	String smartRoomId = requestJson["smart_room_id"];
+	String profileId = requestJson["profile_id"];
+	
+	Profile* profile = searchProfile(profileId);
+	if (!profile)
+	{
+		responseJson["outcome"] = "failure";
+		responseJson["error"] = "profile not found";
+	}
+	else
+	{
+		SmartRoom* smartRoom = profile->getSmartRoom(smartRoomId);
+		if (!smartRoom)
+		{
+			responseJson["outcome"] = "failure";
+			responseJson["error"] = "smart room not found";
+		}
+		else
+		{
+			Smartset* smartset = smartRoom->getSmartset(smartsetId);
+			if (!smartset)
+			{
+				responseJson["outcome"] = "failure";
+				responseJson["error"] = "smartset not found";
+			}
+			else
+			{
+				SmartItem* smartItem = smartset->getSmartItem(smartItemId);
+				if (!smartItem)
+				{
+					responseJson["outcome"] = "failure";
+					responseJson["error"] = "smart item not found";
+				}
+				else
+				{
+					SmartControl* smartControl = smartItem->getSmartControl(id);
+					if (!smartControl)
+					{
+						responseJson["outcome"] = "failure";
+						responseJson["error"] = "smart control not found";
+					}
+					else
+					{
+						if (smartControlType != smartControl->getStringType())
+						{
+							responseJson["outcome"] = "failure";
+							responseJson["error"] = "smart control type invalid";
+						}
+						else
+						{
+							//jsonToSmartControl(smartControlJson, smartControl);
+							//responseJson["outcome"] = "success";
+							switch (smartControl->getType())
+							{
+							case Control::Type::Binary:
+							{
+								responseJson["outcome"] = "success";
+								bool value = toBool(smartControlJson["value"]);
+								SmartBinary* smartbinary = (SmartBinary*) smartControl;
+								smartbinary->setValue(value);
+								responseJson["value"] = toStr(smartbinary->getValue());
+								break;
+							}
+							case Control::Type::Linear:
+							{
+								responseJson["outcome"] = "success";
+								int value = smartControlJson["value"];
+								SmartLinear* smartLinear = (SmartLinear*) smartControl;
+								smartLinear->setValue(value);
+								responseJson["value"] = smartLinear->getValue();
+								break;
+							}
+							default:
+								responseJson["outcome"] = "failure";
+								responseJson["error"] = "control type not handled";
+								break;
+							}
+						}
+					}
+				}
 			}
 		}
 	}
@@ -1621,6 +1834,7 @@ String Database::addItemToSmartset(String smartsetId, String data)
 	String itemActive = itemJson["active"];
 	String profileId = requestJson["profile_id"];
 	String roomId = requestJson["room_id"];
+	JsonArray controlsJson = itemJson["controls"];
 	
 	Profile* profile = searchProfile(profileId);
 	if (!profile)
@@ -1657,6 +1871,30 @@ String Database::addItemToSmartset(String smartsetId, String data)
 				}
 				
 				smartItem->setActive(toBool(itemActive));
+				for (int i = smartItem->getSmartControlsSize() - 1; i >= 0; i--)
+				{
+					delete smartItem->getSmartControl(i);
+					smartItem->removeSmartControl(i);
+				}
+				for (int i = 0; i < controlsJson.size(); i++)
+				{
+					SmartControl* smartControl = nullptr;
+					JsonObject controlJson = controlsJson[i];
+					String controlId = controlJson["id"];
+					String controlType = controlJson["type"];
+					
+					if (controlType == "binary")
+					{
+						smartControl = SmartBinary::create(controlId);
+					}
+					else if (controlType == "linear")
+					{
+						smartControl = SmartLinear::create(controlId);
+					}
+					
+					jsonToSmartControl(controlJson, smartControl);
+					smartItem->addSmartControl(smartControl);
+				}
 			}
 		}
 	}
@@ -1755,50 +1993,31 @@ String Database::activateSmartset(String roomId, String data)
 				else
 				{
 					Smartset* insertset = Smartset::copy(targetset);
-					
-					bool conflict = false; // just for debug
 					bool modified = false;
-					
 					for (int i = 0; i < targetset->getSmartItemsSize(); i++)
 					{
-						SmartItem* target = targetset->getSmartItem(i);
-
-						bool found = false;
-						bool active = false;
+						SmartItem* targetItem = targetset->getSmartItem(i);
 						for (int j = 0; j < room->getSmartsetsSize(); j++)
 						{
 							Smartset* controlset = room->getSmartset(j);
-							SmartItem* control = controlset->getSmartItem(target->getId());
-							if (control)
+							SmartItem* controlItem =
+									controlset->getSmartItem(targetItem->getId());
+							if (controlItem)
 							{
-								// debug
-								if (found)
-								{
-									if (active != control->isActive())
-									{
-										conflict = true;
-									}
-								}
-								// end debug
-								found = true;
-								active = control->isActive();
+								int index = insertset->getSmartItemIndex(targetItem->getId());
+								insertset->removeSmartItem(index);
+								modified = true;
+								break;
 							}
-						}
-
-						if (found && target->isActive() != active)
-						{
-							int index = insertset->getSmartItemIndex(target->getId());
-							insertset->removeSmartItem(index);
-							modified = true;
 						}
 					}
 
-					if (conflict)
+					/*if (conflict)
 					{
 						responseJson["outcome"] = "failure";
 						responseJson["error"] = "conflict found on previous smartsets";
-					}
-					else if (insertset->getSmartItemsSize() == 0)
+					}*/
+					if (insertset->getSmartItemsSize() == 0)
 					{
 						responseJson["outcome"] = "failure";
 						responseJson["error"] = "all the items are currently unavailable";
@@ -1953,6 +2172,31 @@ void Database::smartItemToJson(SmartItem* smartItem, JsonObject& json)
 	json["active"] = toStr(smartItem->isActive());
 }
 
+void Database::smartControlToJson(SmartControl* smartControl, JsonObject& json)
+{
+	json["id"] = smartControl->getId();
+	json["type"] = smartControl->getStringType();
+	
+	switch (smartControl->getType())
+	{
+	case Control::Type::Binary:
+		{
+			SmartBinary* smartBinary = (SmartBinary*) smartControl;
+			json["value"] = toStr(smartBinary->getValue());
+		}
+		break;
+		
+	case Control::Type::Linear:
+		{
+			SmartLinear* smartLinear = (SmartLinear*) smartControl;
+			json["min"] = smartLinear->getMin();
+			json["max"] = smartLinear->getMax();
+			json["value"] = smartLinear->getValue();
+		}
+		break;
+	}
+}
+
 void Database::portToJson(ArduinoPort* port, JsonObject& json)
 {
 	json["name"] = port->getName();
@@ -1998,13 +2242,37 @@ void Database::jsonToControl(JsonObject& json, Control* control)
 		String min = json["min"];
 		String max = json["max"];
 		//String value = json["value"];
-		linear->setParameters(min.toInt(), max.toInt()/*, value.toInt()*/);
+		linear->setParameters(min.toInt(), max.toInt());
 	}
 }
 
 void Database::jsonToSmartset(JsonObject& json, Smartset* smartset)
 {
 	smartset->setName(json["name"]);
+}
+
+void Database::jsonToSmartControl(JsonObject& json, SmartControl* smartControl)
+{
+	switch (smartControl->getType())
+	{
+		case Control::Type::Binary:
+		{
+			SmartBinary* smartBinary = (SmartBinary*) smartControl;
+			String value = json["value"];
+			smartBinary->setValue(toBool(value));
+			break;
+		}
+		case Control::Type::Linear:
+		{
+			SmartLinear* smartLinear = (SmartLinear*) smartControl;
+			String min = json["min"];
+			String max = json["max"];
+			String value = json["value"];
+			smartLinear->setParameters(min.toInt(), max.toInt());
+			smartLinear->setValue(value.toInt());
+			break;
+		}
+	}
 }
 
 /********** GETTERS *************************************************************/

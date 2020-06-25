@@ -17,6 +17,8 @@ public:
 	virtual Type getType();
 	virtual String getStringType() const;
 	virtual void updatePort();
+	virtual bool updateFrom(SmartControl* origin);
+	virtual void setDefault();
 	
 	// getters / setters
 	bool getValue();

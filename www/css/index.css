@@ -25,6 +25,7 @@ body {
 
 .header {
 	text-shadow: none !important;
+	z-index: 1200;
 }
 
 .header-title {
@@ -111,6 +112,7 @@ a {
 	height: 80px;
 	/*border: none;*/
 	border-radius: 40px;
+	box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
 }
 
 .rounded-btn::after {
@@ -210,6 +212,10 @@ a {
 
 /********** SIGN IN PAGE ******************************************************/
 
+#sign-in-page .ui-content {
+	margin-bottom: 120px;
+}
+
 #sign-in-page .devices {
 	width: 360px;
 	margin: auto;
@@ -288,6 +294,10 @@ input::-webkit-inner-spin-button {
 
 /********** PROFILES PAGE *****************************************************/
 
+#profiles-page .ui-content {
+	margin-bottom: 120px;
+}
+
 #profiles-page .profiles {
 	width: 300px;
 	margin: auto;
@@ -363,6 +373,10 @@ input::-webkit-inner-spin-button {
 }
 
 /********** CONTROL PANEL PAGE ************************************************/
+
+#control-panel-page .ui-content {
+	margin-bottom: 120px;
+}
 
 #control-panel-page .room-icon {
     max-width: 100px;
@@ -502,32 +516,36 @@ input::-webkit-inner-spin-button {
 
 /********** MANUAL PANEL PAGE *************************************************/
 
-#manual-panel-page .main .smartsets {
-	width: 90%;
-	height: 45px;
-	margin: 20px auto;
+#manual-panel-page .ui-content.main {
+	margin-bottom: 120px;
 }
 
 #manual-panel-page .ui-popup-container {
-    width: 70%;
+	/*margin-top: 200px;*/
+}
+
+#manual-panel-page .ui-content .smartsets {
+	width: 95%;
+	height: 45px;
+	margin: 10px auto 40px;
+}
+
+#manual-panel-page .ui-popup-container {
+    width: 80%;
 }
 
 #manual-panel-page .item,
 #manual-panel-page .smart-item {
 	min-height: 60px;
-	/*padding: 10px 10px 10px 100px;*/
 	padding: 10px;
-	border-width: 1px 0 0;
+	border-width: 0 0 1px 0;
     border-style: solid;
 	border-color: #ddd;
 }
 
-#manual-panel-page .items :last-child {
+#manual-panel-page .item.ui-first-child,
+#manual-panel-page .smart-item.ui-first-child {
 	border-width: 1px 0;
-}
-
-#manual-panel-page .smart-items :first-child {
-	border-width: 0;
 }
 
 #manual-panel-page .item .item-inner,
@@ -542,7 +560,7 @@ input::-webkit-inner-spin-button {
 	top: 0px;
 	left: 0px;*/
 	display: inline-block;
-	margin: 0 20px 0 10px;
+	margin: 0 20px 0 10px !important;
 	border-width: 0;
 	padding: 0px;
 	width: 60px;
@@ -593,6 +611,7 @@ input::-webkit-inner-spin-button {
 	top: -1px;
 	right: 0;
 	padding: 0;
+	border-width: 1px;
 	margin: 0;
 	height: 80px;
 	width: 80px;
@@ -609,19 +628,33 @@ input::-webkit-inner-spin-button {
 	border-radius: 150px;
 }
 
-#manual-panel-page .item .control.ui-first-child {
-	margin-top: 10px;
+#manual-panel-page .item-controls {
+	margin: 0;
 }
 
-#manual-panel-page .item .ui-field-contain {
+#manual-panel-page .item .control,
+#manual-panel-page .smart-item .control {
+	border-width: 0 1px 1px 1px;
+}
+
+#manual-panel-page .item .control.ui-first-child,
+#manual-panel-page .smart-item .control.ui-first-child {
+	margin-top: 20px;
+	border-width: 1px;
+}
+
+#manual-panel-page .item .ui-field-contain,
+#manual-panel-page .smart-item .ui-field-contain {
 	border-bottom-width: 0;
 	margin: 0;
+	padding: 0;
 }
 
 #manual-panel-page .smartsets-panel {
 	position: fixed;
 	top: 100%;
 	width: 100%;
+	z-index: 10;
 }
 
 #manual-panel-page .smartsets-panel .title {
@@ -659,7 +692,7 @@ input::-webkit-inner-spin-button {
 
 /********** EDIT ITEM *********************************************************/
 
-#edit-item-page .item-icon {
+/*#edit-item-page .item-icon {
 	position: absolute;
 	margin: 20px;
 }
@@ -668,11 +701,6 @@ input::-webkit-inner-spin-button {
 	margin: 0px 20px 0px 140px;
 	padding: 40px 0px;
 }
-
-/*#edit-item-page .ports {
-	width: 70%;
-	margin: 20px auto;
-}*/
 
 #edit-item-page .icons {
 	margin: 120px 10px;
@@ -696,30 +724,35 @@ input::-webkit-inner-spin-button {
 	background: transparent;
 	border: none;
 	font-size: 15px;
-}
+}*/
 
-/********** ADD ITEM **********************************************************/
+/********** ADD ITEM - EDIT ITEM***********************************************/
 
-#add-item-page .item-icon {
+#add-item-page .item-icon,
+#edit-item-page .item-icon {
 	position: absolute;
 	margin: 20px;
 }
 
-#add-item-page .item-name-wrapper {
+#add-item-page .item-name-wrapper,
+#edit-item-page .item-name-wrapper {
 	margin: 0px 20px 0px 140px;
 	padding: 40px 0px;
 }
 
-#add-item-page .controls-wrapper {
+#add-item-page .controls-wrapper,
+#edit-item-page .controls-wrapper {
 	width: 90%;
 	margin: 20px auto;
 }
 
-#add-item-page .control-options .row-1 .ui-block-a {
+#add-item-page .control-options .row-1 .ui-block-a,
+#edit-item-page .control-options .row-1 .ui-block-a {
 	width: 70%;
 }
 
-#add-item-page .control-options .row-1 .ui-block-b {
+#add-item-page .control-options .row-1 .ui-block-b,
+#edit-item-page .control-options .row-1 .ui-block-b {
 	width: 30%;
 }
 
@@ -731,46 +764,56 @@ input::-webkit-inner-spin-button {
 	overflow: visible;
 }*/
 
-#add-item-page .control-options .row-2 .ui-block-a {
+#add-item-page .control-options .row-2 .ui-block-a,
+#edit-item-page .control-options .row-2 .ui-block-a{
 	width: 60%;
 }
 
-#add-item-page .control-options .row-2 .ui-block-b {
+#add-item-page .control-options .row-2 .ui-block-b,
+#edit-item-page .control-options .row-2 .ui-block-b {
 	width: 40%;
 }
 
-#add-item-page .control-options .ui-input-text {
+#add-item-page .control-options .ui-input-text,
+#edit-item-page .control-options .ui-input-text {
 	margin: 8px;
 }
 
-#add-item-page .control-options .device-name {
+#add-item-page .control-options .device-name,
+#edit-item-page .control-options .device-name {
 	height: 36px;
 }
 
-#add-item-page .control-options .control-type {
+#add-item-page .control-options .control-type,
+#edit-item-page .control-options .control-type {
 	margin: 8px 5px;
 }
 
-#add-item-page .control-options .control-type .ui-controlgroup-controls {
+#add-item-page .control-options .control-type .ui-controlgroup-controls,
+#edit-item-page .control-options .control-type .ui-controlgroup-controls {
 	width: 100%;
 }
 
-#add-item-page .control-options .control-type .ui-radio {
+#add-item-page .control-options .control-type .ui-radio,
+#edit-item-page .control-options .control-type .ui-radio {
 	width: 50%;
 }
 
-#add-item-page .control-options .control-type .ui-btn {
+#add-item-page .control-options .control-type .ui-btn,
+#edit-item-page .control-options .control-type .ui-btn {
 	height: 18px;
 	padding: 9px 12px;
 	line-height: 20px;
 	text-align: center;
 }
 
-#add-item-page .control-options .ports {
+#add-item-page .control-options .ports,
+#edit-item-page .control-options .ports {
 	margin: 8px 0px;
 }
 
-#add-item-page .control-options .ports .ui-btn {
+#add-item-page .control-options .ports .ui-btn,
+#edit-item-page .control-options .ports .ui-btn {
 	/*margin: 8px 0px;*/
 	padding: 9px 12px;
 	border-width: 1px;
@@ -779,11 +822,14 @@ input::-webkit-inner-spin-button {
 }
 
 #add-item-page .linear-options .ui-block-a,
-#add-item-page .linear-options .ui-block-c {
+#add-item-page .linear-options .ui-block-c,
+#edit-item-page .linear-options .ui-block-a,
+#edit-item-page .linear-options .ui-block-c {
 	width: 20%;
 }
 
-#add-item-page .linear-options .ui-block-b {
+#add-item-page .linear-options .ui-block-b,
+#edit-item-page .linear-options .ui-block-b {
 	width: 60%;
 }
 
@@ -791,25 +837,31 @@ input::-webkit-inner-spin-button {
 	display: none;
 }*/
 
-#add-item-page .linear-options .ui-input-text {
+#add-item-page .linear-options .ui-input-text,
+#edit-item-page .linear-options .ui-input-text {
 	margin: 8px;
 }
 
 #add-item-page .linear-options .linear-min,
-#add-item-page .linear-options .linear-max {
+#add-item-page .linear-options .linear-max,
+#edit-item-page .linear-options .linear-min,
+#edit-item-page .linear-options .linear-max {
 	height: 36px;
 	text-align: center;
 }
 
-#add-item-page .linear-slider {
+#add-item-page .linear-slider,
+#edit-item-page .linear-slider {
     display: none;
 }
 
-#add-item-page .linear-options .ui-slider {
+#add-item-page .linear-options .ui-slider,
+#edit-item-page .linear-options .ui-slider {
 	margin: 12px 0;
 }
 
-#add-item-page .ui-slider-track {
+#add-item-page .ui-slider-track,
+#edit-item-page .ui-slider-track {
 	margin-left: 15px;
 }
 
@@ -818,14 +870,27 @@ input::-webkit-inner-spin-button {
 	margin: 20px auto;
 }*/
 
-#add-item-page .icons {
+#add-item-page .icons,
+#edit-item-page .icons {
 	margin: 20px 10px;
 }
 
-#add-item-page .icon-btn {
+#add-item-page .icon-btn,
+#edit-item-page .icon-btn {
 	padding: 0px;
 	width: 60px;
 	height: 60px;
 	margin: 5px;
 	border-radius: 35px;
 }
+
+#edit-item-page .footer {
+	text-align: center;
+}
+
+#edit-item-page .remove-btn {
+	display: inline-block;
+	margin: 5px 0px;
+	background: transparent;
+	border: none;
+	font-size: 15px;

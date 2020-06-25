@@ -1,4 +1,6 @@
 #include "Binary.h"
+#include "SmartControl.h"
+#include "SmartBinary.h"
 
 // static constructors
 Binary* Binary::create(PortManager& portManager)
@@ -52,6 +54,25 @@ void Binary::updatePort()
 	{
 		portManager.writeDigital(port, false);
 	}
+}
+
+bool Binary::updateFrom(SmartControl* origin)
+{
+	if (origin->getType() == Control::Type::Binary)
+	{
+		SmartBinary* smartBinary = (SmartBinary*) origin;
+		setValue(smartBinary->getValue());
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Binary::setDefault()
+{
+	setValue(false);
 }
 
 // getters / setters

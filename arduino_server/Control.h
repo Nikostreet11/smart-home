@@ -6,6 +6,9 @@
 #include "PortManager.h"
 #include "IdManager.h"
 
+// forward declarations
+class SmartControl;
+
 class Control
 {
 public:
@@ -18,6 +21,8 @@ public:
 	virtual Type getType() = 0;
 	virtual String getStringType() const = 0;
 	virtual void updatePort() = 0;
+	virtual bool updateFrom(SmartControl* origin) = 0;
+	virtual void setDefault() = 0;
 	
 	// getters / setters
 	int getTrueId() const;

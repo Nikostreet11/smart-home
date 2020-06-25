@@ -6,6 +6,7 @@
 #include "IdManager.h"
 #include "Binary.h"
 #include "Linear.h"
+#include "SmartItem.h"
 
 class Item
 {
@@ -17,6 +18,8 @@ public:
 	virtual ~Item();
 
 	// operations
+	void updateFrom(SmartItem* origin);
+	void setDefault();
 	bool isControlNameAvailable(const String& name);
 	bool addControl(Control* control);
 	bool removeControl(int index);

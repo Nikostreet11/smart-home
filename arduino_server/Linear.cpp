@@ -1,4 +1,6 @@
 #include "Linear.h"
+#include "SmartControl.h"
+#include "SmartLinear.h"
 
 // static constructors
 Linear* Linear::create(PortManager& portManager)
@@ -31,7 +33,7 @@ Linear::~Linear()
 {
 }
 
-// getters / setters
+// operations
 Control::Type Linear::getType()
 {
 	return Type::Linear;
@@ -55,6 +57,26 @@ void Linear::updatePort()
 	}
 }
 
+bool Linear::updateFrom(SmartControl* origin)
+{
+	if (origin->getType() == Control::Type::Linear)
+	{
+		SmartLinear* smartLinear = (SmartLinear*) origin;
+		setValue(smartLinear->getValue());
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+void Linear::setDefault()
+{
+	setValue(min);
+}
+
+// getters / setters
 int Linear::getMin()
 {
 	return min;

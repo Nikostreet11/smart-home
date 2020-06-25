@@ -27,6 +27,30 @@ Item::~Item()
 }
 
 // operations
+void Item::updateFrom(SmartItem* origin)
+{
+	for (int i = 0; i < origin->getSmartControlsSize(); i++)
+	{
+		SmartControl* smartControl = origin->getSmartControl(i);
+		Control* control = getControl(smartControl->getId());
+		if (control)
+		{
+			control->updateFrom(smartControl);
+		}
+	}
+	setActive(origin->isActive());
+}
+
+void Item::setDefault()
+{
+	for (int i = 0; i < controls.size(); i++)
+	{
+		Control* control = controls.get(i);
+		control->setDefault();
+	}
+	setActive(false);
+}
+
 bool Item::isControlNameAvailable(const String& name)
 {
 	bool taken = false;

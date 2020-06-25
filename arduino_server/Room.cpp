@@ -47,7 +47,11 @@ bool Room::addSmartset(Smartset* smartset)
 		for (int i = 0; i < smartset->getSmartItemsSize(); i++)
 		{
 			SmartItem* smartItem = smartset->getSmartItem(i);
-			getItem(smartItem->getId())->setActive(smartItem->isActive());
+			Item* item = getItem(smartItem->getId());
+			if (item)
+			{
+				item->updateFrom(smartItem);
+			}
 		}
 		smartsets.add(smartset);
 		return true;
@@ -74,13 +78,18 @@ bool Room::removeItem(int index)
 
 bool Room::removeSmartset(int index)
 {
-	Serial.println(index);
 	if (0 <= index && index < smartsets.size())
 	{
-		Smartset* targetset = smartsets.get(index);
-		for (int i = 0; i < targetset->getSmartItemsSize(); i++)
+		Smartset* smartset = smartsets.get(index);
+		for (int i = 0; i < smartset->getSmartItemsSize(); i++)
 		{
-			SmartItem* target = targetset->getSmartItem(i);
+			SmartItem* smartItem = smartset->getSmartItem(i);
+			Item* item = getItem(smartItem->getId());
+			if (item)
+			{
+				item->setDefault();
+			}
+			/*SmartItem* target = targetset->getSmartItem(i);
 			bool found = false;
 			for (int j = 0; j < smartsets.size(); j++)
 			{
@@ -98,10 +107,10 @@ bool Room::removeSmartset(int index)
 			if (!found)
 			{
 				getItem(target->getId())->setActive(false);
-			}
+			}*/
 		}
 		
-		delete targetset;
+		delete smartset;
 		smartsets.remove(index);
 		return true;
 	}

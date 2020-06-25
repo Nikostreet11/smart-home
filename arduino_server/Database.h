@@ -10,6 +10,8 @@
 #include "Binary.h"
 #include "Linear.h"
 #include "Smartset.h"
+#include "SmartBinary.h"
+#include "SmartLinear.h"
 #include "PortManager.h"
 
 class Database
@@ -55,6 +57,7 @@ public:
 	String getSmartsetByName(String smartsetName, String roomId, String profileId);
 	String getSmartItems(String smartsetId, String roomId, String profileId);
 	String getSmartItem(String smartItemId, String smartsetId, String roomId, String profileId);
+	String getSmartControls(String smartItemId, String smartsetId, String roomId, String profileId);
 	String getAvailablePorts();
 
 	// update
@@ -78,9 +81,11 @@ public:
 	String removeItem(String id, String data);
 	String removeSmartset(String smartsetId, String data);
 
-	// interface
+	// set
 	String setItemActive(String id, String data);
+	String setSmartItemActive(String id, String data);
 	String setControlStatus(String id, String data);
+	String setSmartControlStatus(String id, String data);
 
 	// smart
 	String addItemToSmartset(String smartsetId, String data);
@@ -96,14 +101,14 @@ public:
 	void controlToJson(Control* control, JsonObject& json);
 	void smartsetToJson(Smartset* smartset, JsonObject& json);
 	void smartItemToJson(SmartItem* smartItem, JsonObject& json);
+	void smartControlToJson(SmartControl* smartControl, JsonObject& json);
 	void portToJson(ArduinoPort* port, JsonObject& json);
 	void jsonToProfile(JsonObject& json, Profile* profile);
 	void jsonToRoom(JsonObject& json, Room* room);
 	void jsonToItem(JsonObject& json, Item* item);
 	void jsonToControl(JsonObject& json, Control* control);
 	void jsonToSmartset(JsonObject& json, Smartset* smartset);
-	//void jsonToItem(JsonObject& json, Smartset* smartset);
-	//void jsonToPort(JsonObject& json, ArduinoPort* port);
+	void jsonToSmartControl(JsonObject& json, SmartControl* smartControl);
 	
 	// getters
 	int getProfilesSize();

@@ -13,10 +13,14 @@ public:
 	// destructor
 	virtual ~Linear();
 	
-	// getters / setters
+	// operations
 	virtual Type getType();
 	virtual String getStringType() const;
 	virtual void updatePort();
+	virtual bool updateFrom(SmartControl* origin);
+	virtual void setDefault();
+
+	// getters / setters
 	int getMin();
 	int getMax();
 	void setParameters(int min, int max);

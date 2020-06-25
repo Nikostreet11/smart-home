@@ -410,6 +410,40 @@ bool SmartHomeServer::handleGET(String path, String query)
 			}
 		}
 	}
+	else if (path.startsWith("/smart_controls/"))
+	{
+		// get the smart control name
+		String remainingPath = path.substring(String("/smart_controls/").length());
+		int smartControlIdEnd = remainingPath.indexOf("/");
+		String smartControlId;
+		String smartItemId = getParameter("smart_item_id", query);
+		String smartsetId = getParameter("smartset_id", query);
+		String roomId = getParameter("room_id", query);
+		String profileId = getParameter("profile_id", query);
+		if (smartControlIdEnd != -1)
+		{
+			smartControlId = remainingPath.substring(0, smartControlIdEnd);
+			remainingPath = remainingPath.substring(smartControlIdEnd);
+			
+			// TODO
+		}
+		else
+		{
+			smartControlId = remainingPath;
+			if (smartControlId == "")
+			{
+				// get all the smart controls
+				responseText = database.getSmartControls(
+						smartItemId, smartsetId, roomId, profileId);
+				return true;
+			}
+			else
+			{
+				// get the smart control
+				// TODO
+			}
+		}
+	}
 	else if (path.startsWith("/ports/"))
 	{
 		// get the item name
@@ -571,9 +605,6 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 		{
 			itemId = remainingPath;
 			
-			StaticJsonDocument<1024> requestJson;
-			deserializeJson(requestJson, data);
-			
 			if (itemId == "")
 			{
 				if (action == "add")
@@ -685,6 +716,65 @@ bool SmartHomeServer::handlePOST(String path, String query, String data)
 				{
 					// remove the item from the smartset
 					responseText = database.removeItemFromSmartset(smartsetId, data);
+					return true;
+				}
+			}
+		}
+	}
+	else if (path.startsWith("/smart_items/"))
+	{
+		// get the smart item id
+		String remainingPath = path.substring(String("/smart_items/").length());
+		int smartItemIdEnd = remainingPath.indexOf("/");
+		String smartItemId;
+		String action = getParameter("action", query);
+		
+		if (smartItemIdEnd != -1)
+		{
+			// TODO
+		}
+		else
+		{
+			smartItemId = remainingPath;
+			
+			if (smartItemId == "")
+			{
+				// TODO
+			}
+			else
+			{
+				if (action == "set_active")
+				{
+					responseText = database.setSmartItemActive(smartItemId, data);
+					return true;
+				}
+			}
+		}
+	}
+	else if (path.startsWith("/smart_controls/"))
+	{
+		// get the smart control id
+		String remainingPath = path.substring(String("/smart_controls/").length());
+		int smartControlIdEnd = remainingPath.indexOf("/");
+		String smartControlId;
+		String action = getParameter("action", query);
+		
+		if (smartControlIdEnd != -1)
+		{
+			// TODO
+		}
+		else
+		{
+			smartControlId = remainingPath;
+			if (smartControlId == "")
+			{
+				// TODO
+			}
+			else
+			{
+				if (action == "set_status")
+				{
+					responseText = database.setSmartControlStatus(smartControlId, data);
 					return true;
 				}
 			}
