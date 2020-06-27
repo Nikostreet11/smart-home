@@ -7,8 +7,8 @@ class Binary : public Control
 {
 public:
 	// static constructors
-	static Binary* create(PortManager& portManager);
-	static Binary* create(PortManager& portManager, String id);
+	static Binary* create(PortManager& portManager, bool active);
+	static Binary* create(PortManager& portManager, bool active, String id);
 	
 	// destructor
 	virtual ~Binary();
@@ -26,8 +26,8 @@ public:
 	
 private:
 	// constructors
-	Binary(PortManager& portManager);
-	Binary(PortManager& portManager, int id);
+	Binary(PortManager& portManager, bool active);
+	Binary(PortManager& portManager, bool active, int id);
 	
 	// variables
 	bool value;

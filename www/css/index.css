@@ -23,6 +23,14 @@ body {
     font-family: system-ui, -apple-system, -apple-system-font, 'Segoe UI', 'Roboto', sans-serif;
 }
 
+h1, h2, h3, h4, h5, h6 {
+	font-weight: normal;
+}
+
+a {
+	text-shadow: none !important;
+}
+
 .header {
 	text-shadow: none !important;
 	z-index: 1200;
@@ -32,14 +40,6 @@ body {
 	padding: 0px !important;
 	margin: 0 !important;
 	width: 100%;
-}
-
-h1, h2, h3, h4, h5, h6 {
-	font-weight: normal;
-}
-
-a {
-	text-shadow: none !important;
 }
 
 .header-title h1 {
@@ -73,6 +73,10 @@ a {
 	border-radius: 0px;
 }
 
+.footer {
+	z-index: 2;
+}
+
 .no-text-btn {
 	margin: 0px !important;
 	padding: 0px !important;
@@ -91,9 +95,9 @@ a {
 	filter: brightness(70%);
 }
 
-.enhanced {
+/*.enhanced {
 	filter: sepia(10%) saturate(150%);
-}
+}*/
 
 .hidden {
 	display: none;
@@ -105,6 +109,7 @@ a {
 	bottom: 20px;
 	margin: 0px;
 	padding: 0px;
+	z-index: 2;
 }
 
 .rounded-btn {
@@ -530,6 +535,12 @@ input::-webkit-inner-spin-button {
 	margin: 10px auto 40px;
 }
 
+#manual-panel-page .ui-content .smartsets .ui-collapsible-heading-toggle {
+	background-color: #47f !important;
+	color: white;
+	text-align: center
+}
+
 #manual-panel-page .ui-popup-container {
     width: 80%;
 }
@@ -568,10 +579,10 @@ input::-webkit-inner-spin-button {
 	border-radius: 30px;
 }
 
-#manual-panel-page .item[active="true"],
-#manual-panel-page .smart-item[active="true"] {
-	background-color: #fafafa;
-	filter: sepia(10%) saturate(250%);
+#manual-panel-page .item[active="false"],
+#manual-panel-page .smart-item[active="false"] {
+	background-color: #f5f5f5;
+	filter: grayscale(80%);
 }
 
 #manual-panel-page .item .item-active-btn::after,
@@ -688,6 +699,17 @@ input::-webkit-inner-spin-button {
 	font-size: 16px;
 	font-weight: normal;
 	margin: 0;
+}
+
+#manual-panel-page .add-smartset-popup .ui-title,
+#manual-panel-page .edit-smartset-popup .ui-title {
+	width: 100%;
+	margin: 0;
+}
+
+#manual-panel-page .add-smartset-popup .ui-btn-inline,
+#manual-panel-page .edit-smartset-popup .ui-btn-inline {
+	width: 25%;
 }
 
 /********** EDIT ITEM *********************************************************/

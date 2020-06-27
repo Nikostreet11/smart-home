@@ -1003,8 +1003,8 @@ String Database::addItem(String data)
 	}*/
 	else
 	{
-		Item* newItem = Item::create(/*portManager*/);
-		jsonToItem(itemJson, newItem);
+		Item* item = Item::create(/*portManager*/);
+		jsonToItem(itemJson, item);
 		
 		JsonArray controlsJson = itemJson["controls"];
 		bool controlsPass = true;
@@ -1014,7 +1014,7 @@ String Database::addItem(String data)
 			String name = controlJson["name"];
 			String port = controlJson["port"];
 			Control* control = nullptr;
-			if (!newItem->isControlNameAvailable(name))
+			if (!item->isControlNameAvailable(name))
 			{
 				controlsPass = false;
 				responseJson["outcome"] = "failure";
@@ -1030,11 +1030,11 @@ String Database::addItem(String data)
 			}
 			if (controlJson["type"] == "binary")
 			{
-				control = Binary::create(portManager);
+				control = Binary::create(portManager, item->isActive());
 			}
 			else if (controlJson["type"] == "linear")
 			{
-				control = Linear::create(portManager);
+				control = Linear::create(portManager, item->isActive());
 			}
 			else
 			{
@@ -1044,17 +1044,17 @@ String Database::addItem(String data)
 				break;
 			}
 			jsonToControl(controlJson, control);
-			newItem->addControl(control);
+			item->addControl(control);
 		}
 
 		if (controlsPass)
 		{
-			room->addItem(newItem);
+			room->addItem(item);
 			responseJson["outcome"] = "success";
 		}
 		else
 		{
-			delete newItem;
+			delete item;
 		}
 	}
 	log(responseJson);
@@ -1255,11 +1255,11 @@ String Database::editItem(String id, String data)
 							delete control;
 							if (controlType == "binary")
 							{
-								control = Binary::create(portManager, controlId);
+								control = Binary::create(portManager, item->isActive(), controlId);
 							}
 							else if (controlType == "linear")
 							{
-								control = Linear::create(portManager, controlId);
+								control = Linear::create(portManager, item->isActive(), controlId);
 							}
 							else
 							{
@@ -1289,11 +1289,11 @@ String Database::editItem(String id, String data)
 					}
 					if (controlType == "binary")
 					{
-						control = Binary::create(portManager);
+						control = Binary::create(portManager, item->isActive());
 					}
 					else if (controlType == "linear")
 					{
-						control = Linear::create(portManager);
+						control = Linear::create(portManager, item->isActive());
 					}
 					else
 					{

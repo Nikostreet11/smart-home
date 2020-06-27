@@ -185,7 +185,6 @@ bool Item::isActive() const
 void Item::setActive(bool active)
 {
 	this->active = active;
-	//portManager.setActive(port, active);
 	for (int i = 0; i < controls.size(); i++)
 	{
 		controls.get(i)->setActive(active);
@@ -193,12 +192,10 @@ void Item::setActive(bool active)
 }
 
 // constructor
-Item::Item(/*PortManager& portManager*/) :
-		//portManager(portManager),
+Item::Item() :
 		id(idManager.acquireId()),
 		name("item"),
 		icon("default"),
-		//port("none"),
-		active(false)
+		active(true)
 {
 }

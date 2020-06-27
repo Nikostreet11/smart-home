@@ -3,11 +3,11 @@
 #include "SmartLinear.h"
 
 // static constructors
-Linear* Linear::create(PortManager& portManager)
+Linear* Linear::create(PortManager& portManager, bool active)
 {
 	if (idManager.isIdAvailable())
 	{
-		return new Linear(portManager);
+		return new Linear(portManager, active);
 	}
 	else
 	{
@@ -15,12 +15,12 @@ Linear* Linear::create(PortManager& portManager)
 	}
 }
 
-Linear* Linear::create(PortManager& portManager, String id)
+Linear* Linear::create(PortManager& portManager, bool active, String id)
 {
 	int trueId = toTrueId(id);
 	if (idManager.isIdAvailable(trueId))
 	{
-		return new Linear(portManager, trueId);
+		return new Linear(portManager, active, trueId);
 	}
 	else
 	{
@@ -153,16 +153,16 @@ void Linear::setValue(int value)
 }
 
 // constructors
-Linear::Linear(PortManager& portManager) :
-		Control(portManager)
+Linear::Linear(PortManager& portManager, bool active) :
+		Control(portManager, active)
 {
 	min = 0;
 	max = 100;
 	value = 0;
 }
 
-Linear::Linear(PortManager& portManager, int id) :
-		Control(portManager, id)
+Linear::Linear(PortManager& portManager, bool active, int id) :
+		Control(portManager, active, id)
 {
 	min = 0;
 	max = 100;

@@ -7,8 +7,8 @@ class Linear : public Control
 {
 public:
 	// static constructors
-	static Linear* create(PortManager& portManager);
-	static Linear* create(PortManager& portManager, String id);
+	static Linear* create(PortManager& portManager, bool active);
+	static Linear* create(PortManager& portManager, bool active, String id);
 	
 	// destructor
 	virtual ~Linear();
@@ -29,8 +29,8 @@ public:
 	
 private:
 	// constructors
-	Linear(PortManager& portManager);
-	Linear(PortManager& portManager, int id);
+	Linear(PortManager& portManager, bool active);
+	Linear(PortManager& portManager, bool active, int id);
 	
 	// variables
 	int min;

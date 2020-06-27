@@ -42,8 +42,8 @@ protected:
 	static int toTrueId(String id);
 	
 	// constructors
-	Control(PortManager& portManager);
-	Control(PortManager& portManager, int id);
+	Control(PortManager& portManager, bool active);
+	Control(PortManager& portManager, bool active, int id);
 
 	// static resources
     static IdManager idManager;

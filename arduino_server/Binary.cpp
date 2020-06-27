@@ -3,11 +3,11 @@
 #include "SmartBinary.h"
 
 // static constructors
-Binary* Binary::create(PortManager& portManager)
+Binary* Binary::create(PortManager& portManager, bool active)
 {
 	if (idManager.isIdAvailable())
 	{
-		return new Binary(portManager);
+		return new Binary(portManager, active);
 	}
 	else
 	{
@@ -15,12 +15,12 @@ Binary* Binary::create(PortManager& portManager)
 	}
 }
 
-Binary* Binary::create(PortManager& portManager, String id)
+Binary* Binary::create(PortManager& portManager, bool active, String id)
 {
 	int trueId = toTrueId(id);
 	if (idManager.isIdAvailable(trueId))
 	{
-		return new Binary(portManager, trueId);
+		return new Binary(portManager, active, trueId);
 	}
 	else
 	{
@@ -88,14 +88,14 @@ void Binary::setValue(bool value)
 }
 
 // constructors
-Binary::Binary(PortManager& portManager) :
-		Control(portManager)
+Binary::Binary(PortManager& portManager, bool active) :
+		Control(portManager, active)
 {
 	value = false;
 }
 
-Binary::Binary(PortManager& portManager, int id) :
-		Control(portManager, id)
+Binary::Binary(PortManager& portManager, bool active, int id) :
+		Control(portManager, active, id)
 {
 	value = false;
 }

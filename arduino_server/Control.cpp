@@ -78,20 +78,20 @@ int Control::toTrueId(String id)
 }
 
 // constructors
-Control::Control(PortManager& portManager) :
+Control::Control(PortManager& portManager, bool active) :
 	portManager(portManager),
 	id(idManager.acquireId()),
 	name("default"),
 	port("none"),
-	active(false)
+	active(active)
 {
 }
 
-Control::Control(PortManager& portManager, int id) :
+Control::Control(PortManager& portManager, bool active, int id) :
 	portManager(portManager),
 	id(idManager.acquireId(id)),
 	name("default"),
 	port("none"),
-	active(false)
+	active(active)
 {
 }

@@ -2248,6 +2248,7 @@ var app = {
 		}
 		
 		else if (target.is($('#manual-panel-page .add-smartset-popup'))) {
+			$('#manual-panel-page .add-smartset-popup .smartset-name').val('');
 			$('#manual-panel-page .add-smartset-popup').popup("open");
 		}
 		
