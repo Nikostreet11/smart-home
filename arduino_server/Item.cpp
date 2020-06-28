@@ -48,7 +48,7 @@ void Item::setDefault()
 		Control* control = controls.get(i);
 		control->setDefault();
 	}
-	setActive(false);
+	setActive(true);
 }
 
 bool Item::isControlNameAvailable(const String& name)

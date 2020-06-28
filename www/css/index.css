@@ -525,7 +525,10 @@ input::-webkit-inner-spin-button {
 	margin-bottom: 120px;
 }
 
-#manual-panel-page .ui-popup-container {
+#manual-panel-page .smartset-popup-wrapper {
+/*#manual-panel-page .smartset-popup {*/
+	/*position: absolute;*/
+	top: 200px !important;
 	/*margin-top: 200px;*/
 }
 
