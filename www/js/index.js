@@ -3059,9 +3059,14 @@ var app = {
 										'>' +
 									'</div>' +
 									'<div class="ui-block-b">' +
-										'<a class="remove-control-btn ui-btn">' +
-											'remove' +
-										'</a>' +
+									'<a class="remove-control-btn ui-btn ' +
+											'ui-icon-delete ui-btn-icon-notext ' +
+											//'ui-corner-all ' +
+									'">' +
+									'</a>' +
+									/*'<a class="remove-control-btn ui-btn">' +
+										'remove' +
+									'</a>' +*/
 									'</div>' +
 								'</div>' +
 								'<div class="row-2 ui-grid-a">' +
@@ -3344,9 +3349,14 @@ var app = {
 									'>' +
 								'</div>' +
 								'<div class="ui-block-b">' +
-									'<a class="remove-control-btn ui-btn">' +
-										'remove' +
+									'<a class="remove-control-btn ui-btn ' +
+											'ui-icon-delete ui-btn-icon-notext ' +
+											//'ui-corner-all ' +
+									'">' +
 									'</a>' +
+									/*'<a class="remove-control-btn ui-btn">' +
+										'remove' +
+									'</a>' +*/
 								'</div>' +
 							'</div>' +
 							'<div class="row-2 ui-grid-a">' +

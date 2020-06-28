@@ -770,12 +770,19 @@ input::-webkit-inner-spin-button {
 
 #add-item-page .control-options .row-1 .ui-block-a,
 #edit-item-page .control-options .row-1 .ui-block-a {
-	width: 70%;
+	width: 85%;
 }
 
 #add-item-page .control-options .row-1 .ui-block-b,
 #edit-item-page .control-options .row-1 .ui-block-b {
-	width: 30%;
+	width: 15%;
+}
+
+#add-item-page .control-options .remove-control-btn,
+#edit-item-page .control-options .remove-control-btn {
+	margin: 8px 0;
+	width: 90%;
+	height: 35px;
 }
 
 /*#add-item-page .control {
